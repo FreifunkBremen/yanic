@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net"
+	"reflect"
+	"strings"
 	"time"
 )
 
@@ -11,22 +13,15 @@ const (
 	maxDatagramSize = 8192
 )
 
-type Node struct {
-	Firstseen  time.Time   `json:"firstseen"`
-	Lastseen   time.Time   `json:"lastseen"`
-	Statistics interface{} `json:"statistics"`
-	Nodeinfo   interface{} `json:"nodeinfo"`
-}
-
 type Collector struct {
-	connection *net.UDPConn     // UDP socket
-	queue      chan string      // received responses
-	nodes      map[string]*Node // the current nodemap
+	collectType string
+	connection  *net.UDPConn // UDP socket
+	queue       chan string  // received responses
 }
 
-func NewCollector() *Collector {
+func NewCollector(collectType string) *Collector {
 	// Parse address
-	addr, err := net.ResolveUDPAddr("udp", "[::]:1001")
+	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -39,10 +34,13 @@ func NewCollector() *Collector {
 	conn.SetReadBuffer(maxDatagramSize)
 
 	collector := &Collector{
-		connection: conn,
-		queue:      make(chan string, 100),
-		nodes:      make(map[string]*Node),
+		collectType: collectType,
+		connection:  conn,
+		queue:       make(chan string, 100),
 	}
+
+	go collector.sendOnce()
+	go collector.sender()
 
 	go collector.receiver()
 	go collector.parser()
@@ -55,26 +53,29 @@ func (coll *Collector) Close() {
 	close(coll.queue)
 }
 
-func (coll *Collector) send(address string) {
-	addr, err := net.ResolveUDPAddr("udp", address)
-	if err != nil {
-		log.Panic(err)
-	}
-	coll.connection.WriteToUDP([]byte("nodeinfo"), addr)
+func (coll *Collector) sendOnce() {
+	coll.sendPacket("[2a06:8782:ffbb:1337:c24a:ff:fe2c:c7ac]:1001")
+	coll.sendPacket("[2001:bf7:540:0:32b5:c2ff:fe6e:99d5]:1001")
 }
 
-func (coll *Collector) print() {
-	b, err := json.Marshal(coll.nodes)
-	if err != nil {
-		log.Panic(err)
+func (coll *Collector) sendPacket(address string) {
+	addr, err := net.ResolveUDPAddr("udp", address)
+	check(err)
+
+	coll.connection.WriteToUDP([]byte(coll.collectType), addr)
+}
+
+func (coll *Collector) sender() {
+	c := time.Tick(collectInterval)
+
+	for range c {
+		coll.sendOnce()
 	}
-	log.Println(string(b))
 }
 
 func (coll *Collector) parser() {
 	for str := range coll.queue {
 		coll.parseSingle(str)
-		coll.print()
 	}
 }
 
@@ -90,29 +91,24 @@ func (coll *Collector) parseSingle(str string) {
 		return
 	}
 
-	now := time.Now()
-	node, _ := coll.nodes[nodeId]
+	node := nodes.get(nodeId)
 
-	if node == nil {
-		node = &Node{
-			Firstseen: now,
-		}
-		coll.nodes[nodeId] = node
-	}
-
-	node.Lastseen = now
-	node.Nodeinfo = result
+	// Set result
+	elem := reflect.ValueOf(node).Elem()
+	field := elem.FieldByName(strings.Title(coll.collectType))
+	field.Set(reflect.ValueOf(result))
 }
 
 func (coll *Collector) receiver() {
 	b := make([]byte, maxDatagramSize)
 	for {
-		n, _, err := coll.connection.ReadFromUDP(b)
+		n, src, err := coll.connection.ReadFromUDP(b)
 
 		if err != nil {
 			log.Println("ReadFromUDP failed:", err)
-		} else {
-			coll.queue <- string(b[:n])
+			return
 		}
+		coll.queue <- string(b[:n])
+		log.Println("received", coll.collectType, "from", src)
 	}
 }

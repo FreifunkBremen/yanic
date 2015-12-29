@@ -1,17 +1,37 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+)
+
+var (
+	nodes           = NewNodes()
+	outputFile      string
+	collectInterval time.Duration
+	saveInterval    time.Duration
 )
 
 func main() {
-	collector := NewCollector()
-	defer collector.Close()
-	collector.send("[2a06:8782:ffbb:1337:c24a:ff:fe2c:c7ac]:1001")
-	collector.send("[2001:bf7:540:0:32b5:c2ff:fe6e:99d5]:1001")
+	var collectSeconds, saveSeconds int
+
+	flag.StringVar(&outputFile, "output", "nodes.json", "path output file")
+	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
+	flag.IntVar(&saveSeconds, "saveInterval", 5, "interval for data saving")
+	flag.Parse()
+
+	collectInterval = time.Second * time.Duration(collectSeconds)
+	saveInterval = time.Second * time.Duration(saveSeconds)
+
+	collectors := []*Collector{
+		NewCollector("statistics"),
+		NewCollector("nodeinfo"),
+		NewCollector("neighbours"),
+	}
 
 	// Wait for SIGINT or SIGTERM
 	sigs := make(chan os.Signal, 1)
@@ -19,4 +39,13 @@ func main() {
 	sig := <-sigs
 	log.Println("received", sig)
 
+	for _, c := range collectors {
+		c.Close()
+	}
+}
+
+func check(e error) {
+	if e != nil {
+		log.Panic(e)
+	}
 }
