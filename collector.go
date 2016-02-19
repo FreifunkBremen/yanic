@@ -48,7 +48,7 @@ func NewCollector(collectType string) *Collector {
 	collector := &Collector{
 		collectType: collectType,
 		connection:  conn,
-		queue:       make(chan *Response, 100),
+		queue:       make(chan *Response, 400),
 	}
 
 	go collector.sendOnce()
@@ -116,7 +116,6 @@ func (coll *Collector) parse(res *Response) {
 
 	if !reflect.DeepEqual(field,result){
 		nodeserver.SendAll(node)
-		log.Println("get a node update")
 	}
 
 	field.Set(reflect.ValueOf(result))
