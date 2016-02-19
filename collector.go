@@ -113,6 +113,8 @@ func (coll *Collector) parse(res *Response) {
 	elem := reflect.ValueOf(node).Elem()
 	field := elem.FieldByName(strings.Title(coll.collectType))
 	field.Set(reflect.ValueOf(result))
+
+	nodeserver.SendAll(node)
 }
 
 func (coll *Collector) receiver() {

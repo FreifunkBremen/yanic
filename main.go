@@ -16,7 +16,7 @@ var (
 func main(){
 	var collectSeconds, saveSeconds int
 
-	flag.StringVar(&outputFile, "output", "nodes.json", "path output file")
+	flag.StringVar(&outputFile, "output", "webroot/nodes.json", "path output file")
 	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
 	flag.IntVar(&saveSeconds, "saveInterval", 5, "interval for data saving")
 	flag.Parse()
