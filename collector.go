@@ -51,11 +51,12 @@ func NewCollector(collectType string) *Collector {
 		queue:       make(chan *Response, 400),
 	}
 
-	go collector.sendOnce()
 	go collector.sender()
 
 	go collector.receiver()
 	go collector.parser()
+
+	collector.sendOnce()
 
 	return collector
 }
@@ -67,6 +68,7 @@ func (coll *Collector) Close() {
 
 func (coll *Collector) sendOnce() {
 	coll.sendPacket(net.JoinHostPort(MultiCastGroup,Port))
+	log.Println("send request")
 }
 
 func (coll *Collector) sendPacket(address string) {
