@@ -14,7 +14,7 @@ const (
 	MultiCastGroup string = "ff02:0:0:0:0:0:2:1001"
 
 	// default udp port used by announced
-	Port int = 1001
+	Port string = "1001"
 
 	// maximum receivable size
 	MaxDataGramSize int = 8192
@@ -66,9 +66,7 @@ func (coll *Collector) Close() {
 }
 
 func (coll *Collector) sendOnce() {
-	// TODO
-	coll.sendPacket("[2a06:8782:ffbb:1337:c24a:ff:fe2c:c7ac]:1001")
-	coll.sendPacket("[2001:bf7:540:0:32b5:c2ff:fe6e:99d5]:1001")
+	coll.sendPacket(net.JoinHostPort(MultiCastGroup,Port))
 }
 
 func (coll *Collector) sendPacket(address string) {
