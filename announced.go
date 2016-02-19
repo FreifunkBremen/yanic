@@ -12,7 +12,7 @@ type Announced struct {
 	collectors	[]*Collector
 }
 
-func NewAnnounced(ns NodeServer) *Announced {
+func NewAnnounced(ns *NodeServer) *Announced {
 	collects := []*Collector{
 		NewCollector("statistics"),
 		NewCollector("nodeinfo"),
@@ -21,7 +21,7 @@ func NewAnnounced(ns NodeServer) *Announced {
 	return &Announced{
 		ns,
 		NewNodes(),
-		output,
+		"webroot/nodes.json",
 		time.Second * time.Duration(15),
 		time.Second * time.Duration(15),
 		collects,

@@ -70,12 +70,18 @@ func (nodes *Nodes) save() {
 	nodes.Unlock()
 
 	if err !=nil{
-		log.Panic(e)
+		log.Panic(err)
 	}
 	log.Println("saving", len(nodes.List), "nodes")
 
 	tmpFile := outputFile + ".tmp"
 
-	check(ioutil.WriteFile(tmpFile, data, 0644))
-	check(os.Rename(tmpFile, outputFile))
+	err = ioutil.WriteFile(tmpFile, data, 0644)
+	if err !=nil{
+		log.Panic(err)
+	}
+	err = os.Rename(tmpFile, outputFile)
+	if err !=nil{
+		log.Panic(err)
+	}
 }
