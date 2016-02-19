@@ -69,7 +69,9 @@ func (nodes *Nodes) save() {
 	data, err := json.Marshal(nodes)
 	nodes.Unlock()
 
-	check(err)
+	if err !=nil{
+		log.Panic(e)
+	}
 	log.Println("saving", len(nodes.List), "nodes")
 
 	tmpFile := outputFile + ".tmp"

@@ -73,7 +73,9 @@ func (coll *Collector) sendOnce() {
 
 func (coll *Collector) sendPacket(address string) {
 	addr, err := net.ResolveUDPAddr("udp", address)
-	check(err)
+	if err != nil {
+		log.Panic(err)
+	}
 
 	coll.connection.WriteToUDP([]byte(coll.collectType), addr)
 }
