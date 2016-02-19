@@ -102,7 +102,6 @@ func (s *NodeServer) Listen() {
 
 		// broadcast message for all clients
 		case node := <-s.sendAllCh:
-			log.Println("Send all:", node)
 			s.sendAll(node)
 
 		case err := <-s.errCh:

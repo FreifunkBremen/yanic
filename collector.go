@@ -112,9 +112,16 @@ func (coll *Collector) parse(res *Response) {
 	// Set result
 	elem := reflect.ValueOf(node).Elem()
 	field := elem.FieldByName(strings.Title(coll.collectType))
-	field.Set(reflect.ValueOf(result))
 
-	nodeserver.SendAll(node)
+	log.Println(field)
+	log.Println(result)
+
+	if !reflect.DeepEqual(field,result){
+		nodeserver.SendAll(node)
+		log.Println("get a node update")
+	}
+
+	field.Set(reflect.ValueOf(result))
 }
 
 func (coll *Collector) receiver() {

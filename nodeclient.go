@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"golang.org/x/net/websocket"
 )
@@ -58,18 +57,16 @@ func (c *NodeClient) Done() {
 
 // Listen Write and Read request via chanel
 func (c *NodeClient) Listen() {
-	go c.listenWrite()
+	c.listenWrite()
 }
 
 // Listen write request via chanel
 func (c *NodeClient) listenWrite() {
-	log.Println("Listening write to NodeClient")
 	for {
 		select {
 
 		// send message to the client
 		case node := <-c.ch:
-			log.Println("Send:", node)
 			websocket.JSON.Send(c.ws, node)
 
 		// receive done request
