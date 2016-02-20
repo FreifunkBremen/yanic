@@ -33,7 +33,7 @@ type Collector struct {
 
 func NewCollector(collectType string) *Collector {
 	// Parse address
-	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
+	addr, err := net.ResolveUDPAddr("udp", "[::%wlp3s0]:0")
 	if err != nil {
 		log.Panic(err)
 	}
