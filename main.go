@@ -18,27 +18,31 @@ import (
 )
 
 var (
-	wsserverForNodes = websocketserver.NewServer("/nodes")
-	responedDaemon   *responed.Daemon
-	nodes            = models.NewNodes()
-	outputFile       string
-	collectInterval  time.Duration
-	saveInterval     time.Duration
+	wsserverForNodes  = websocketserver.NewServer("/nodes")
+	responedDaemon    *responed.Daemon
+	nodes             = models.NewNodes()
+	aliases           = models.NewNodes()
+	outputNodesFile   string
+	outputAliasesFile string
+	collectInterval   time.Duration
+	saveInterval      time.Duration
 )
 
 func main() {
 	var collectSeconds, saveSeconds int
 
-	flag.StringVar(&outputFile, "output", "webroot/nodes.json", "path output file")
-	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
+	flag.StringVar(&outputNodesFile, "output", "webroot/nodes.json", "path nodes.json file")
+	flag.StringVar(&outputAliasesFile, "aliases", "webroot/aliases.json", "path aliases.json file")
 	flag.IntVar(&saveSeconds, "saveInterval", 5, "interval for data saving")
+	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
 	flag.Parse()
 
 	collectInterval = time.Second * time.Duration(collectSeconds)
 	saveInterval = time.Second * time.Duration(saveSeconds)
 
 	go wsserverForNodes.Listen()
-	go nodes.Saver(outputFile, saveInterval)
+	go nodes.Saver(outputNodesFile, saveInterval)
+	go aliases.Saver(outputAliasesFile, saveInterval)
 	responedDaemon = responed.NewDaemon(func(coll *responed.Collector, res *responed.Response) {
 		var result map[string]interface{}
 		json.Unmarshal(res.Raw, &result)
