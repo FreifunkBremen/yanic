@@ -1,19 +1,32 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"log"
-	"time"
 	"net/http"
+	"os"
+	"os/signal"
+	"reflect"
+	"strings"
+	"syscall"
+	"time"
+
+	"github.com/monitormap/micro-daemon/models"
+	"github.com/monitormap/micro-daemon/responed"
+	"github.com/monitormap/micro-daemon/websocketserver"
 )
+
 var (
-	nodeserver	= NewNodeServer("/nodes")
-	nodes           = NewNodes()
-	outputFile      string
-	collectInterval time.Duration
-	saveInterval    time.Duration
+	wsserverForNodes = websocketserver.NewServer("/nodes")
+	responedDaemon   *responed.Daemon
+	nodes            = models.NewNodes()
+	outputFile       string
+	collectInterval  time.Duration
+	saveInterval     time.Duration
 )
-func main(){
+
+func main() {
 	var collectSeconds, saveSeconds int
 
 	flag.StringVar(&outputFile, "output", "webroot/nodes.json", "path output file")
@@ -24,19 +37,47 @@ func main(){
 	collectInterval = time.Second * time.Duration(collectSeconds)
 	saveInterval = time.Second * time.Duration(saveSeconds)
 
-	collectors := []*Collector{
-		NewCollector("statistics"),
-		NewCollector("nodeinfo"),
-		NewCollector("neighbours"),
-	}	
+	go wsserverForNodes.Listen()
+	go nodes.Saver(outputFile, saveInterval)
+	responedDaemon = responed.NewDaemon(func(coll *responed.Collector, res *responed.Response) {
+		var result map[string]interface{}
+		json.Unmarshal(res.Raw, &result)
 
-	go nodeserver.Listen()
-	
-	// static files
+		nodeID, _ := result["node_id"].(string)
+
+		if nodeID == "" {
+			log.Println("unable to parse node_id")
+			return
+		}
+
+		node := nodes.Get(nodeID)
+
+		// Set result
+		elem := reflect.ValueOf(node).Elem()
+		field := elem.FieldByName(strings.Title(coll.CollectType))
+
+		log.Println(field)
+		log.Println(result)
+
+		if !reflect.DeepEqual(field, result) {
+			wsserverForNodes.SendAll(node)
+		}
+
+		field.Set(reflect.ValueOf(result))
+	})
+	go responedDaemon.ListenAndSend(collectInterval)
+
 	http.Handle("/", http.FileServer(http.Dir("webroot")))
-
+	//TODO bad
 	log.Fatal(http.ListenAndServe(":8080", nil))
-	for _, c := range collectors {
-		c.Close()
-	}
+
+	// Wait for End
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	sig := <-sigs
+	log.Println("received", sig)
+
+	// Close everything at the end
+	wsserverForNodes.Close()
+	responedDaemon.Close()
 }

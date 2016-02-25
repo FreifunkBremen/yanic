@@ -1,4 +1,4 @@
-package main
+package websocketserver
 
 import (
 	"log"
@@ -7,58 +7,63 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-// Node server.
-type NodeServer struct {
+//Server struct
+type Server struct {
 	pattern   string
-	clients   map[int]*NodeClient
-	addCh     chan *NodeClient
-	delCh     chan *NodeClient
-	sendAllCh chan *Node
-	doneCh    chan bool
+	clients   map[int]*Client
+	addCh     chan *Client
+	delCh     chan *Client
+	sendAllCh chan *struct{}
+	closeCh   chan bool
 	errCh     chan error
 }
 
-// Create new node server.
-func NewNodeServer(pattern string) *NodeServer {
-	clients := make(map[int]*NodeClient)
-	addCh := make(chan *NodeClient)
-	delCh := make(chan *NodeClient)
-	sendAllCh := make(chan *Node)
-	doneCh := make(chan bool)
+//NewServer creates a new node server
+func NewServer(pattern string) *Server {
+	clients := make(map[int]*Client)
+	addCh := make(chan *Client)
+	delCh := make(chan *Client)
+	sendAllCh := make(chan *struct{})
+	closeCh := make(chan bool)
 	errCh := make(chan error)
 
-	return &NodeServer{
+	return &Server{
 		pattern,
 		clients,
 		addCh,
 		delCh,
 		sendAllCh,
-		doneCh,
+		closeCh,
 		errCh,
 	}
 }
 
-func (s *NodeServer) Add(c *NodeClient) {
+//Add a node listen client
+func (s *Server) Add(c *Client) {
 	s.addCh <- c
 }
 
-func (s *NodeServer) Del(c *NodeClient) {
+//Del a node listen client
+func (s *Server) Del(c *Client) {
 	s.delCh <- c
 }
 
-func (s *NodeServer) SendAll(node *Node) {
+//SendAll to all listen clients refreshed information of a node
+func (s *Server) SendAll(node *struct{}) {
 	s.sendAllCh <- node
 }
 
-func (s *NodeServer) Done() {
-	s.doneCh <- true
+//Close stops node server
+func (s *Server) Close() {
+	s.closeCh <- true
 }
 
-func (s *NodeServer) Err(err error) {
+//Err send to server
+func (s *Server) Err(err error) {
 	s.errCh <- err
 }
 
-func (s *NodeServer) sendAll(node *Node) {
+func (s *Server) sendAll(node *struct{}) {
 	for _, c := range s.clients {
 		c.Write(node)
 	}
@@ -66,9 +71,9 @@ func (s *NodeServer) sendAll(node *Node) {
 
 // Listen and serve.
 // It serves client connection and broadcast request.
-func (s *NodeServer) Listen() {
+func (s *Server) Listen() {
 
-	log.Println("Listening NodeServer...")
+	log.Println("Listening Server...")
 
 	// websocket handler
 	onConnected := func(ws *websocket.Conn) {
@@ -79,7 +84,7 @@ func (s *NodeServer) Listen() {
 			}
 		}()
 
-		client := NewNodeClient(ws, s)
+		client := NewClient(ws, s)
 		s.Add(client)
 		client.Listen()
 	}
@@ -107,7 +112,7 @@ func (s *NodeServer) Listen() {
 		case err := <-s.errCh:
 			log.Println("Error:", err.Error())
 
-		case <-s.doneCh:
+		case <-s.closeCh:
 			return
 		}
 	}

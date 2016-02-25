@@ -1,39 +1,40 @@
-package main
+package responed
 
 import (
-	"encoding/json"
 	"log"
 	"net"
-	"reflect"
-	"strings"
 	"time"
 )
 
 const (
 	// default multicast group used by announced
-	MultiCastGroup string = "ff02:0:0:0:0:0:2:1001"
+	multiCastGroup string = "ff02:0:0:0:0:0:2:1001"
 
 	// default udp port used by announced
-	Port string = "1001"
+	port string = "1001"
 
 	// maximum receivable size
-	MaxDataGramSize int = 8192
+	maxDataGramSize int = 8192
 )
 
+//Response of the
 type Response struct {
 	Address net.UDPAddr
 	Raw     []byte
 }
 
+//Collector for a specificle responed messages
 type Collector struct {
-	collectType string
+	CollectType string
 	connection  *net.UDPConn   // UDP socket
 	queue       chan *Response // received responses
+	parse       func(coll *Collector, res *Response)
 }
 
-func NewCollector(collectType string) *Collector {
+//NewCollector creates a Collector struct
+func NewCollector(CollectType string, parseFunc func(coll *Collector, res *Response)) *Collector {
 	// Parse address
-	addr, err := net.ResolveUDPAddr("udp", "[::%wlp3s0]:0")
+	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -43,15 +44,14 @@ func NewCollector(collectType string) *Collector {
 	if err != nil {
 		log.Panic(err)
 	}
-	conn.SetReadBuffer(MaxDataGramSize)
+	conn.SetReadBuffer(maxDataGramSize)
 
 	collector := &Collector{
-		collectType: collectType,
+		CollectType: CollectType,
 		connection:  conn,
 		queue:       make(chan *Response, 400),
+		parse:       parseFunc,
 	}
-
-	go collector.sender()
 
 	go collector.receiver()
 	go collector.parser()
@@ -61,13 +61,14 @@ func NewCollector(collectType string) *Collector {
 	return collector
 }
 
+//Close Collector
 func (coll *Collector) Close() {
 	coll.connection.Close()
 	close(coll.queue)
 }
 
 func (coll *Collector) sendOnce() {
-	coll.sendPacket(net.JoinHostPort(MultiCastGroup,Port))
+	coll.sendPacket(net.JoinHostPort(multiCastGroup, port))
 	log.Println("send request")
 }
 
@@ -77,10 +78,10 @@ func (coll *Collector) sendPacket(address string) {
 		log.Panic(err)
 	}
 
-	coll.connection.WriteToUDP([]byte(coll.collectType), addr)
+	coll.connection.WriteToUDP([]byte(coll.CollectType), addr)
 }
 
-func (coll *Collector) sender() {
+func (coll *Collector) sender(collectInterval time.Duration) {
 	c := time.Tick(collectInterval)
 
 	for range c {
@@ -91,40 +92,12 @@ func (coll *Collector) sender() {
 
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
-		coll.parse(obj)
+		coll.parse(coll, obj)
 	}
-}
-
-// Parses a response
-func (coll *Collector) parse(res *Response) {
-	var result map[string]interface{}
-	json.Unmarshal(res.Raw, &result)
-
-	nodeId, _ := result["node_id"].(string)
-
-	if nodeId == "" {
-		log.Println("unable to parse node_id")
-		return
-	}
-
-	node := nodes.get(nodeId)
-
-	// Set result
-	elem := reflect.ValueOf(node).Elem()
-	field := elem.FieldByName(strings.Title(coll.collectType))
-
-	log.Println(field)
-	log.Println(result)
-
-	if !reflect.DeepEqual(field,result){
-		nodeserver.SendAll(node)
-	}
-
-	field.Set(reflect.ValueOf(result))
 }
 
 func (coll *Collector) receiver() {
-	buf := make([]byte, MaxDataGramSize)
+	buf := make([]byte, maxDataGramSize)
 	for {
 		n, src, err := coll.connection.ReadFromUDP(buf)
 
@@ -140,6 +113,6 @@ func (coll *Collector) receiver() {
 			Address: *src,
 			Raw:     raw,
 		}
-		log.Println("received", coll.collectType, "from", src)
+		log.Println("received", coll.CollectType, "from", src)
 	}
 }

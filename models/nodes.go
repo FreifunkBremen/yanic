@@ -1,4 +1,4 @@
-package main
+package models
 
 import (
 	"encoding/json"
@@ -30,12 +30,10 @@ func NewNodes() *Nodes {
 		List:    make(map[string]*Node),
 	}
 
-	go nodes.saver()
-
 	return nodes
 }
 
-func (nodes *Nodes) get(nodeId string) *Node {
+func (nodes *Nodes) Get(nodeId string) *Node {
 	now := time.Now()
 
 	nodes.Lock()
@@ -54,22 +52,22 @@ func (nodes *Nodes) get(nodeId string) *Node {
 	return node
 }
 
-func (nodes *Nodes) saver() {
+func (nodes *Nodes) Saver(outputFile string, saveInterval time.Duration) {
 	c := time.Tick(saveInterval)
 
 	for range c {
-		nodes.save()
+		nodes.save(outputFile)
 	}
 }
 
-func (nodes *Nodes) save() {
+func (nodes *Nodes) save(outputFile string) {
 	nodes.Timestamp = time.Now()
 
 	nodes.Lock()
 	data, err := json.Marshal(nodes)
 	nodes.Unlock()
 
-	if err !=nil{
+	if err != nil {
 		log.Panic(err)
 	}
 	log.Println("saving", len(nodes.List), "nodes")
@@ -77,11 +75,11 @@ func (nodes *Nodes) save() {
 	tmpFile := outputFile + ".tmp"
 
 	err = ioutil.WriteFile(tmpFile, data, 0644)
-	if err !=nil{
+	if err != nil {
 		log.Panic(err)
 	}
 	err = os.Rename(tmpFile, outputFile)
-	if err !=nil{
+	if err != nil {
 		log.Panic(err)
 	}
 }
