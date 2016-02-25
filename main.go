@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -26,6 +27,8 @@ var (
 	outputAliasesFile string
 	collectInterval   time.Duration
 	saveInterval      time.Duration
+	listenPort        string
+	listenAddr        string
 )
 
 func main() {
@@ -33,6 +36,8 @@ func main() {
 
 	flag.StringVar(&outputNodesFile, "output", "webroot/nodes.json", "path nodes.json file")
 	flag.StringVar(&outputAliasesFile, "aliases", "webroot/aliases.json", "path aliases.json file")
+	flag.StringVar(&listenPort, "p", "8080", "path aliases.json file")
+	flag.StringVar(&listenAddr, "h", "", "path aliases.json file")
 	flag.IntVar(&saveSeconds, "saveInterval", 60, "interval for data saving")
 	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
 	flag.Parse()
@@ -74,7 +79,7 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("webroot")))
 	//TODO bad
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(net.JoinHostPort(listenAddr, listenPort), nil))
 
 	// Wait for End
 	sigs := make(chan os.Signal, 1)
