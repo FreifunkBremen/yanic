@@ -63,7 +63,16 @@ func (c *Client) listen() {
 	for {
 		select {
 		case msg := <-c.ch:
-			websocket.JSON.Send(c.ws, msg)
+			err := websocket.JSON.Send(c.ws, msg)
+			if err != nil {
+				c.doneCh <- true
+			}
+		case gone := <-c.doneCh:
+			if gone {
+				c.server.Del(c)
+				err := fmt.Errorf("Client %d is disconnected.", c.id)
+				c.server.Err(err)
+			}
 		}
 	}
 }

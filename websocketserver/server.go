@@ -1,6 +1,7 @@
 package websocketserver
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -86,6 +87,11 @@ func (s *Server) Listen() {
 
 		client := NewClient(ws, s)
 		s.Add(client)
+		defer func() {
+			s.Del(client)
+			err := fmt.Errorf("Client %d is disconnected.", client.id)
+			s.Err(err)
+		}()
 		client.Listen()
 	}
 	http.Handle(s.pattern, websocket.Handler(onConnected))
