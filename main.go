@@ -33,7 +33,7 @@ func main() {
 
 	flag.StringVar(&outputNodesFile, "output", "webroot/nodes.json", "path nodes.json file")
 	flag.StringVar(&outputAliasesFile, "aliases", "webroot/aliases.json", "path aliases.json file")
-	flag.IntVar(&saveSeconds, "saveInterval", 5, "interval for data saving")
+	flag.IntVar(&saveSeconds, "saveInterval", 60, "interval for data saving")
 	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
 	flag.Parse()
 
