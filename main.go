@@ -56,11 +56,12 @@ func main() {
 		elem := reflect.ValueOf(node).Elem()
 		field := elem.FieldByName(strings.Title(coll.CollectType))
 
-		log.Println(field)
-		log.Println(result)
-
 		if !reflect.DeepEqual(field, result) {
+			log.Printf("Start sendAll after recieve %s", coll.CollectType)
+			log.Printf("Field: %V", field)
+			log.Printf("Result: %V", result)
 			wsserverForNodes.SendAll(node)
+			log.Print("End")
 		}
 
 		field.Set(reflect.ValueOf(result))
