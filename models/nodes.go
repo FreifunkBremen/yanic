@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+//Node struct
 type Node struct {
 	Firstseen  time.Time   `json:"firstseen"`
 	Lastseen   time.Time   `json:"lastseen"`
@@ -17,6 +18,7 @@ type Node struct {
 	Neighbours interface{} `json:"neighbours"`
 }
 
+//Nodes struct: cache DB of Node's structs
 type Nodes struct {
 	Version   int              `json:"version"`
 	Timestamp time.Time        `json:"timestamp"`
@@ -24,6 +26,7 @@ type Nodes struct {
 	sync.Mutex
 }
 
+//NewNodes create Nodes structs (cache DB)
 func NewNodes() *Nodes {
 	nodes := &Nodes{
 		Version: 1,
@@ -33,17 +36,18 @@ func NewNodes() *Nodes {
 	return nodes
 }
 
-func (nodes *Nodes) Get(nodeId string) *Node {
+//Get a Node by nodeid
+func (nodes *Nodes) Get(nodeID string) *Node {
 	now := time.Now()
 
 	nodes.Lock()
-	node, _ := nodes.List[nodeId]
+	node, _ := nodes.List[nodeID]
 
 	if node == nil {
 		node = &Node{
 			Firstseen: now,
 		}
-		nodes.List[nodeId] = node
+		nodes.List[nodeID] = node
 	}
 	nodes.Unlock()
 
@@ -52,6 +56,7 @@ func (nodes *Nodes) Get(nodeId string) *Node {
 	return node
 }
 
+//Saver to save the cached DB to json file
 func (nodes *Nodes) Saver(outputFile string, saveInterval time.Duration) {
 	c := time.Tick(saveInterval)
 

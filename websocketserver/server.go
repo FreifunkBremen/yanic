@@ -13,17 +13,17 @@ type Server struct {
 	clients   map[int]*Client
 	addCh     chan *Client
 	delCh     chan *Client
-	sendAllCh chan *struct{}
+	sendAllCh chan interface{}
 	closeCh   chan bool
 	errCh     chan error
 }
 
-//NewServer creates a new node server
+//NewServer creates a new  server
 func NewServer(pattern string) *Server {
 	clients := make(map[int]*Client)
 	addCh := make(chan *Client)
 	delCh := make(chan *Client)
-	sendAllCh := make(chan *struct{})
+	sendAllCh := make(chan interface{})
 	closeCh := make(chan bool)
 	errCh := make(chan error)
 
@@ -38,22 +38,22 @@ func NewServer(pattern string) *Server {
 	}
 }
 
-//Add a node listen client
+//Add a listen client
 func (s *Server) Add(c *Client) {
 	s.addCh <- c
 }
 
-//Del a node listen client
+//Del a listen client
 func (s *Server) Del(c *Client) {
 	s.delCh <- c
 }
 
-//SendAll to all listen clients refreshed information of a node
-func (s *Server) SendAll(node *struct{}) {
-	s.sendAllCh <- node
+//SendAll to all listen clients a msg
+func (s *Server) SendAll(msg interface{}) {
+	s.sendAllCh <- msg
 }
 
-//Close stops node server
+//Close stops server
 func (s *Server) Close() {
 	s.closeCh <- true
 }
@@ -63,9 +63,9 @@ func (s *Server) Err(err error) {
 	s.errCh <- err
 }
 
-func (s *Server) sendAll(node *struct{}) {
+func (s *Server) sendAll(msg interface{}) {
 	for _, c := range s.clients {
-		c.Write(node)
+		c.Write(msg)
 	}
 }
 
@@ -106,8 +106,8 @@ func (s *Server) Listen() {
 			delete(s.clients, c.id)
 
 		// broadcast message for all clients
-		case node := <-s.sendAllCh:
-			s.sendAll(node)
+		case msg := <-s.sendAllCh:
+			s.sendAll(msg)
 
 		case err := <-s.errCh:
 			log.Println("Error:", err.Error())

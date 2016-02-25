@@ -17,7 +17,7 @@ const (
 	maxDataGramSize int = 8192
 )
 
-//Response of the
+//Response of the responed request
 type Response struct {
 	Address net.UDPAddr
 	Raw     []byte

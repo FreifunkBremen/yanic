@@ -15,7 +15,7 @@ type Client struct {
 	id     int
 	ws     *websocket.Conn
 	server *Server
-	ch     chan *struct{}
+	ch     chan interface{}
 	doneCh chan bool
 }
 
@@ -31,7 +31,7 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	}
 
 	maxID++
-	ch := make(chan *struct{}, channelBufSize)
+	ch := make(chan interface{}, channelBufSize)
 	doneCh := make(chan bool)
 
 	return &Client{maxID, ws, server, ch, doneCh}
@@ -43,7 +43,7 @@ func (c *Client) GetConnection() *websocket.Conn {
 }
 
 //Write send the msg informations to the clients
-func (c *Client) Write(msg *struct{}) {
+func (c *Client) Write(msg interface{}) {
 	select {
 	case c.ch <- msg:
 	default:
