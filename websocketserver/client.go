@@ -31,10 +31,14 @@ func NewClient(ws *websocket.Conn, server *Server) *Client {
 	}
 
 	maxID++
-	ch := make(chan interface{}, channelBufSize)
-	doneCh := make(chan bool)
 
-	return &Client{maxID, ws, server, ch, doneCh}
+	return &Client{
+		id:     maxID,
+		ws:     ws,
+		server: server,
+		ch:     make(chan interface{}, channelBufSize),
+		doneCh: make(chan bool),
+	}
 }
 
 //GetConnection the websocket connection of a listen client

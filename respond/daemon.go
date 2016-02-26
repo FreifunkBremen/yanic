@@ -9,13 +9,12 @@ type Daemon struct {
 
 //NewDaemon create a list of collectors
 func NewDaemon(parseFunc func(coll *Collector, res *Response)) *Daemon {
-	collectors := []*Collector{
-		NewCollector("statistics", parseFunc),
-		NewCollector("nodeinfo", parseFunc),
-		NewCollector("neighbours", parseFunc),
-	}
 	return &Daemon{
-		collectors,
+		collectors: []*Collector{
+			NewCollector("statistics", parseFunc),
+			NewCollector("nodeinfo", parseFunc),
+			NewCollector("neighbours", parseFunc),
+		},
 	}
 }
 

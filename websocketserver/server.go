@@ -21,21 +21,14 @@ type Server struct {
 
 //NewServer creates a new  server
 func NewServer(pattern string) *Server {
-	clients := make(map[int]*Client)
-	addCh := make(chan *Client)
-	delCh := make(chan *Client)
-	sendAllCh := make(chan interface{})
-	closeCh := make(chan bool)
-	errCh := make(chan error)
-
 	return &Server{
-		pattern,
-		clients,
-		addCh,
-		delCh,
-		sendAllCh,
-		closeCh,
-		errCh,
+		pattern:   pattern,
+		clients:   make(map[int]*Client),
+		addCh:     make(chan *Client),
+		delCh:     make(chan *Client),
+		sendAllCh: make(chan interface{}),
+		closeCh:   make(chan bool),
+		errCh:     make(chan error),
 	}
 }
 
