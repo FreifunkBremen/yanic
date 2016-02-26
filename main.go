@@ -23,23 +23,25 @@ var (
 	respondDaemon     *respond.Daemon
 	nodes             = models.NewNodes()
 	aliases           = models.NewNodes()
+	listenAddr        string
+	listenPort        string
+	collectInterval   time.Duration
+	httpDir           string
 	outputNodesFile   string
 	outputAliasesFile string
-	collectInterval   time.Duration
 	saveInterval      time.Duration
-	listenPort        string
-	listenAddr        string
 )
 
 func main() {
 	var collectSeconds, saveSeconds int
 
-	flag.StringVar(&outputNodesFile, "output", "webroot/nodes.json", "path nodes.json file")
-	flag.StringVar(&outputAliasesFile, "aliases", "webroot/aliases.json", "path aliases.json file")
-	flag.StringVar(&listenPort, "p", "8080", "path aliases.json file")
-	flag.StringVar(&listenAddr, "h", "", "path aliases.json file")
-	flag.IntVar(&saveSeconds, "saveInterval", 60, "interval for data saving")
+	flag.StringVar(&listenAddr, "host", "", "path aliases.json file")
+	flag.StringVar(&listenPort, "port", "8080", "path aliases.json file")
 	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
+	flag.StringVar(&httpDir, "httpdir", "webroot", "a implemented static file webserver")
+	flag.StringVar(&outputNodesFile, "path-nodes", "webroot/nodes.json", "path nodes.json file")
+	flag.StringVar(&outputAliasesFile, "path-aliases", "webroot/aliases.json", "path aliases.json file")
+	flag.IntVar(&saveSeconds, "saveInterval", 60, "interval for data saving")
 	flag.Parse()
 
 	collectInterval = time.Second * time.Duration(collectSeconds)
@@ -73,7 +75,7 @@ func main() {
 	})
 	go respondDaemon.ListenAndSend(collectInterval)
 
-	http.Handle("/", http.FileServer(http.Dir("webroot")))
+	http.Handle("/", http.FileServer(http.Dir(httpDir)))
 	//TODO bad
 	log.Fatal(http.ListenAndServe(net.JoinHostPort(listenAddr, listenPort), nil))
 

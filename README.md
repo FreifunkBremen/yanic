@@ -11,15 +11,17 @@ Also it's will push statistic informations to a influxdb.
 ## Usage
 ```
 Usage of ./micro-daemon:
-  -aliases string
-    	path aliases.json file (default "webroot/aliases.json")
   -collectInterval int
     	interval for data collections (default 15)
-  -h string
+  -host string
     	path aliases.json file
-  -output string
+  -httpdir string
+    	a implemented static file webserver (default "webroot")
+  -path-aliases string
+    	path aliases.json file (default "webroot/aliases.json")
+  -path-nodes string
     	path nodes.json file (default "webroot/nodes.json")
-  -p string
+  -port string
     	path aliases.json file (default "8080")
   -saveInterval int
     	interval for data saving (default 60)
