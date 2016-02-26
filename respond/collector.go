@@ -1,4 +1,4 @@
-package responed
+package respond
 
 import (
 	"log"
@@ -17,13 +17,13 @@ const (
 	maxDataGramSize int = 8192
 )
 
-//Response of the responed request
+//Response of the respond request
 type Response struct {
 	Address net.UDPAddr
 	Raw     []byte
 }
 
-//Collector for a specificle responed messages
+//Collector for a specificle respond messages
 type Collector struct {
 	CollectType string
 	connection  *net.UDPConn   // UDP socket

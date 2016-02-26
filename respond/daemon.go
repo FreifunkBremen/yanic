@@ -1,4 +1,4 @@
-package responed
+package respond
 
 import "time"
 

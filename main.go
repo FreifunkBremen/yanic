@@ -14,13 +14,13 @@ import (
 	"time"
 
 	"github.com/monitormap/micro-daemon/models"
-	"github.com/monitormap/micro-daemon/responed"
+	"github.com/monitormap/micro-daemon/respond"
 	"github.com/monitormap/micro-daemon/websocketserver"
 )
 
 var (
 	wsserverForNodes  = websocketserver.NewServer("/nodes")
-	responedDaemon    *responed.Daemon
+	respondDaemon     *respond.Daemon
 	nodes             = models.NewNodes()
 	aliases           = models.NewNodes()
 	outputNodesFile   string
@@ -48,7 +48,7 @@ func main() {
 	go wsserverForNodes.Listen()
 	go nodes.Saver(outputNodesFile, saveInterval)
 	go aliases.Saver(outputAliasesFile, saveInterval)
-	responedDaemon = responed.NewDaemon(func(coll *responed.Collector, res *responed.Response) {
+	respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
 		var result map[string]interface{}
 		json.Unmarshal(res.Raw, &result)
 
@@ -71,7 +71,7 @@ func main() {
 
 		field.Set(reflect.ValueOf(result))
 	})
-	go responedDaemon.ListenAndSend(collectInterval)
+	go respondDaemon.ListenAndSend(collectInterval)
 
 	http.Handle("/", http.FileServer(http.Dir("webroot")))
 	//TODO bad
@@ -85,5 +85,5 @@ func main() {
 
 	// Close everything at the end
 	wsserverForNodes.Close()
-	responedDaemon.Close()
+	respondDaemon.Close()
 }
