@@ -1,0 +1,17 @@
+---
+responedd:
+  enable: true
+  collectinterval: 15
+webserver:
+  enable: false
+  port: 8080
+  address: 127.0.0.1
+  webroot: webroot
+  websocketnode: false
+nodes:
+  enable: true
+  nodes_path: /var/www/html/meshviewer/nodes.json
+  graphs_path: /var/www/html/meshviewer/graphs.json
+  saveinterval: 5
+  aliases_enable: false
+  aliases_path: webroot/aliases.json

@@ -18,68 +18,70 @@ import (
 )
 
 var (
-	wsserverForNodes  = websocketserver.NewServer("/nodes")
-	respondDaemon     *respond.Daemon
-	nodes             = models.NewNodes()
-	aliases           = models.NewNodes()
-	listenAddr        string
-	listenPort        string
-	collectInterval   time.Duration
-	httpDir           string
-	outputNodesFile   string
-	outputAliasesFile string
-	saveInterval      time.Duration
+	configFile       string
+	config           *models.Config
+	wsserverForNodes *websocketserver.Server
+	respondDaemon    *respond.Daemon
+	nodes            = models.NewNodes()
+	aliases          = models.NewNodes()
 )
 
 func main() {
-	var collectSeconds, saveSeconds int
-
-	flag.StringVar(&listenAddr, "host", "", "path aliases.json file")
-	flag.StringVar(&listenPort, "port", "8080", "path aliases.json file")
-	flag.IntVar(&collectSeconds, "collectInterval", 15, "interval for data collections")
-	flag.StringVar(&httpDir, "httpdir", "webroot", "a implemented static file webserver")
-	flag.StringVar(&outputNodesFile, "path-nodes", "webroot/nodes.json", "path nodes.json file")
-	flag.StringVar(&outputAliasesFile, "path-aliases", "webroot/aliases.json", "path aliases.json file")
-	flag.IntVar(&saveSeconds, "saveInterval", 60, "interval for data saving")
+	flag.StringVar(&configFile, "c", "config.yml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
+	config = models.ConfigReadFile(configFile)
 
-	collectInterval = time.Second * time.Duration(collectSeconds)
-	saveInterval = time.Second * time.Duration(saveSeconds)
+	collectInterval := time.Second * time.Duration(config.Responedd.CollectInterval)
+	saveInterval := time.Second * time.Duration(config.Nodes.SaveInterval)
 
-	go wsserverForNodes.Listen()
-	go nodes.Saver(outputNodesFile, saveInterval)
-	go aliases.Saver(outputAliasesFile, saveInterval)
-	respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
+	if config.Nodes.Enable {
+		go nodes.Saver(config.Nodes.NodesPath, saveInterval)
+	}
+	if config.Nodes.AliasesEnable {
+		go aliases.Saver(config.Nodes.AliasesPath, saveInterval)
+	}
 
-		switch coll.CollectType {
-		case "neighbours":
-			result := &data.NeighbourStruct{}
-			if json.Unmarshal(res.Raw, result) == nil {
-				node := nodes.Get(result.NodeId)
-				node.Neighbours = result
-			}
-		case "nodeinfo":
-			result := &data.NodeInfo{}
-			if json.Unmarshal(res.Raw, result) == nil {
-				node := nodes.Get(result.NodeId)
-				node.Nodeinfo = result
-			}
-		case "statistics":
-			result := &data.StatisticsStruct{}
-			if json.Unmarshal(res.Raw, result) == nil {
-				node := nodes.Get(result.NodeId)
-				node.Statistics = result
-			}
-		default:
-			log.Println("unknown CollectType:", coll.CollectType)
+	if config.Webserver.Enable {
+		if config.Webserver.WebsocketNode {
+			wsserverForNodes = websocketserver.NewServer("/nodes")
+			go wsserverForNodes.Listen()
 		}
-	})
-	go respondDaemon.ListenAndSend(collectInterval)
+		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
+	}
 
-	http.Handle("/", http.FileServer(http.Dir(httpDir)))
+	if config.Responedd.Enable {
+		respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
+
+			switch coll.CollectType {
+			case "neighbours":
+				result := &data.NeighbourStruct{}
+				if json.Unmarshal(res.Raw, result) == nil {
+					node := nodes.Get(result.NodeId)
+					node.Neighbours = result
+				}
+			case "nodeinfo":
+				result := &data.NodeInfo{}
+				if json.Unmarshal(res.Raw, result) == nil {
+					node := nodes.Get(result.NodeId)
+					node.Nodeinfo = result
+				}
+			case "statistics":
+				result := &data.StatisticsStruct{}
+				if json.Unmarshal(res.Raw, result) == nil {
+					node := nodes.Get(result.NodeId)
+					node.Statistics = result
+				}
+			default:
+				log.Println("unknown CollectType:", coll.CollectType)
+			}
+		})
+		go respondDaemon.ListenAndSend(collectInterval)
+	}
+
 	//TODO bad
-	log.Fatal(http.ListenAndServe(net.JoinHostPort(listenAddr, listenPort), nil))
-
+	if config.Webserver.Enable {
+		log.Fatal(http.ListenAndServe(net.JoinHostPort(config.Webserver.Address, config.Webserver.Port), nil))
+	}
 	// Wait for End
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
