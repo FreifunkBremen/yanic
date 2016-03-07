@@ -21,14 +21,21 @@ type GraphLink struct {
 }
 
 type GraphBuilder struct {
-	macToID map[string]string     // mapping from MAC address to node id
-	links   map[string]*GraphLink // mapping from $idA-$idB to existing link
+	macToID map[string]string      // mapping from MAC address to node id
+	links   map[string]*GraphLink  // mapping from $idA-$idB to existing link
+	vpn     map[string]interface{} // IDs/addresses of VPN servers
 }
 
-func (nodes *Nodes) BuildGraph() *Graph {
+func (nodes *Nodes) BuildGraph(vpnAddresses []string) *Graph {
 	builder := &GraphBuilder{
 		macToID: make(map[string]string),
 		links:   make(map[string]*GraphLink),
+		vpn:     make(map[string]interface{}),
+	}
+
+	// read VPN addresses into map
+	for _, address := range vpnAddresses {
+		builder.vpn[address] = nil
 	}
 
 	builder.readNodes(nodes.List)
@@ -44,6 +51,11 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 		if neighbours := node.Neighbours; neighbours != nil {
 			for sourceAddress, _ := range neighbours.Batadv {
 				builder.macToID[sourceAddress] = sourceId
+
+				// is VPN address?
+				if _, found := builder.vpn[sourceAddress]; found {
+					builder.vpn[sourceId] = nil
+				}
 			}
 		}
 	}
@@ -73,6 +85,15 @@ func (builder *GraphBuilder) Links() []*GraphLink {
 	return links
 }
 
+func (builder *GraphBuilder) isVPN(ids ...string) bool {
+	for _, id := range ids {
+		if _, found := builder.vpn[id]; found {
+			return true
+		}
+	}
+	return false
+}
+
 func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq int) {
 	// Order IDs to get generate the key
 	var key string
@@ -91,6 +112,7 @@ func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq in
 		builder.links[key] = &GraphLink{
 			Source: sourceId,
 			Target: targetId,
+			VPN:    builder.isVPN(sourceId, targetId),
 			TQ:     tq,
 		}
 	} else {

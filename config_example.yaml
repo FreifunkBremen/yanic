@@ -15,3 +15,6 @@ nodes:
   saveinterval: 5
   aliases_enable: false
   aliases_path: webroot/aliases.json
+  vpn_addresses:
+  - da:25:d6:5c:97:6f
+  - da:62:f2:70:c8:8d

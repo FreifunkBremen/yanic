@@ -32,10 +32,9 @@ func main() {
 	config = models.ConfigReadFile(configFile)
 
 	collectInterval := time.Second * time.Duration(config.Responedd.CollectInterval)
-	saveInterval := time.Second * time.Duration(config.Nodes.SaveInterval)
 
 	if config.Nodes.Enable {
-		go nodes.Saver(config.Nodes.NodesPath, config.Nodes.GraphsPath, saveInterval)
+		go nodes.Saver(config)
 	}
 	if config.Nodes.AliasesEnable {
 		// FIXME what does this do?

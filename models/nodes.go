@@ -62,15 +62,19 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 }
 
 // Saves the cached DB to json file periodically
-func (nodes *Nodes) Saver(nodesPath string, graphPath string, saveInterval time.Duration) {
-	c := time.Tick(saveInterval)
+func (nodes *Nodes) Saver(config *Config) {
+	c := time.Tick(time.Second * time.Duration(config.Nodes.SaveInterval))
 
 	for range c {
 		log.Println("saving", len(nodes.List), "nodes")
 		nodes.Timestamp = time.Now()
 		nodes.Lock()
-		save(nodes, nodesPath)
-		save(nodes.BuildGraph(), graphPath)
+		if path := config.Nodes.NodesPath; path != "" {
+			save(nodes, path)
+		}
+		if path := config.Nodes.GraphsPath; path != "" {
+			save(nodes.BuildGraph(config.Nodes.VpnAddresses), path)
+		}
 		nodes.Unlock()
 	}
 }

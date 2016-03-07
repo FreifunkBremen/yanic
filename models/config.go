@@ -24,12 +24,13 @@ type Config struct {
 		WebsocketAliases bool   `yaml:"websocketaliases"`
 	} `yaml:"webserver"`
 	Nodes struct {
-		Enable        bool   `yaml:"enable"`
-		NodesPath     string `yaml:"nodes_path"`
-		GraphsPath    string `yaml:"graphs_path"`
-		AliasesEnable bool   `yaml:"aliases_enable"`
-		AliasesPath   string `yaml:"aliases_path"`
-		SaveInterval  int    `yaml:"saveinterval"`
+		Enable        bool     `yaml:"enable"`
+		NodesPath     string   `yaml:"nodes_path"`
+		GraphsPath    string   `yaml:"graphs_path"`
+		AliasesEnable bool     `yaml:"aliases_enable"`
+		AliasesPath   string   `yaml:"aliases_path"`
+		SaveInterval  int      `yaml:"saveinterval"`
+		VpnAddresses  []string `yaml:"vpn_addresses"`
 	} `yaml:"nodes"`
 }
 
