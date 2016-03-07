@@ -78,7 +78,9 @@ func (coll *Collector) sendPacket(address string) {
 		log.Panic(err)
 	}
 
-	coll.connection.WriteToUDP([]byte(coll.CollectType), addr)
+	if _, err := coll.connection.WriteToUDP([]byte(coll.CollectType), addr); err != nil {
+		log.Println("WriteToUDP failed:", err)
+	}
 }
 
 func (coll *Collector) sender(collectInterval time.Duration) {
