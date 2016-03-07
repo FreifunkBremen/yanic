@@ -23,7 +23,7 @@ var (
 	wsserverForNodes *websocketserver.Server
 	respondDaemon    *respond.Daemon
 	nodes            = models.NewNodes()
-	aliases          = models.NewNodes()
+	//aliases          = models.NewNodes()
 )
 
 func main() {
@@ -35,10 +35,11 @@ func main() {
 	saveInterval := time.Second * time.Duration(config.Nodes.SaveInterval)
 
 	if config.Nodes.Enable {
-		go nodes.Saver(config.Nodes.NodesPath, saveInterval)
+		go nodes.Saver(config.Nodes.NodesPath, config.Nodes.GraphsPath, saveInterval)
 	}
 	if config.Nodes.AliasesEnable {
-		go aliases.Saver(config.Nodes.AliasesPath, saveInterval)
+		// FIXME what does this do?
+		//go aliases.Saver(config.Nodes.AliasesPath, saveInterval)
 	}
 
 	if config.Webserver.Enable {
