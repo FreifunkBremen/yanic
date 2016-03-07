@@ -24,3 +24,4 @@ _testmain.go
 *.prof
 micro-daemon
 webroot/nodes.json
+config.yml
