@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"github.com/ffdo/node-informant/gluon-collector/data"
 	"io/ioutil"
 	"log"
 	"os"
@@ -9,24 +10,28 @@ import (
 	"time"
 )
 
-//Node struct
+// Node struct
 type Node struct {
-	Firstseen  time.Time   `json:"firstseen"`
-	Lastseen   time.Time   `json:"lastseen"`
-	Statistics interface{} `json:"statistics"`
-	Nodeinfo   interface{} `json:"nodeinfo"`
-	Neighbours interface{} `json:"neighbours"`
+	Firstseen  time.Time              `json:"firstseen"`
+	Lastseen   time.Time              `json:"lastseen"`
+	Statistics *data.StatisticsStruct `json:"statistics"`
+	Nodeinfo   *data.NodeInfo         `json:"nodeinfo"`
+	Neighbours *data.NeighbourStruct  `json:"-"`
 }
 
-//Nodes struct: cache DB of Node's structs
+type NodeElement struct {
+	NodeId string
+}
+
+// Nodes struct: cache DB of Node's structs
 type Nodes struct {
 	Version   int              `json:"version"`
 	Timestamp time.Time        `json:"timestamp"`
-	List      map[string]*Node `json:"nodes"` // the current nodemap
+	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 	sync.Mutex
 }
 
-//NewNodes create Nodes structs (cache DB)
+// NewNodes create Nodes structs (cache DB)
 func NewNodes() *Nodes {
 	nodes := &Nodes{
 		Version: 1,
@@ -36,7 +41,7 @@ func NewNodes() *Nodes {
 	return nodes
 }
 
-//Get a Node by nodeid
+// Get a Node by nodeid
 func (nodes *Nodes) Get(nodeID string) *Node {
 	now := time.Now()
 
@@ -56,7 +61,7 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 	return node
 }
 
-//Saver to save the cached DB to json file
+// Saves the cached DB to json file periodically
 func (nodes *Nodes) Saver(outputFile string, saveInterval time.Duration) {
 	c := time.Tick(saveInterval)
 

@@ -8,11 +8,10 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"reflect"
-	"strings"
 	"syscall"
 	"time"
 
+	"github.com/ffdo/node-informant/gluon-collector/data"
 	"github.com/monitormap/micro-daemon/models"
 	"github.com/monitormap/micro-daemon/respond"
 	"github.com/monitormap/micro-daemon/websocketserver"
@@ -51,27 +50,29 @@ func main() {
 	go nodes.Saver(outputNodesFile, saveInterval)
 	go aliases.Saver(outputAliasesFile, saveInterval)
 	respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
-		var result map[string]interface{}
-		json.Unmarshal(res.Raw, &result)
 
-		nodeID, _ := result["node_id"].(string)
-
-		if nodeID == "" {
-			log.Println("unable to parse node_id")
-			return
+		switch coll.CollectType {
+		case "neighbours":
+			result := &data.NeighbourStruct{}
+			if json.Unmarshal(res.Raw, result) == nil {
+				node := nodes.Get(result.NodeId)
+				node.Neighbours = result
+			}
+		case "nodeinfo":
+			result := &data.NodeInfo{}
+			if json.Unmarshal(res.Raw, result) == nil {
+				node := nodes.Get(result.NodeId)
+				node.Nodeinfo = result
+			}
+		case "statistics":
+			result := &data.StatisticsStruct{}
+			if json.Unmarshal(res.Raw, result) == nil {
+				node := nodes.Get(result.NodeId)
+				node.Statistics = result
+			}
+		default:
+			log.Println("unknown CollectType:", coll.CollectType)
 		}
-
-		node := nodes.Get(nodeID)
-
-		// Set result
-		elem := reflect.ValueOf(node).Elem()
-		field := elem.FieldByName(strings.Title(coll.CollectType))
-
-		if !reflect.DeepEqual(field, result) {
-			wsserverForNodes.SendAll(node)
-		}
-
-		field.Set(reflect.ValueOf(result))
 	})
 	go respondDaemon.ListenAndSend(collectInterval)
 
