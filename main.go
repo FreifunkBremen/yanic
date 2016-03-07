@@ -90,6 +90,10 @@ func main() {
 	log.Println("received", sig)
 
 	// Close everything at the end
-	wsserverForNodes.Close()
-	respondDaemon.Close()
+	if wsserverForNodes != nil {
+		wsserverForNodes.Close()
+	}
+	if respondDaemon != nil {
+		respondDaemon.Close()
+	}
 }
