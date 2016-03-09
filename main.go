@@ -21,7 +21,7 @@ var (
 	configFile       string
 	config           *models.Config
 	wsserverForNodes *websocketserver.Server
-	respondDaemon    *respond.Daemon
+	multiCollector   *respond.MultiCollector
 	nodes            = models.NewNodes()
 	//aliases          = models.NewNodes()
 )
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	if config.Respondd.Enable {
-		respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
+		multiCollector = respond.NewMultiCollector(func(coll *respond.Collector, res *respond.Response) {
 
 			switch coll.CollectType {
 			case "neighbours":
@@ -75,7 +75,7 @@ func main() {
 				log.Println("unknown CollectType:", coll.CollectType)
 			}
 		})
-		go respondDaemon.ListenAndSend(collectInterval)
+		go multiCollector.ListenAndSend(collectInterval)
 	}
 
 	//TODO bad
@@ -92,7 +92,7 @@ func main() {
 	if wsserverForNodes != nil {
 		wsserverForNodes.Close()
 	}
-	if respondDaemon != nil {
-		respondDaemon.Close()
+	if multiCollector != nil {
+		multiCollector.Close()
 	}
 }
