@@ -31,7 +31,7 @@ func main() {
 	flag.Parse()
 	config = models.ConfigReadFile(configFile)
 
-	collectInterval := time.Second * time.Duration(config.Responedd.CollectInterval)
+	collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
 
 	if config.Nodes.Enable {
 		go nodes.Saver(config)
@@ -49,7 +49,7 @@ func main() {
 		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
 	}
 
-	if config.Responedd.Enable {
+	if config.Respondd.Enable {
 		respondDaemon = respond.NewDaemon(func(coll *respond.Collector, res *respond.Response) {
 
 			switch coll.CollectType {

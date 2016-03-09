@@ -9,12 +9,12 @@ import (
 
 //Config the config File of this daemon
 type Config struct {
-	Responedd struct {
+	Respondd struct {
 		Enable          bool   `yaml:"enable"`
 		Port            string `yaml:"port"`
 		Address         string `yaml:"address"`
 		CollectInterval int    `yaml:"collectinterval"`
-	} `yaml:"responedd"`
+	} `yaml:"respondd"`
 	Webserver struct {
 		Enable           bool   `yaml:"enable"`
 		Port             string `yaml:"port"`

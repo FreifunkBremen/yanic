@@ -1,5 +1,5 @@
 ---
-responedd:
+respondd:
   enable: true
   collectinterval: 15
 webserver:
