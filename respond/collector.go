@@ -1,8 +1,10 @@
 package respond
 
 import (
+	"encoding/json"
 	"log"
 	"net"
+	"reflect"
 	"time"
 )
 
@@ -11,17 +13,18 @@ type Collector struct {
 	CollectType string
 	connection  *net.UDPConn   // UDP socket
 	queue       chan *Response // received responses
-	parse       func(coll *Collector, res *Response)
+	onReceive   OnReceive
+	msgType     reflect.Type
 
 	// Ticker and stopper
 	ticker *time.Ticker
 	stop   chan interface{}
 }
 
-type ParseFunc func(coll *Collector, res *Response)
+type OnReceive func(net.UDPAddr, interface{})
 
 //NewCollector creates a Collector struct
-func NewCollector(CollectType string, interval time.Duration, parseFunc ParseFunc) *Collector {
+func NewCollector(CollectType string, interval time.Duration, msgStruct interface{}, onReceive OnReceive) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -39,9 +42,10 @@ func NewCollector(CollectType string, interval time.Duration, parseFunc ParseFun
 		CollectType: CollectType,
 		connection:  conn,
 		queue:       make(chan *Response, 400),
-		parse:       parseFunc,
 		ticker:      time.NewTicker(interval),
 		stop:        make(chan interface{}, 1),
+		msgType:     reflect.TypeOf(msgStruct),
+		onReceive:   onReceive,
 	}
 
 	go collector.receiver()
@@ -91,7 +95,14 @@ func (coll *Collector) sender() {
 
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
-		coll.parse(coll, obj)
+		// create new struct instance
+		data := reflect.New(coll.msgType).Interface()
+
+		if err := json.Unmarshal(obj.Raw, data); err == nil {
+			coll.onReceive(obj.Address, data)
+		} else {
+			log.Println("unable to decode response from", obj.Address.String(), err)
+		}
 	}
 }
 

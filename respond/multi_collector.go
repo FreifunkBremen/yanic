@@ -1,6 +1,9 @@
 package respond
 
-import "time"
+import (
+	"github.com/ffdo/node-informant/gluon-collector/data"
+	"time"
+)
 
 //MultiCollector struct
 type MultiCollector struct {
@@ -8,12 +11,12 @@ type MultiCollector struct {
 }
 
 //NewMultiCollector create a list of collectors
-func NewMultiCollector(interval time.Duration, parseFunc ParseFunc) *MultiCollector {
+func NewMultiCollector(interval time.Duration, onReceive OnReceive) *MultiCollector {
 	return &MultiCollector{
 		collectors: []*Collector{
-			NewCollector("statistics", interval, parseFunc),
-			NewCollector("nodeinfo", interval, parseFunc),
-			NewCollector("neighbours", interval, parseFunc),
+			NewCollector("statistics", interval, data.StatisticsStruct{}, onReceive),
+			NewCollector("nodeinfo", interval, data.NodeInfo{}, onReceive),
+			NewCollector("neighbours", interval, data.NeighbourStruct{}, onReceive),
 		},
 	}
 }

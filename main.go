@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"log"
 	"net"
@@ -50,29 +49,16 @@ func main() {
 	}
 
 	if config.Respondd.Enable {
-		multiCollector = respond.NewMultiCollector(collectInterval, func(coll *respond.Collector, res *respond.Response) {
-
-			switch coll.CollectType {
-			case "neighbours":
-				result := &data.NeighbourStruct{}
-				if json.Unmarshal(res.Raw, result) == nil {
-					node := nodes.Get(result.NodeId)
-					node.Neighbours = result
-				}
-			case "nodeinfo":
-				result := &data.NodeInfo{}
-				if json.Unmarshal(res.Raw, result) == nil {
-					node := nodes.Get(result.NodeId)
-					node.Nodeinfo = result
-				}
-			case "statistics":
-				result := &data.StatisticsStruct{}
-				if json.Unmarshal(res.Raw, result) == nil {
-					node := nodes.Get(result.NodeId)
-					node.Statistics = result
-				}
+		multiCollector = respond.NewMultiCollector(collectInterval, func(addr net.UDPAddr, msg interface{}) {
+			switch msg := msg.(type) {
+			case *data.NodeInfo:
+				nodes.Get(msg.NodeId).Nodeinfo = msg
+			case *data.NeighbourStruct:
+				nodes.Get(msg.NodeId).Neighbours = msg
+			case *data.StatisticsStruct:
+				nodes.Get(msg.NodeId).Statistics = msg
 			default:
-				log.Println("unknown CollectType:", coll.CollectType)
+				log.Println("unknown message:", msg)
 			}
 		})
 	}
