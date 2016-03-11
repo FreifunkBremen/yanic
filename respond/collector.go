@@ -12,10 +12,16 @@ type Collector struct {
 	connection  *net.UDPConn   // UDP socket
 	queue       chan *Response // received responses
 	parse       func(coll *Collector, res *Response)
+
+	// Ticker and stopper
+	ticker *time.Ticker
+	stop   chan interface{}
 }
 
+type ParseFunc func(coll *Collector, res *Response)
+
 //NewCollector creates a Collector struct
-func NewCollector(CollectType string, parseFunc func(coll *Collector, res *Response)) *Collector {
+func NewCollector(CollectType string, interval time.Duration, parseFunc ParseFunc) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -34,18 +40,23 @@ func NewCollector(CollectType string, parseFunc func(coll *Collector, res *Respo
 		connection:  conn,
 		queue:       make(chan *Response, 400),
 		parse:       parseFunc,
+		ticker:      time.NewTicker(interval),
+		stop:        make(chan interface{}, 1),
 	}
 
 	go collector.receiver()
 	go collector.parser()
-
-	collector.sendOnce()
+	go collector.sender()
 
 	return collector
 }
 
-//Close Collector
+// Close Collector
 func (coll *Collector) Close() {
+	// stop ticker
+	coll.ticker.Stop()
+	coll.stop <- nil
+
 	coll.connection.Close()
 	close(coll.queue)
 }
@@ -66,12 +77,15 @@ func (coll *Collector) sendPacket(address string) {
 	}
 }
 
-func (coll *Collector) sender(collectInterval time.Duration) {
-	c := time.Tick(collectInterval)
-
-	for range c {
-		// TODO break condition
-		coll.sendOnce()
+// send packets continously
+func (coll *Collector) sender() {
+	for {
+		select {
+		case <-coll.stop:
+			return
+		case <-coll.ticker.C:
+			coll.sendOnce()
+		}
 	}
 }
 
@@ -98,6 +112,5 @@ func (coll *Collector) receiver() {
 			Address: *src,
 			Raw:     raw,
 		}
-		log.Println("received", coll.CollectType, "from", src)
 	}
 }

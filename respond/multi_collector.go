@@ -8,20 +8,13 @@ type MultiCollector struct {
 }
 
 //NewMultiCollector create a list of collectors
-func NewMultiCollector(parseFunc func(coll *Collector, res *Response)) *MultiCollector {
+func NewMultiCollector(interval time.Duration, parseFunc ParseFunc) *MultiCollector {
 	return &MultiCollector{
 		collectors: []*Collector{
-			NewCollector("statistics", parseFunc),
-			NewCollector("nodeinfo", parseFunc),
-			NewCollector("neighbours", parseFunc),
+			NewCollector("statistics", interval, parseFunc),
+			NewCollector("nodeinfo", interval, parseFunc),
+			NewCollector("neighbours", interval, parseFunc),
 		},
-	}
-}
-
-//ListenAndSend on Collection
-func (multi *MultiCollector) ListenAndSend(collectInterval time.Duration) {
-	for _, col := range multi.collectors {
-		col.sender(collectInterval)
 	}
 }
 

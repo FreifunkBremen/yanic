@@ -50,7 +50,7 @@ func main() {
 	}
 
 	if config.Respondd.Enable {
-		multiCollector = respond.NewMultiCollector(func(coll *respond.Collector, res *respond.Response) {
+		multiCollector = respond.NewMultiCollector(collectInterval, func(coll *respond.Collector, res *respond.Response) {
 
 			switch coll.CollectType {
 			case "neighbours":
@@ -75,7 +75,6 @@ func main() {
 				log.Println("unknown CollectType:", coll.CollectType)
 			}
 		})
-		go multiCollector.ListenAndSend(collectInterval)
 	}
 
 	//TODO bad
