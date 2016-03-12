@@ -14,9 +14,9 @@ type MultiCollector struct {
 func NewMultiCollector(interval time.Duration, onReceive OnReceive) *MultiCollector {
 	return &MultiCollector{
 		collectors: []*Collector{
-			NewCollector("statistics", interval, data.Statistics{}, onReceive),
-			NewCollector("nodeinfo", interval, data.NodeInfo{}, onReceive),
-			NewCollector("neighbours", interval, data.Neighbours{}, onReceive),
+			NewCollector("statistics", 0, interval, data.Statistics{}, onReceive),
+			NewCollector("nodeinfo", time.Second*3, interval, data.NodeInfo{}, onReceive),
+			NewCollector("neighbours", time.Second*6, interval, data.Neighbours{}, onReceive),
 		},
 	}
 }

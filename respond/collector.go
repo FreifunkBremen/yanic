@@ -24,7 +24,7 @@ type Collector struct {
 type OnReceive func(net.UDPAddr, interface{})
 
 //NewCollector creates a Collector struct
-func NewCollector(CollectType string, interval time.Duration, msgStruct interface{}, onReceive OnReceive) *Collector {
+func NewCollector(CollectType string, initialDelay time.Duration, interval time.Duration, msgStruct interface{}, onReceive OnReceive) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -52,8 +52,11 @@ func NewCollector(CollectType string, interval time.Duration, msgStruct interfac
 	go collector.parser()
 
 	// Run senders
-	go collector.sendOnce() // immediately
-	go collector.sender()   // periodically
+	go func() {
+		time.Sleep(initialDelay)
+		collector.sendOnce() // immediately
+		collector.sender()   // periodically
+	}()
 
 	return collector
 }
