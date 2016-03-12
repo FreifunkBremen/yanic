@@ -1,7 +1,7 @@
 package respond
 
 import (
-	"github.com/ffdo/node-informant/gluon-collector/data"
+	"github.com/monitormap/micro-daemon/data"
 	"time"
 )
 
@@ -14,9 +14,9 @@ type MultiCollector struct {
 func NewMultiCollector(interval time.Duration, onReceive OnReceive) *MultiCollector {
 	return &MultiCollector{
 		collectors: []*Collector{
-			NewCollector("statistics", interval, data.StatisticsStruct{}, onReceive),
+			NewCollector("statistics", interval, data.Statistics{}, onReceive),
 			NewCollector("nodeinfo", interval, data.NodeInfo{}, onReceive),
-			NewCollector("neighbours", interval, data.NeighbourStruct{}, onReceive),
+			NewCollector("neighbours", interval, data.Neighbours{}, onReceive),
 		},
 	}
 }

@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ffdo/node-informant/gluon-collector/data"
 	"github.com/influxdata/influxdb/client/v2"
+	"github.com/monitormap/micro-daemon/data"
 )
 
 const (
@@ -43,24 +43,45 @@ func NewStatsDb() *StatsDb {
 	return db
 }
 
-func (c *StatsDb) Add(stats *data.StatisticsStruct) {
+func (c *StatsDb) Add(stats *data.Statistics) {
 	tags := map[string]string{
 		"nodeid": stats.NodeId,
 	}
 	fields := map[string]interface{}{
-		"load":                   stats.LoadAverage,
-		"processes.open":         stats.Processes.Running,
-		"clients.wifi":           stats.Clients.Wifi,
-		"clients.total":          stats.Clients.Total,
-		"traffic.forward":        stats.Traffic.Forward,
-		"traffic.rx":             stats.Traffic.Rx,
-		"traffic.tx":             stats.Traffic.Tx,
-		"traffic.mgmt.rx":        stats.Traffic.MgmtRx,
-		"traffic.mgmt.tx":        stats.Traffic.MgmtTx,
-		"traffic.memory.buffers": stats.Memory.Buffers,
-		"traffic.memory.cached":  stats.Memory.Cached,
-		"traffic.memory.free":    stats.Memory.Free,
-		"traffic.memory.total":   stats.Memory.Total,
+		"load":              stats.LoadAverage,
+		"idletime":          uint64(stats.Idletime),
+		"uptime":            uint64(stats.Uptime),
+		"processes.running": stats.Processes.Running,
+		"clients.wifi":      stats.Clients.Wifi,
+		"clients.wifi24":    stats.Clients.Wifi24,
+		"clients.wifi5":     stats.Clients.Wifi5,
+		"clients.total":     stats.Clients.Total,
+		"memory.buffers":    stats.Memory.Buffers,
+		"memory.cached":     stats.Memory.Cached,
+		"memory.free":       stats.Memory.Free,
+		"memory.total":      stats.Memory.Total,
+	}
+
+	if t := stats.Traffic.Rx; t != nil {
+		fields["traffic.rx.bytes"] = uint64(t.Bytes)
+		fields["traffic.rx.packets"] = t.Packets
+	}
+	if t := stats.Traffic.Tx; t != nil {
+		fields["traffic.tx.bytes"] = uint64(t.Bytes)
+		fields["traffic.tx.packets"] = t.Packets
+		fields["traffic.tx.dropped"] = t.Dropped
+	}
+	if t := stats.Traffic.Forward; t != nil {
+		fields["traffic.forward.bytes"] = uint64(t.Bytes)
+		fields["traffic.forward.packets"] = t.Packets
+	}
+	if t := stats.Traffic.MgmtRx; t != nil {
+		fields["traffic.mgmt_rx.bytes"] = uint64(t.Bytes)
+		fields["traffic.mgmt_rx.packets"] = t.Packets
+	}
+	if t := stats.Traffic.MgmtTx; t != nil {
+		fields["traffic.mgmt_tx.bytes"] = uint64(t.Bytes)
+		fields["traffic.mgmt_tx.packets"] = t.Packets
 	}
 
 	point, err := client.NewPoint("node", tags, fields, time.Now())

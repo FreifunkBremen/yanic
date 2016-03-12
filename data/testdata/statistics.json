@@ -1,0 +1,63 @@
+{
+  "clients": {
+    "total": 35,
+    "wifi": 35,
+    "wifi24": 30,
+    "wifi5": 8
+  },
+  "traffic": {
+    "rx": {
+      "packets": 66182267,
+      "bytes": 57861871176
+    },
+    "tx": {
+      "packets": 26751682,
+      "bytes": 3669258402.9999998,
+      "dropped": 23764
+    },
+    "forward": {
+      "packets": 2223,
+      "bytes": 252299
+    },
+    "mgmt_rx": {
+      "packets": 3461523,
+      "bytes": 427521481
+    },
+    "mgmt_tx": {
+      "packets": 7694493,
+      "bytes": 1500526811
+    }
+  },
+  "gateway": "52:54:00:a9:f7:6e",
+  "mesh_vpn": {
+    "groups": {
+      "backbone": {
+        "peers": {
+          "vpn02": null,
+          "vpn01": null,
+          "vpn06": {
+            "established": 138270.378
+          },
+          "vpn05": null,
+          "vpn04": null,
+          "vpn03": null
+        }
+      }
+    }
+  },
+  "node_id": "f81a67a601ea",
+  "rootfs_usage": 0.04178994082840237,
+  "memory": {
+    "total": 126200,
+    "free": 86452,
+    "buffers": 2308,
+    "cached": 8596
+  },
+  "uptime": 138355.13,
+  "idletime": 106305.02,
+  "loadavg": 0.48,
+  "processes": {
+    "running": 3,
+    "total": 47
+  }
+}

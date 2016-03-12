@@ -1,0 +1,63 @@
+{
+  "software": {
+    "autoupdater": {
+      "branch": "stable",
+      "enabled": true
+    },
+    "batman-adv": {
+      "version": "2013.4.0",
+      "compat": 14
+    },
+    "fastd": {
+      "version": "v17",
+      "enabled": true
+    },
+    "firmware": {
+      "base": "gluon-v2016.1.2",
+      "release": "2016.1.2+bremen1"
+    },
+    "status-page": {
+      "api": 1
+    }
+  },
+  "network": {
+    "addresses": [
+      "fd2f:5119:f2c:0:fa1a:67ff:fea6:1ea",
+      "2a06:8782:ffbb:1337:fa1a:67ff:fea6:1ea",
+      "fe80::fa1a:67ff:fea6:1ea"
+    ],
+    "mesh": {
+      "bat0": {
+        "interfaces": {
+          "wireless": [
+            "fa:1d:69:a6:01:ea",
+            "fa:1d:68:a6:01:ea"
+          ],
+          "tunnel": [
+            "fa:1e:67:a6:01:ea"
+          ],
+          "other": [
+            "fa:1b:68:a6:01:ea"
+          ]
+        }
+      }
+    },
+    "mac": "f8:1a:67:a6:01:ea"
+  },
+  "location": {
+    "latitude": 53.079362250000006,
+    "longitude": 8.88002693
+  },
+  "owner": {
+    "contact": "freifunk@example.com"
+  },
+  "system": {
+    "site_code": "ffhb"
+  },
+  "node_id": "f81a67a601ea",
+  "hostname": "foo-bar",
+  "hardware": {
+    "model": "TP-Link TL-WDR4900 v1",
+    "nproc": 1
+  }
+}

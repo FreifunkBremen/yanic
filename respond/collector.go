@@ -104,7 +104,7 @@ func (coll *Collector) parser() {
 		if err := json.Unmarshal(obj.Raw, data); err == nil {
 			coll.onReceive(obj.Address, data)
 		} else {
-			log.Println("unable to decode response from", obj.Address.String(), err)
+			log.Println("unable to decode response from", obj.Address.String(), err, "\n", string(obj.Raw))
 		}
 	}
 }

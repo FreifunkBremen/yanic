@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ffdo/node-informant/gluon-collector/data"
+	"github.com/monitormap/micro-daemon/data"
 	"github.com/monitormap/micro-daemon/models"
 	"github.com/monitormap/micro-daemon/respond"
 	"github.com/monitormap/micro-daemon/websocketserver"
@@ -82,10 +82,10 @@ func onReceive(addr net.UDPAddr, msg interface{}) {
 	case *data.NodeInfo:
 		nodes.Get(msg.NodeId).Nodeinfo = msg
 
-	case *data.NeighbourStruct:
+	case *data.Neighbours:
 		nodes.Get(msg.NodeId).Neighbours = msg
 
-	case *data.StatisticsStruct:
+	case *data.Statistics:
 		nodes.Get(msg.NodeId).Statistics = msg
 
 		// store data?

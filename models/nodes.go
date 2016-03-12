@@ -8,16 +8,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ffdo/node-informant/gluon-collector/data"
+	"github.com/monitormap/micro-daemon/data"
 )
 
 // Node struct
 type Node struct {
-	Firstseen  time.Time              `json:"firstseen"`
-	Lastseen   time.Time              `json:"lastseen"`
-	Statistics *data.StatisticsStruct `json:"statistics"`
-	Nodeinfo   *data.NodeInfo         `json:"nodeinfo"`
-	Neighbours *data.NeighbourStruct  `json:"-"`
+	Firstseen  time.Time        `json:"firstseen"`
+	Lastseen   time.Time        `json:"lastseen"`
+	Statistics *data.Statistics `json:"statistics"`
+	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
+	Neighbours *data.Neighbours `json:"-"`
 }
 
 type NodeElement struct {
@@ -53,8 +53,8 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 		node = &Node{
 			Firstseen:  now,
 			Nodeinfo:   &data.NodeInfo{},
-			Statistics: &data.StatisticsStruct{},
-			Neighbours: &data.NeighbourStruct{},
+			Statistics: &data.Statistics{},
+			Neighbours: &data.Neighbours{},
 		}
 		nodes.List[nodeID] = node
 	}
