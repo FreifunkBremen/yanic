@@ -32,6 +32,12 @@ type Config struct {
 		SaveInterval  int      `yaml:"saveinterval"`
 		VpnAddresses  []string `yaml:"vpn_addresses"`
 	} `yaml:"nodes"`
+	Influxdb struct {
+		Enable   bool   `yaml:"enable"`
+		Database string `yaml:"database"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	}
 }
 
 //ConfigReadFile reads a Config models by path to a yml file

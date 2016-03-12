@@ -21,6 +21,7 @@ var (
 	config           *models.Config
 	wsserverForNodes *websocketserver.Server
 	multiCollector   *respond.MultiCollector
+	statsDb          *StatsDb
 	nodes            = models.NewNodes()
 	//aliases          = models.NewNodes()
 )
@@ -48,6 +49,10 @@ func main() {
 		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
 	}
 
+	if config.Influxdb.Enable {
+		statsDb = NewStatsDb()
+	}
+
 	if config.Respondd.Enable {
 		multiCollector = respond.NewMultiCollector(collectInterval, func(addr net.UDPAddr, msg interface{}) {
 			switch msg := msg.(type) {
@@ -57,6 +62,9 @@ func main() {
 				nodes.Get(msg.NodeId).Neighbours = msg
 			case *data.StatisticsStruct:
 				nodes.Get(msg.NodeId).Statistics = msg
+				if statsDb != nil {
+					statsDb.Add(msg)
+				}
 			default:
 				log.Println("unknown message:", msg)
 			}
@@ -79,5 +87,8 @@ func main() {
 	}
 	if multiCollector != nil {
 		multiCollector.Close()
+	}
+	if statsDb != nil {
+		statsDb.Close()
 	}
 }
