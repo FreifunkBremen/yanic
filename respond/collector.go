@@ -50,7 +50,10 @@ func NewCollector(CollectType string, interval time.Duration, msgStruct interfac
 
 	go collector.receiver()
 	go collector.parser()
-	go collector.sender()
+
+	// Run senders
+	go collector.sendOnce() // immediately
+	go collector.sender()   // periodically
 
 	return collector
 }
