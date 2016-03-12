@@ -1,5 +1,10 @@
 package data
 
+/*
+	Nodes Lua based respondd do not have a integer type.
+	They always return float.
+*/
+
 type Statistics struct {
 	NodeId      string   `json:"node_id"`
 	Clients     Clients  `json:"clients"`
@@ -31,7 +36,6 @@ type MeshVPN struct {
 }
 
 type TrafficEntry struct {
-	// Some nodes return bytes as float value
 	Bytes   float64 `json:"bytes,omitempty"`
 	Packets float64 `json:"packets,omitempty"`
 	Dropped float64 `json:"dropped,omitempty"`
