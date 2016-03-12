@@ -70,7 +70,7 @@ func (coll *Collector) Close() {
 
 func (coll *Collector) sendOnce() {
 	coll.sendPacket(net.JoinHostPort(multiCastGroup, port))
-	log.Println("send request")
+	log.Println("request", coll.CollectType)
 }
 
 func (coll *Collector) sendPacket(address string) {
