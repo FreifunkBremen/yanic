@@ -1,31 +1,16 @@
-# README
-`micro-daemon` is a respond daemon to fetch information for Freifunk Nodes
-and represent this information with Websocket- and JSON-APIs.
+# Respond Collector
 
-## Issues/Features in the Future
-It will also APIs for manipulate the fetched data
- and give a access for ansible to push changes to the nodes.
-
-Also it's will push statistic informations to a influxdb.
+`Respond Collector` is a respond client that fetches, stores and publishes information about a Freifunk network. The goals:
+* Generating JSON for [MeshViewer](https://github.com/ffnord/meshviewer)
+* Storing statistics in [InfluxDB](https://influxdata.com/) to be analyzed by [Grafana](http://grafana.org/)
+* Provide information via Websocket- and JSON-APIs
 
 ## Usage
 ```
 Usage of ./micro-daemon:
-  -collectInterval int
-    	interval for data collections (default 15)
-  -host string
-    	path aliases.json file
-  -httpdir string
-    	a implemented static file webserver (default "webroot")
-  -path-aliases string
-    	path aliases.json file (default "webroot/aliases.json")
-  -path-nodes string
-    	path nodes.json file (default "webroot/nodes.json")
-  -port string
-    	path aliases.json file (default "8080")
-  -saveInterval int
-    	interval for data saving (default 60)
+  -config path/to/config.yml
 ```
+
 ## Development
 ### respond
 It send the `gluon-neighbour-info` request and collect them together.
