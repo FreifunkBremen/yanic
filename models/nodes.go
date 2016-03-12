@@ -2,12 +2,13 @@ package models
 
 import (
 	"encoding/json"
-	"github.com/ffdo/node-informant/gluon-collector/data"
 	"io/ioutil"
 	"log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/ffdo/node-informant/gluon-collector/data"
 )
 
 // Node struct
@@ -50,7 +51,10 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 
 	if node == nil {
 		node = &Node{
-			Firstseen: now,
+			Firstseen:  now,
+			Nodeinfo:   &data.NodeInfo{},
+			Statistics: &data.StatisticsStruct{},
+			Neighbours: &data.NeighbourStruct{},
 		}
 		nodes.List[nodeID] = node
 	}
