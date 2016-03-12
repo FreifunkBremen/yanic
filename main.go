@@ -31,14 +31,8 @@ func main() {
 	flag.Parse()
 	config = models.ConfigReadFile(configFile)
 
-	collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
-
 	if config.Nodes.Enable {
 		go nodes.Saver(config)
-	}
-	if config.Nodes.AliasesEnable {
-		// FIXME what does this do?
-		//go aliases.Saver(config.Nodes.AliasesPath, saveInterval)
 	}
 
 	if config.Webserver.Enable {
@@ -54,28 +48,16 @@ func main() {
 	}
 
 	if config.Respondd.Enable {
-		multiCollector = respond.NewMultiCollector(collectInterval, func(addr net.UDPAddr, msg interface{}) {
-			switch msg := msg.(type) {
-			case *data.NodeInfo:
-				nodes.Get(msg.NodeId).Nodeinfo = msg
-			case *data.NeighbourStruct:
-				nodes.Get(msg.NodeId).Neighbours = msg
-			case *data.StatisticsStruct:
-				nodes.Get(msg.NodeId).Statistics = msg
-				if statsDb != nil {
-					statsDb.Add(msg)
-				}
-			default:
-				log.Println("unknown message:", msg)
-			}
-		})
+		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
+		multiCollector = respond.NewMultiCollector(collectInterval, onReceive)
 	}
 
-	//TODO bad
+	// TODO bad
 	if config.Webserver.Enable {
 		log.Fatal(http.ListenAndServe(net.JoinHostPort(config.Webserver.Address, config.Webserver.Port), nil))
 	}
-	// Wait for End
+
+	// Wait for INT/TERM
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-sigs
@@ -90,5 +72,28 @@ func main() {
 	}
 	if statsDb != nil {
 		statsDb.Close()
+	}
+}
+
+// called for every parsed announced-message
+func onReceive(addr net.UDPAddr, msg interface{}) {
+	switch msg := msg.(type) {
+
+	case *data.NodeInfo:
+		nodes.Get(msg.NodeId).Nodeinfo = msg
+
+	case *data.NeighbourStruct:
+		nodes.Get(msg.NodeId).Neighbours = msg
+
+	case *data.StatisticsStruct:
+		nodes.Get(msg.NodeId).Statistics = msg
+
+		// store data?
+		if statsDb != nil {
+			statsDb.Add(msg)
+		}
+
+	default:
+		log.Println("unknown message:", msg)
 	}
 }

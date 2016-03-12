@@ -49,7 +49,7 @@ func (c *StatsDb) Add(stats *data.StatisticsStruct) {
 	}
 	fields := map[string]interface{}{
 		"load":                   stats.LoadAverage,
-		"processes.running":      stats.Processes.Running,
+		"processes.open":         stats.Processes.Running,
 		"clients.wifi":           stats.Clients.Wifi,
 		"clients.total":          stats.Clients.Total,
 		"traffic.forward":        stats.Traffic.Forward,
@@ -76,8 +76,10 @@ func (c *StatsDb) Close() {
 	c.client.Close()
 }
 
+// stores data points in batches into the influxdb
 func (c *StatsDb) worker() {
 	lastSent := time.Now()
+	open := true // channel open?
 	bpConfig := client.BatchPointsConfig{
 		Database:  config.Influxdb.Database,
 		Precision: "m",
@@ -85,10 +87,9 @@ func (c *StatsDb) worker() {
 
 	var bp client.BatchPoints
 	var err error
-	var abort bool
 	var dirty bool
 
-	for {
+	for open {
 		// create new batch points?
 		if bp == nil {
 			if bp, err = client.NewBatchPoints(bpConfig); err != nil {
@@ -103,26 +104,22 @@ func (c *StatsDb) worker() {
 				bp.AddPoint(point)
 				dirty = true
 			} else {
-				abort = true
+				open = false
 			}
 		case <-time.After(time.Second):
 			// nothing
 		}
 
-		// write now?
-		if dirty && (abort || lastSent.Add(saveInterval).Before(time.Now())) {
+		// write batch now?
+		if dirty && (!open || lastSent.Add(saveInterval).Before(time.Now())) {
 			log.Println("saving", len(bp.Points()), "points")
 
-			if err := c.client.Write(bp); err != nil {
+			if err = c.client.Write(bp); err != nil {
 				panic(err)
 			}
 			lastSent = time.Now()
 			dirty = false
 			bp = nil
-		}
-
-		if abort {
-			break
 		}
 	}
 
