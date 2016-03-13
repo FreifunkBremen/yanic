@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/monitormap/micro-daemon/data"
+	"github.com/FreifunkBremen/RespondCollector/data"
 )
 
 // Node struct

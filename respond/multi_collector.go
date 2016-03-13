@@ -1,7 +1,7 @@
 package respond
 
 import (
-	"github.com/monitormap/micro-daemon/data"
+	"github.com/FreifunkBremen/RespondCollector/data"
 	"time"
 )
 

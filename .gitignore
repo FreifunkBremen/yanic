@@ -22,6 +22,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
-micro-daemon
-webroot/nodes.json
+RespondCollector
+webroot/
 config.yml

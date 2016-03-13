@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/monitormap/micro-daemon/data"
-	"github.com/monitormap/micro-daemon/models"
-	"github.com/monitormap/micro-daemon/respond"
-	"github.com/monitormap/micro-daemon/websocketserver"
+	"github.com/FreifunkBremen/RespondCollector/data"
+	"github.com/FreifunkBremen/RespondCollector/models"
+	"github.com/FreifunkBremen/RespondCollector/respond"
+	"github.com/FreifunkBremen/RespondCollector/websocketserver"
 )
 
 var (

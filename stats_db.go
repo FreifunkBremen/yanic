@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/monitormap/micro-daemon/data"
+	"github.com/FreifunkBremen/RespondCollector/data"
 )
 
 const (
