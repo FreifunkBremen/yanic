@@ -1,13 +1,13 @@
 # Respond Collector
 
 `Respond Collector` is a respond client that fetches, stores and publishes information about a Freifunk network. The goals:
-* Generating JSON for [MeshViewer](https://github.com/ffnord/meshviewer)
+* Generating JSON for [MeshViewer](https://github.com/ffnord/meshviewer) (Works with branch [JSONv2](https://github.com/FreifunkBremen/meshviewer/tree/JSONv2))
 * Storing statistics in [InfluxDB](https://influxdata.com/) to be analyzed by [Grafana](http://grafana.org/)
 * Provide information via Websocket- and JSON-APIs
 
 ## Usage
 ```
-Usage of ./micro-daemon:
+Usage of ./RespondCollector:
   -config path/to/config.yml
 ```
 
@@ -29,4 +29,3 @@ One Instance is running under `/nodes` which send updates or new Nodes,
 ### Issues
 Later there should be also `/aliases` Websocket with Authentification to manage the `aliases.json` with the request for changes.
 
-A Implementation of the connection to influxdb are also needed, maybe log a little bit to `telegraf` from influxdb.
