@@ -35,7 +35,7 @@ type Nodes struct {
 // NewNodes create Nodes structs (cache DB)
 func NewNodes() *Nodes {
 	nodes := &Nodes{
-		Version: 1,
+		Version: 2,
 		List:    make(map[string]*Node),
 	}
 
