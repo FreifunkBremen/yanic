@@ -1,7 +1,7 @@
 package respond
 
 import (
-	"github.com/FreifunkBremen/RespondCollector/data"
+	"github.com/FreifunkBremen/respond-collector/data"
 	"time"
 )
 

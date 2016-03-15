@@ -1,13 +1,13 @@
 # Respond Collector
 
-`Respond Collector` is a respond client that fetches, stores and publishes information about a Freifunk network. The goals:
+`respond-collector` is a respond client that fetches, stores and publishes information about a Freifunk network. The goals:
 * Generating JSON for [MeshViewer](https://github.com/ffnord/meshviewer) (Works with branch [JSONv2](https://github.com/FreifunkBremen/meshviewer/tree/JSONv2))
 * Storing statistics in [InfluxDB](https://influxdata.com/) to be analyzed by [Grafana](http://grafana.org/)
 * Provide information via Websocket- and JSON-APIs
 
 ## Usage
 ```
-Usage of ./RespondCollector:
+Usage of ./respond-collector:
   -config path/to/config.yml
 ```
 

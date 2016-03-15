@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/FreifunkBremen/RespondCollector/data"
 )
 
 const (

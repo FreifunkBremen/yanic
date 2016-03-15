@@ -10,10 +10,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/FreifunkBremen/RespondCollector/data"
-	"github.com/FreifunkBremen/RespondCollector/models"
-	"github.com/FreifunkBremen/RespondCollector/respond"
-	"github.com/FreifunkBremen/RespondCollector/websocketserver"
+	"github.com/FreifunkBremen/respond-collector/data"
+	"github.com/FreifunkBremen/respond-collector/models"
+	"github.com/FreifunkBremen/respond-collector/respond"
+	"github.com/FreifunkBremen/respond-collector/websocketserver"
 )
 
 var (

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/FreifunkBremen/RespondCollector/data"
+	"github.com/FreifunkBremen/respond-collector/data"
 )
 
 // Node struct
