@@ -48,8 +48,24 @@ func (nodes *Nodes) BuildGraph(vpnAddresses []string) *Graph {
 func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	// Fill mac->id map
 	for sourceId, node := range nodes {
-		if neighbours := node.Neighbours; neighbours != nil {
-			for sourceAddress, _ := range neighbours.Batadv {
+		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Tunnel {
+				builder.macToID[sourceAddress] = sourceId
+
+				// is VPN address?
+				if _, found := builder.vpn[sourceAddress]; found {
+					builder.vpn[sourceId] = nil
+				}
+			}
+			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Wireless {
+				builder.macToID[sourceAddress] = sourceId
+
+				// is VPN address?
+				if _, found := builder.vpn[sourceAddress]; found {
+					builder.vpn[sourceId] = nil
+				}
+			}
+			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Other {
 				builder.macToID[sourceAddress] = sourceId
 
 				// is VPN address?
