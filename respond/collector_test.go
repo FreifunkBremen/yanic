@@ -12,16 +12,11 @@ import (
 
 func TestParse(t *testing.T) {
 	assert := assert.New(t)
-	var decompressed *data.NodeInfo
+	var decompressed *data.ResponseData
 
 	// callback function
-	onReceive := func(addr net.UDPAddr, msg interface{}) {
-		switch msg := msg.(type) {
-		case *data.NodeInfo:
-			decompressed = msg
-		default:
-			t.Error("unexpected message:", msg)
-		}
+	onReceive := func(addr net.UDPAddr, res *data.ResponseData) {
+		decompressed = res
 	}
 
 	collector := &Collector{
@@ -38,5 +33,6 @@ func TestParse(t *testing.T) {
 	})
 
 	assert.NotNil(decompressed)
-	assert.Equal("f81a67a5e9c1", decompressed.NodeId)
+	assert.NotNil(decompressed.NodeInfo)
+	assert.Equal("f81a67a5e9c1", decompressed.NodeInfo.NodeId)
 }

@@ -9,6 +9,8 @@ import (
 	"net"
 	"reflect"
 	"time"
+
+	"github.com/FreifunkBremen/respond-collector/data"
 )
 
 //Collector for a specificle respond messages
@@ -24,10 +26,10 @@ type Collector struct {
 	stop   chan interface{}
 }
 
-type OnReceive func(net.UDPAddr, interface{})
+type OnReceive func(net.UDPAddr, *data.ResponseData)
 
 //NewCollector creates a Collector struct
-func NewCollector(CollectType string, initialDelay time.Duration, interval time.Duration, msgStruct interface{}, onReceive OnReceive) *Collector {
+func NewCollector(CollectType string, interval time.Duration, onReceive OnReceive) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -47,7 +49,6 @@ func NewCollector(CollectType string, initialDelay time.Duration, interval time.
 		queue:       make(chan *Response, 400),
 		ticker:      time.NewTicker(interval),
 		stop:        make(chan interface{}, 1),
-		msgType:     reflect.TypeOf(msgStruct),
 		onReceive:   onReceive,
 	}
 
@@ -56,7 +57,6 @@ func NewCollector(CollectType string, initialDelay time.Duration, interval time.
 
 	// Run senders
 	go func() {
-		time.Sleep(initialDelay)
 		collector.sendOnce() // immediately
 		collector.sender()   // periodically
 	}()
@@ -111,8 +111,6 @@ func (coll *Collector) parser() {
 }
 
 func (coll *Collector) parse(response *Response) (err error) {
-	// create new struct instance
-	data := reflect.New(coll.msgType).Interface()
 
 	// deflater
 	reader := flate.NewReader(bytes.NewReader(response.Raw))
@@ -123,21 +121,13 @@ func (coll *Collector) parse(response *Response) (err error) {
 		return
 	}
 
-	// Remove useless wrapper element that only exists in compressed data.
-	// Who introduced this !?
-	if bytes.HasPrefix(decompressed, []byte(`{"neighbours":`)) ||
-		bytes.HasPrefix(decompressed, []byte(`{"statistics":`)) {
-		decompressed = decompressed[14 : len(decompressed)-1]
-	} else if bytes.HasPrefix(decompressed, []byte(`{"nodeinfo":`)) {
-		decompressed = decompressed[12 : len(decompressed)-1]
-	}
-
-	err = json.Unmarshal(decompressed, data)
+	res := &data.ResponseData{}
+	err = json.Unmarshal(decompressed, res)
 	if err != nil {
 		return
 	}
 
-	coll.onReceive(response.Address, data)
+	coll.onReceive(response.Address, res)
 
 	return
 }

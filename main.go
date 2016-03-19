@@ -20,7 +20,7 @@ var (
 	configFile       string
 	config           *models.Config
 	wsserverForNodes *websocketserver.Server
-	multiCollector   *respond.MultiCollector
+	collector        *respond.Collector
 	statsDb          *StatsDb
 	nodes            = models.NewNodes()
 	//aliases          = models.NewNodes()
@@ -49,7 +49,7 @@ func main() {
 
 	if config.Respondd.Enable {
 		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
-		multiCollector = respond.NewMultiCollector(collectInterval, onReceive)
+		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive)
 	}
 
 	// TODO bad
@@ -67,8 +67,8 @@ func main() {
 	if wsserverForNodes != nil {
 		wsserverForNodes.Close()
 	}
-	if multiCollector != nil {
-		multiCollector.Close()
+	if collector != nil {
+		collector.Close()
 	}
 	if statsDb != nil {
 		statsDb.Close()
@@ -76,24 +76,21 @@ func main() {
 }
 
 // called for every parsed announced-message
-func onReceive(addr net.UDPAddr, msg interface{}) {
-	switch msg := msg.(type) {
+func onReceive(addr net.UDPAddr, res *data.ResponseData) {
 
-	case *data.NodeInfo:
-		nodes.Get(msg.NodeId).Nodeinfo = msg
+	if val := res.Neighbours; val != nil {
+		nodes.Get(val.NodeId).Neighbours = val
+	}
 
-	case *data.Neighbours:
-		nodes.Get(msg.NodeId).Neighbours = msg
+	if val := res.NodeInfo; val != nil {
+		nodes.Get(val.NodeId).Nodeinfo = val
+	}
 
-	case *data.Statistics:
-		nodes.Get(msg.NodeId).Statistics = msg
+	if val := res.Statistics; val != nil {
+		nodes.Get(val.NodeId).Statistics = val
 
-		// store data?
 		if statsDb != nil {
-			statsDb.Add(msg)
+			statsDb.Add(val)
 		}
-
-	default:
-		log.Println("unknown message:", msg)
 	}
 }
