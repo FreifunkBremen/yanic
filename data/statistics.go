@@ -6,20 +6,26 @@ package data
 */
 
 type Statistics struct {
-	NodeId      string   `json:"node_id"`
-	Clients     Clients  `json:"clients"`
-	RootFsUsage float64  `json:"rootfs_usage"`
-	Traffic     *Traffic `json:"traffic"`
-	Memory      Memory   `json:"memory"`
-	Uptime      float64  `json:"uptime"`
-	Idletime    float64  `json:"idletime"`
-	Gateway     string   `json:"gateway"`
+	NodeId      string  `json:"node_id"`
+	Clients     Clients `json:"clients"`
+	RootFsUsage float64 `json:"rootfs_usage"`
+	LoadAverage float64 `json:"loadavg"`
+	Memory      Memory  `json:"memory"`
+	Uptime      float64 `json:"uptime"`
+	Idletime    float64 `json:"idletime"`
+	Gateway     string  `json:"gateway"`
 	Processes   struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
 	} `json:"processes"`
-	LoadAverage float64  `json:"loadavg"`
-	MeshVpn     *MeshVPN `json:"mesh_vpn,omitempty"`
+	MeshVpn *MeshVPN `json:"mesh_vpn,omitempty"`
+	Traffic struct {
+		Tx      *Traffic `json:"tx"`
+		Rx      *Traffic `json:"rx"`
+		Forward *Traffic `json:"forward"`
+		MgmtTx  *Traffic `json:"mgmt_tx"`
+		MgmtRx  *Traffic `json:"mgmt_rx"`
+	} `json:"traffic"`
 }
 
 type MeshVPNPeerLink struct {
@@ -35,18 +41,10 @@ type MeshVPN struct {
 	Groups map[string]*MeshVPNPeerGroup `json:"groups,omitempty"`
 }
 
-type TrafficEntry struct {
+type Traffic struct {
 	Bytes   float64 `json:"bytes,omitempty"`
 	Packets float64 `json:"packets,omitempty"`
 	Dropped float64 `json:"dropped,omitempty"`
-}
-
-type Traffic struct {
-	Tx      *TrafficEntry `json:"tx"`
-	Rx      *TrafficEntry `json:"rx"`
-	Forward *TrafficEntry `json:"forward"`
-	MgmtTx  *TrafficEntry `json:"mgmt_tx"`
-	MgmtRx  *TrafficEntry `json:"mgmt_rx"`
 }
 
 type Clients struct {
