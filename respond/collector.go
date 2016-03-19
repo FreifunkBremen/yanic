@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/flate"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net"
 	"reflect"
@@ -112,22 +111,15 @@ func (coll *Collector) parser() {
 
 func (coll *Collector) parse(response *Response) (err error) {
 
-	// deflater
-	reader := flate.NewReader(bytes.NewReader(response.Raw))
-	defer reader.Close()
+	// Deflate
+	deflater := flate.NewReader(bytes.NewReader(response.Raw))
+	defer deflater.Close()
 
-	decompressed, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return
-	}
-
+	// Unmarshal
 	res := &data.ResponseData{}
-	err = json.Unmarshal(decompressed, res)
-	if err != nil {
-		return
+	if err = json.NewDecoder(deflater).Decode(res); err == nil {
+		coll.onReceive(response.Address, res)
 	}
-
-	coll.onReceive(response.Address, res)
 
 	return
 }
