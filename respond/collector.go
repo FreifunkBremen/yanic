@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/flate"
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net"
 	"reflect"
@@ -117,10 +118,26 @@ func (coll *Collector) parse(response *Response) (err error) {
 	reader := flate.NewReader(bytes.NewReader(response.Raw))
 	defer reader.Close()
 
-	decoder := json.NewDecoder(reader)
-	if err = decoder.Decode(data); err == nil {
-		coll.onReceive(response.Address, data)
+	decompressed, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return
 	}
+
+	// Remove useless wrapper element that only exists in compressed data.
+	// Who introduced this !?
+	if bytes.HasPrefix(decompressed, []byte(`{"neighbours":`)) ||
+		bytes.HasPrefix(decompressed, []byte(`{"statistics":`)) {
+		decompressed = decompressed[14 : len(decompressed)-1]
+	} else if bytes.HasPrefix(decompressed, []byte(`{"nodeinfo":`)) {
+		decompressed = decompressed[12 : len(decompressed)-1]
+	}
+
+	err = json.Unmarshal(decompressed, data)
+	if err != nil {
+		return
+	}
+
+	coll.onReceive(response.Address, data)
 
 	return
 }
