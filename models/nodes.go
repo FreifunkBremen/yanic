@@ -9,12 +9,13 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/respond-collector/data"
+	"github.com/FreifunkBremen/respond-collector/jsontime"
 )
 
 // Node struct
 type Node struct {
-	Firstseen  time.Time        `json:"firstseen"`
-	Lastseen   time.Time        `json:"lastseen"`
+	Firstseen  jsontime.Time    `json:"firstseen"`
+	Lastseen   jsontime.Time    `json:"lastseen"`
 	Statistics *data.Statistics `json:"statistics"`
 	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"-"`
@@ -27,7 +28,7 @@ type NodeElement struct {
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
 	Version   int              `json:"version"`
-	Timestamp time.Time        `json:"timestamp"`
+	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 	sync.Mutex
 }
@@ -44,7 +45,7 @@ func NewNodes() *Nodes {
 
 // Update a Node
 func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
-	now := time.Now()
+	now := jsontime.Now()
 
 	nodes.Lock()
 	node, _ := nodes.List[nodeID]
