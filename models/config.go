@@ -40,8 +40,8 @@ type Config struct {
 	}
 }
 
-//ConfigReadFile reads a Config models by path to a yml file
-func ConfigReadFile(path string) *Config {
+// reads a config models by path to a yml file
+func ReadConfigFile(path string) *Config {
 	config := &Config{}
 	file, _ := ioutil.ReadFile(path)
 	err := yaml.Unmarshal(file, &config)

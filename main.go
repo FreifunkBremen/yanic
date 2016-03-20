@@ -30,7 +30,7 @@ var (
 func main() {
 	flag.StringVar(&configFile, "config", "config.yml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
-	config = models.ConfigReadFile(configFile)
+	config = models.ReadConfigFile(configFile)
 	nodes = models.NewNodes(config)
 
 	if config.Influxdb.Enable {
