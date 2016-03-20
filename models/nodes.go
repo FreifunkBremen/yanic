@@ -30,16 +30,23 @@ type Nodes struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
+	config    *Config
 	sync.Mutex
 }
 
-// NewNodes create Nodes structs (cache DB)
-func NewNodes() *Nodes {
+// NewNodes create Nodes structs
+func NewNodes(config *Config) *Nodes {
 	nodes := &Nodes{
-		Version: 2,
-		List:    make(map[string]*Node),
+		List:   make(map[string]*Node),
+		config: config,
 	}
 
+	if config.Nodes.NodesPath != "" {
+		nodes.load()
+	}
+	go nodes.worker()
+
+	nodes.Version = 2
 	return nodes
 }
 
@@ -76,39 +83,55 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 	}
 }
 
-// Saves the cached DB to json file periodically
-func (nodes *Nodes) Saver(config *Config) {
-	c := time.Tick(time.Second * time.Duration(config.Nodes.SaveInterval))
+// Periodically saves the cached DB to json file
+func (nodes *Nodes) worker() {
+	c := time.Tick(time.Second * 5)
 
 	for range c {
 		log.Println("saving", len(nodes.List), "nodes")
-		nodes.Timestamp = time.Now()
+		nodes.Timestamp = jsontime.Now()
 		nodes.Lock()
-		if path := config.Nodes.NodesPath; path != "" {
+
+		// serialize nodes
+		save(nodes, nodes.config.Nodes.NodesPath)
+
+		if path := nodes.config.Nodes.GraphsPath; path != "" {
 			save(nodes, path)
 		}
-		if path := config.Nodes.GraphsPath; path != "" {
-			save(nodes.BuildGraph(config.Nodes.VpnAddresses), path)
-		}
+
 		nodes.Unlock()
+	}
+}
+
+func (nodes *Nodes) load() {
+	path := nodes.config.Nodes.NodesPath
+	log.Println("loading", path)
+
+	if data, err := ioutil.ReadFile(path); err == nil {
+		if err := json.Unmarshal(data, nodes); err == nil {
+			log.Println("loaded", len(nodes.List), "nodes")
+		} else {
+			log.Println("failed to unmarshal nodes:", err)
+		}
+
+	} else {
+		log.Println("failed loading cached nodes:", err)
 	}
 }
 
 func save(input interface{}, outputFile string) {
 	data, err := json.Marshal(input)
-
 	if err != nil {
 		log.Panic(err)
 	}
 
 	tmpFile := outputFile + ".tmp"
 
-	err = ioutil.WriteFile(tmpFile, data, 0644)
-	if err != nil {
+	if err := ioutil.WriteFile(tmpFile, data, 0644); err != nil {
 		log.Panic(err)
 	}
-	err = os.Rename(tmpFile, outputFile)
-	if err != nil {
+
+	if err := os.Rename(tmpFile, outputFile); err != nil {
 		log.Panic(err)
 	}
 }

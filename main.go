@@ -22,7 +22,7 @@ var (
 	wsserverForNodes *websocketserver.Server
 	collector        *respond.Collector
 	statsDb          *StatsDb
-	nodes            = models.NewNodes()
+	nodes            *models.Nodes
 	//aliases          = models.NewNodes()
 )
 
@@ -30,18 +30,7 @@ func main() {
 	flag.StringVar(&configFile, "config", "config.yml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
 	config = models.ConfigReadFile(configFile)
-
-	if config.Nodes.Enable {
-		go nodes.Saver(config)
-	}
-
-	if config.Webserver.Enable {
-		if config.Webserver.WebsocketNode {
-			wsserverForNodes = websocketserver.NewServer("/nodes")
-			go wsserverForNodes.Listen()
-		}
-		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
-	}
+	nodes = models.NewNodes(config)
 
 	if config.Influxdb.Enable {
 		statsDb = NewStatsDb()
@@ -52,9 +41,18 @@ func main() {
 		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive)
 	}
 
-	// TODO bad
+	if config.Webserver.WebsocketNode {
+		wsserverForNodes = websocketserver.NewServer("/nodes")
+		go wsserverForNodes.Listen()
+	}
+
 	if config.Webserver.Enable {
-		log.Fatal(http.ListenAndServe(net.JoinHostPort(config.Webserver.Address, config.Webserver.Port), nil))
+		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
+
+		address := net.JoinHostPort(config.Webserver.Address, config.Webserver.Port)
+		log.Println("starting webserver on", address)
+		// TODO bad
+		log.Fatal(http.ListenAndServe(address, nil))
 	}
 
 	// Wait for INT/TERM

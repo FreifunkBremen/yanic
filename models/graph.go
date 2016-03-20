@@ -26,16 +26,11 @@ type GraphBuilder struct {
 	vpn     map[string]interface{} // IDs/addresses of VPN servers
 }
 
-func (nodes *Nodes) BuildGraph(vpnAddresses []string) *Graph {
+func (nodes *Nodes) BuildGraph() *Graph {
 	builder := &GraphBuilder{
 		macToID: make(map[string]string),
 		links:   make(map[string]*GraphLink),
 		vpn:     make(map[string]interface{}),
-	}
-
-	// read VPN addresses into map
-	for _, address := range vpnAddresses {
-		builder.vpn[address] = nil
 	}
 
 	builder.readNodes(nodes.List)
