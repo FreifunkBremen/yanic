@@ -78,19 +78,22 @@ func main() {
 // called for every parsed announced-message
 func onReceive(addr net.UDPAddr, res *data.ResponseData) {
 
-	if val := res.Neighbours; val != nil {
-		nodes.Get(val.NodeId).Neighbours = val
-	}
-
+	// Search for NodeID
+	var nodeId string
 	if val := res.NodeInfo; val != nil {
-		nodes.Get(val.NodeId).Nodeinfo = val
+		nodeId = val.NodeId
+	} else if val := res.Neighbours; val != nil {
+		nodeId = val.NodeId
+	} else if val := res.Statistics; val != nil {
+		nodeId = val.NodeId
 	}
 
-	if val := res.Statistics; val != nil {
-		nodes.Get(val.NodeId).Statistics = val
+	// Updates nodes if NodeID found
+	if nodeId != "" {
+		nodes.Update(nodeId, res)
+	}
 
-		if statsDb != nil {
-			statsDb.Add(val)
-		}
+	if val := res.Statistics; val != nil && statsDb != nil {
+		statsDb.Add(val)
 	}
 }

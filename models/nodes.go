@@ -42,8 +42,8 @@ func NewNodes() *Nodes {
 	return nodes
 }
 
-// Get a Node by nodeid
-func (nodes *Nodes) Get(nodeID string) *Node {
+// Update a Node
+func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 	now := time.Now()
 
 	nodes.Lock()
@@ -51,10 +51,7 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 
 	if node == nil {
 		node = &Node{
-			Firstseen:  now,
-			Nodeinfo:   &data.NodeInfo{},
-			Statistics: &data.Statistics{},
-			Neighbours: &data.Neighbours{},
+			Firstseen: now,
 		}
 		nodes.List[nodeID] = node
 	}
@@ -62,7 +59,20 @@ func (nodes *Nodes) Get(nodeID string) *Node {
 
 	node.Lastseen = now
 
-	return node
+	// Update neighbours
+	if val := res.Neighbours; val != nil {
+		node.Neighbours = val
+	}
+
+	// Update nodeinfo
+	if val := res.NodeInfo; val != nil {
+		node.Nodeinfo = val
+	}
+
+	// Update statistics
+	if val := res.Statistics; val != nil {
+		node.Statistics = val
+	}
 }
 
 // Saves the cached DB to json file periodically
