@@ -14,6 +14,7 @@ import (
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
 	"github.com/FreifunkBremen/respond-collector/websocketserver"
+	"github.com/NYTimes/gziphandler"
 )
 
 var (
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	if config.Webserver.Enable {
-		http.Handle("/", http.FileServer(http.Dir(config.Webserver.Webroot)))
+		http.Handle("/", gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot))))
 
 		address := net.JoinHostPort(config.Webserver.Address, config.Webserver.Port)
 		log.Println("starting webserver on", address)
