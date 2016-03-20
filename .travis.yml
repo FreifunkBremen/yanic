@@ -4,3 +4,7 @@ go:
   - 1.6
 install:
   - go get -t github.com/FreifunkBremen/respond-collector/...
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+script:
+  - ./.test-coverage
