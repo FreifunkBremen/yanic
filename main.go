@@ -89,9 +89,12 @@ func onReceive(addr net.UDPAddr, res *data.ResponseData) {
 	}
 
 	// Updates nodes if NodeID found
-	if nodeId != "" {
-		nodes.Update(nodeId, res)
+	if len(nodeId) != 12 {
+		log.Printf("invalid NodeID '%s' from %s", nodeId, addr.String())
+		return
 	}
+
+	nodes.Update(nodeId, res)
 
 	if val := res.Statistics; val != nil && statsDb != nil {
 		statsDb.Add(val)
