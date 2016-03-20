@@ -49,23 +49,10 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	// Fill mac->id map
 	for sourceId, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Tunnel {
-				builder.macToID[sourceAddress] = sourceId
+			interfaces := nodeinfo.Network.Mesh.Bat0.Interfaces
+			addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
 
-				// is VPN address?
-				if _, found := builder.vpn[sourceAddress]; found {
-					builder.vpn[sourceId] = nil
-				}
-			}
-			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Wireless {
-				builder.macToID[sourceAddress] = sourceId
-
-				// is VPN address?
-				if _, found := builder.vpn[sourceAddress]; found {
-					builder.vpn[sourceId] = nil
-				}
-			}
-			for _, sourceAddress := range nodeinfo.Network.Mesh.Bat0.Interfaces.Other {
+			for _, sourceAddress := range addresses {
 				builder.macToID[sourceAddress] = sourceId
 
 				// is VPN address?
@@ -111,7 +98,7 @@ func (builder *GraphBuilder) isVPN(ids ...string) bool {
 }
 
 func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq int) {
-	// Order IDs to get generate the key
+	// Sort IDs to generate the key
 	var key string
 	if strings.Compare(sourceId, targetId) > 0 {
 		key = fmt.Sprintf("%s-%s", sourceId, targetId)
