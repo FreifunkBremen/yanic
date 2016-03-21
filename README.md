@@ -32,3 +32,13 @@ One Instance is running under `/nodes` which send updates or new Nodes,
 ### Issues
 Later there should be also `/aliases` Websocket with Authentification to manage the `aliases.json` with the request for changes.
 
+## Related projects
+
+Collecting data from respondd:
+* [Node informant](https://github.com/ffdo/node-informant) written in Go
+* [HopGlass Server](https://github.com/plumpudding/hopglass-server) written in Node.js
+
+Respondd for servers:
+* [respondd branch of ffnord-alfred-announce](https://github.com/ffnord/ffnord-alfred-announce/tree/respondd) from FreiFunkNord
+* [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
+* [respondd](https://github.com/FreifunkBremen/respondd) from Freifunk Bremen (just a proof of concept)
