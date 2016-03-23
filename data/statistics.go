@@ -55,8 +55,8 @@ type Clients struct {
 }
 
 type Memory struct {
-	Cached  uint64 `json:"cached"`
-	Total   uint64 `json:"total"`
-	Buffers uint64 `json:"buffers"`
-	Free    uint64 `json:"free"`
+	Cached  uint32 `json:"cached"`
+	Total   uint32 `json:"total"`
+	Buffers uint32 `json:"buffers"`
+	Free    uint32 `json:"free"`
 }

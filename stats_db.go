@@ -49,8 +49,8 @@ func (c *StatsDb) Add(stats *data.Statistics) {
 	}
 	fields := map[string]interface{}{
 		"load":              stats.LoadAverage,
-		"idletime":          uint64(stats.Idletime),
-		"uptime":            uint64(stats.Uptime),
+		"idletime":          int64(stats.Idletime),
+		"uptime":            int64(stats.Uptime),
 		"processes.running": stats.Processes.Running,
 		"clients.wifi":      stats.Clients.Wifi,
 		"clients.wifi24":    stats.Clients.Wifi24,
@@ -63,24 +63,24 @@ func (c *StatsDb) Add(stats *data.Statistics) {
 	}
 
 	if t := stats.Traffic.Rx; t != nil {
-		fields["traffic.rx.bytes"] = uint64(t.Bytes)
+		fields["traffic.rx.bytes"] = int64(t.Bytes)
 		fields["traffic.rx.packets"] = t.Packets
 	}
 	if t := stats.Traffic.Tx; t != nil {
-		fields["traffic.tx.bytes"] = uint64(t.Bytes)
+		fields["traffic.tx.bytes"] = int64(t.Bytes)
 		fields["traffic.tx.packets"] = t.Packets
 		fields["traffic.tx.dropped"] = t.Dropped
 	}
 	if t := stats.Traffic.Forward; t != nil {
-		fields["traffic.forward.bytes"] = uint64(t.Bytes)
+		fields["traffic.forward.bytes"] = int64(t.Bytes)
 		fields["traffic.forward.packets"] = t.Packets
 	}
 	if t := stats.Traffic.MgmtRx; t != nil {
-		fields["traffic.mgmt_rx.bytes"] = uint64(t.Bytes)
+		fields["traffic.mgmt_rx.bytes"] = int64(t.Bytes)
 		fields["traffic.mgmt_rx.packets"] = t.Packets
 	}
 	if t := stats.Traffic.MgmtTx; t != nil {
-		fields["traffic.mgmt_tx.bytes"] = uint64(t.Bytes)
+		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
 		fields["traffic.mgmt_tx.packets"] = t.Packets
 	}
 
