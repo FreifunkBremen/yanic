@@ -96,7 +96,7 @@ func (nodes *Nodes) worker() {
 		save(nodes, nodes.config.Nodes.NodesPath)
 
 		if path := nodes.config.Nodes.GraphsPath; path != "" {
-			save(nodes, path)
+			save(nodes.BuildGraph(), path)
 		}
 
 		nodes.Unlock()
