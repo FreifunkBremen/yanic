@@ -11,19 +11,18 @@ type NodeInfo struct {
 	Hardware Hardware  `json:"hardware"`
 	VPN      bool      `json:"vpn"`
 }
+type BatInterface struct {
+	Interfaces struct {
+		Wireless []string `json:"wireless,omitempty"`
+		Other    []string `json:"other,omitempty"`
+		Tunnel   []string `json:"tunnel,omitempty"`
+	} `json:"interfaces"`
+}
 
 type Network struct {
 	Mac       string   `json:"mac"`
 	Addresses []string `json:"addresses"`
-	Mesh      struct {
-		Bat0 struct {
-			Interfaces struct {
-				Wireless []string `json:"wireless,omitempty"`
-				Other    []string `json:"other,omitempty"`
-				Tunnel   []string `json:"tunnel,omitempty"`
-			} `json:"interfaces"`
-		} `json:"bat0"`
-	} `json:"mesh"`
+	Mesh      map[string]*BatInterface `json:"mesh"`
 	MeshInterfaces []string `json:"mesh_interfaces"`
 }
 

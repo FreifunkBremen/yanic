@@ -44,15 +44,17 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	// Fill mac->id map
 	for sourceId, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-			interfaces := nodeinfo.Network.Mesh.Bat0.Interfaces
-			addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
+			for _,batinterface := range nodeinfo.Network.Mesh {
+				interfaces := batinterface.Interfaces
+				addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
 
-			for _, sourceAddress := range addresses {
-				builder.macToID[sourceAddress] = sourceId
+				for _, sourceAddress := range addresses {
+					builder.macToID[sourceAddress] = sourceId
 
-				// is VPN address?
-				if _, found := builder.vpn[sourceAddress]; found {
-					builder.vpn[sourceId] = nil
+					// is VPN address?
+					if _, found := builder.vpn[sourceAddress]; found {
+						builder.vpn[sourceId] = nil
+					}
 				}
 			}
 		}
