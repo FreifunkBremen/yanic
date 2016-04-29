@@ -22,7 +22,7 @@ type StatsDb struct {
 func NewStatsDb() *StatsDb {
 	// Make client
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     "http://localhost:8086",
+		Addr:     config.Influxdb.Addr,
 		Username: config.Influxdb.Username,
 		Password: config.Influxdb.Password,
 	})

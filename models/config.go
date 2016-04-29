@@ -34,6 +34,7 @@ type Config struct {
 	} `yaml:"nodes"`
 	Influxdb struct {
 		Enable   bool   `yaml:"enable"`
+		Addr string `yaml:"host"`
 		Database string `yaml:"database"`
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`

@@ -17,6 +17,7 @@ nodes:
   aliases_path: /var/www/html/meshviewer/data/aliases.json
 influxdb:
   enable: false
+  host: http://localhost:8086
   database: ffhb
   username:
   password:
