@@ -17,8 +17,7 @@ type Node struct {
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
 	Flags      *Flags           `json:"flags,omitempty"`
-	//Statistics *MeshviewerStatistics `json:"statistics"`
-	Statistics *data.Statistics `json:"statistics"`
+	Statistics *MeshviewerStatistics `json:"statistics"`
 	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"-"`
 }
@@ -87,10 +86,9 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 	// Update statistics
 	if val := res.Statistics; val != nil {
-		//node.Statistics = &MeshviewerStatistics{
-		node.Statistics = &data.Statistics{
+		node.Statistics = &MeshviewerStatistics{
 			NodeId: val.NodeId,
-//			Clients: 0,
+			Clients: 0,
 			Gateway: val.Gateway,
 			RootFsUsage: val.RootFsUsage,
 			LoadAverage: val.LoadAverage,
@@ -101,8 +99,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 			MeshVpn: val.MeshVpn,
 			Traffic: val.Traffic,
 		}
-		//node.Statistics.Clients = val.Clients.Total
-		node.Statistics.Clients = val.Clients
+		node.Statistics.Clients = val.Clients.Total
 	}
 }
 
@@ -114,16 +111,13 @@ func (nodes *Nodes) worker() {
 		log.Println("saving", len(nodes.List), "nodes")
 		nodes.Timestamp = jsontime.Now()
 		nodes.Lock()
-
+//
 		// set node as offline (without statistics)
 		for _,node := range nodes.List {
 			if node.Statistics != nil && node.Lastseen.Unix()+int64(5*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
-				// node.Statistics.Clients = data.Clients{Wifi: 0, Wifi24: 0, Wifi5: 0, Total: 0}
-				// node.Statistics = &MeshviewerStatistics{
-				node.Statistics = &data.Statistics{
+				node.Statistics = &MeshviewerStatistics{
 					NodeId: node.Statistics.NodeId,
-					//Clients: 0,
-					Clients: data.Clients{Wifi: 0, Wifi24: 0, Wifi5: 0, Total: 0},
+					Clients: 0,
 				}
 				if node.Flags != nil {
 					node.Flags.Online = false
