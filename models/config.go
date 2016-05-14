@@ -20,14 +20,15 @@ type Config struct {
 		Port             string `yaml:"port"`
 		Address          string `yaml:"address"`
 		Webroot          string `yaml:"webroot"`
-		WebsocketNode    bool   `yaml:"websocketnode"`
-		WebsocketAliases bool   `yaml:"websocketaliases"`
+		Api struct {
+			NewNode    bool   `yaml:"newnode"`
+			Aliases bool   `yaml:"aliases"`
+		} `yaml:"api"`
 	} `yaml:"webserver"`
 	Nodes struct {
 		Enable        bool     `yaml:"enable"`
 		NodesPath     string   `yaml:"nodes_path"`
 		GraphsPath    string   `yaml:"graphs_path"`
-		AliasesEnable bool     `yaml:"aliases_enable"`
 		AliasesPath   string   `yaml:"aliases_path"`
 		SaveInterval  int      `yaml:"saveinterval"`
 		VpnAddresses  []string `yaml:"vpn_addresses"`

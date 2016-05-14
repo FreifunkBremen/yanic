@@ -10,21 +10,21 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
+	"github.com/NYTimes/gziphandler"
+
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
-	"github.com/FreifunkBremen/respond-collector/websocketserver"
-	"github.com/NYTimes/gziphandler"
+	"github.com/FreifunkBremen/respond-collector/api"
 )
 
 var (
 	configFile       string
 	config           *models.Config
-	wsserverForNodes *websocketserver.Server
 	collector        *respond.Collector
 	statsDb          *StatsDb
 	nodes            *models.Nodes
-	//aliases          = models.NewNodes()
 )
 
 func main() {
@@ -42,18 +42,21 @@ func main() {
 		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive)
 	}
 
-	if config.Webserver.WebsocketNode {
-		wsserverForNodes = websocketserver.NewServer("/nodes")
-		go wsserverForNodes.Listen()
-	}
 
 	if config.Webserver.Enable {
-		http.Handle("/", gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot))))
+		router := httprouter.New()
+		if config.Webserver.Api.NewNode {
+		}
+		if config.Webserver.Api.Aliases {
+			api.NewAliases(config,router,"/api/aliases",nodes)
+			log.Println("api started")
+		}
+		router.NotFound = gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot)))
 
 		address := net.JoinHostPort(config.Webserver.Address, config.Webserver.Port)
 		log.Println("starting webserver on", address)
 		// TODO bad
-		log.Fatal(http.ListenAndServe(address, nil))
+		log.Fatal(http.ListenAndServe(address, router))
 	}
 
 	// Wait for INT/TERM
@@ -63,9 +66,6 @@ func main() {
 	log.Println("received", sig)
 
 	// Close everything at the end
-	if wsserverForNodes != nil {
-		wsserverForNodes.Close()
-	}
 	if collector != nil {
 		collector.Close()
 	}
