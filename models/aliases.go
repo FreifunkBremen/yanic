@@ -40,19 +40,19 @@ func (e *Aliases) Update(nodeID string, newalias *Alias) {
 }
 
 func (e *Aliases) load() {
-  path := e.config.Nodes.AliasesPath
-  log.Println("loading", path)
+	path := e.config.Nodes.AliasesPath
+	log.Println("loading", path)
 
-  if data, err := ioutil.ReadFile(path); err == nil {
-    if err := json.Unmarshal(data, e); err == nil {
-      log.Println("loaded", len(e.List), "aliases")
-    } else {
-      log.Println("failed to unmarshal nodes:", err)
-    }
+	if data, err := ioutil.ReadFile(path); err == nil {
+		if err := json.Unmarshal(data, e); err == nil {
+			log.Println("loaded", len(e.List), "aliases")
+		} else {
+			log.Println("failed to unmarshal nodes:", err)
+		}
 
-  } else {
-    log.Println("failed loading cached nodes:", err)
-  }
+	} else {
+		log.Println("failed loading cached nodes:", err)
+	}
 }
 
 // Periodically saves the cached DB to json file
