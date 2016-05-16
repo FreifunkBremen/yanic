@@ -114,7 +114,7 @@ func (builder *GraphBuilder) Extract() ([]*GraphNode,[]*GraphLink) {
 			iLinks += 1
 		}
 	}
-	return  nodes, links
+	return  nodes, links[:iLinks]
 }
 
 func (builder *GraphBuilder) isVPN(ids ...string) bool {
