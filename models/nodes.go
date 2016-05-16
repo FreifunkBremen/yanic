@@ -48,7 +48,7 @@ func NewNodes(config *Config) *Nodes {
 	}
 	go nodes.worker()
 
-	nodes.Version = 2
+	nodes.Version = 1
 	return nodes
 }
 
