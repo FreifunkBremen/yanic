@@ -23,7 +23,8 @@ func NewAliases (config *models.Config, router *httprouter.Router,prefix string,
 	router.GET(prefix, api.GetAll)
 	router.GET(prefix+"/ansible", api.AnsibleDiff)
 	router.GET(prefix+"/cleanup", api.Cleanup)
-	router.GET(prefix+"/alias/:nodeid",  BasicAuth(api.GetOne, []byte(config.Webserver.Api.Passphrase)))
+	router.GET(prefix+"/auth",  BasicAuth(api.Cleanup, []byte(config.Webserver.Api.Passphrase)))
+	router.GET(prefix+"/alias/:nodeid",  api.GetOne)
 	router.POST(prefix+"/alias/:nodeid", BasicAuth(api.SaveOne,[]byte(config.Webserver.Api.Passphrase)))
 }
 func (api *ApiAliases) cleaner(){
