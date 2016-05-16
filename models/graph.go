@@ -8,13 +8,20 @@ import (
 type Graph struct {
 	Version int `json:"version"`
 	Batadv  struct {
+		Directed bool `json:"directed"`
+		Graph []string `json:"graph"`
+		Nodes []*GraphNode `json:"nodes"`
 		Links []*GraphLink `json:"links"`
 	} `json:"batadv"`
 }
 
+type GraphNode struct {
+	ID       string  `json:"id"`
+	NodeID   string  `json:"node_id"`
+}
 type GraphLink struct {
-	Source   string  `json:"source"`
-	Target   string  `json:"target"`
+	Source   interface{}    `json:"source"`
+	Target   interface{}    `json:"target"`
 	VPN      bool    `json:"vpn"`
 	TQ       float32 `json:"tq"`
 	Bidirect bool    `json:"bidirect"`
@@ -35,8 +42,9 @@ func (nodes *Nodes) BuildGraph() *Graph {
 
 	builder.readNodes(nodes.List)
 
-	graph := &Graph{Version: 2}
-	graph.Batadv.Links = builder.Links()
+	graph := &Graph{Version: 1}
+	graph.Batadv.Directed = false
+	graph.Batadv.Nodes, graph.Batadv.Links = builder.Extract()
 	return graph
 }
 
@@ -73,15 +81,40 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	}
 }
 
-func (builder *GraphBuilder) Links() []*GraphLink {
-	i := 0
+func (builder *GraphBuilder) Extract() ([]*GraphNode,[]*GraphLink) {
+	iNodes := 0
+	iLinks := 0
 	links := make([]*GraphLink, len(builder.links))
+	nodes := make([]*GraphNode, len(builder.macToID))
 
-	for _, link := range builder.links {
-		links[i] = link
-		i += 1
+	for mac, nodeID := range builder.macToID {
+		nodes[iNodes] = &GraphNode{
+			ID: mac,
+			NodeID: nodeID,
+		}
+		iNodes += 1
 	}
-	return links
+	for key, link := range builder.links {
+		linkPart :=strings.Split(key,"-")
+		both := 0
+		for i,node := range nodes{
+			if(linkPart[0] == node.NodeID){
+				link.Source = i
+				both += 1
+				continue
+			}
+			if(linkPart[1]==node.NodeID){
+				link.Target = i
+				both += 1
+				break
+			}
+		}
+		if both == 2 {
+			links[iLinks] = link
+			iLinks += 1
+		}
+	}
+	return  nodes, links
 }
 
 func (builder *GraphBuilder) isVPN(ids ...string) bool {
@@ -109,8 +142,6 @@ func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq in
 
 	if link, ok := builder.links[key]; !ok {
 		builder.links[key] = &GraphLink{
-			Source: sourceId,
-			Target: targetId,
 			VPN:    builder.isVPN(sourceId, targetId),
 			TQ:     tq,
 		}
