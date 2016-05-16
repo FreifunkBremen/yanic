@@ -21,6 +21,7 @@ type Config struct {
 		Address          string `yaml:"address"`
 		Webroot          string `yaml:"webroot"`
 		Api struct {
+			Passphrase string `yaml:"passphrase"`
 			NewNode    bool   `yaml:"newnode"`
 			Aliases bool   `yaml:"aliases"`
 		} `yaml:"api"`

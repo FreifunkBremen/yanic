@@ -22,10 +22,13 @@ func NewAliases (config *models.Config, router *httprouter.Router,prefix string,
 	}
 	router.GET(prefix, api.GetAll)
 	router.GET(prefix+"/ansible", api.AnsibleDiff)
-	router.GET(prefix+"/alias/:nodeid", api.GetOne)
-	router.POST(prefix+"/alias/:nodeid", api.SaveOne)
+	router.GET(prefix+"/cleanup", api.Cleanup)
+	router.GET(prefix+"/alias/:nodeid",  BasicAuth(api.GetOne, []byte(config.Webserver.Api.Passphrase)))
+	router.POST(prefix+"/alias/:nodeid", BasicAuth(api.SaveOne,[]byte(config.Webserver.Api.Passphrase)))
 }
-
+func (api *ApiAliases) cleaner(){
+	// clean up the aliases by correct values in nodes
+}
 func (api *ApiAliases) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	jsonOutput(w,api.aliases.List)
 }
@@ -40,8 +43,8 @@ func (api *ApiAliases) GetOne(w http.ResponseWriter, r *http.Request, ps httprou
 
 func (api *ApiAliases) SaveOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var alias models.Alias
-	err := json.NewDecoder(r.Body).Decode(&alias)
 
+	err := json.NewDecoder(r.Body).Decode(&alias)
 	if err != nil{
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Fprint(w, "Decode: ", ps.ByName("nodeid"),"\n")
@@ -51,8 +54,11 @@ func (api *ApiAliases) SaveOne(w http.ResponseWriter, r *http.Request, ps httpro
 	jsonOutput(w,alias)
 }
 
+func (api *ApiAliases) Cleanup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	api.cleaner()
+	jsonOutput(w,api.aliases.List)
+}
 func (api *ApiAliases) AnsibleDiff(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	diff := api.aliases.List
-	//TODO diff between List and api.nodes (for run not at all)
-	jsonOutput(w,models.GenerateAnsible(api.nodes,diff))
+	api.cleaner()
+	jsonOutput(w,models.GenerateAnsible(api.nodes,api.aliases.List))
 }
