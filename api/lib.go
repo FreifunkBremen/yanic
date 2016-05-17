@@ -18,17 +18,21 @@ func jsonOutput(w http.ResponseWriter,data interface{}){
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+	}
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers","Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	w.Write(js)
 }
 func BasicAuth(h httprouter.Handle, pass []byte) httprouter.Handle {
 		return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-			w.Header().Set("Access-Control-Allow-Origin", "*")
+			if origin := r.Header.Get("Origin"); origin != "" {
+					w.Header().Set("Access-Control-Allow-Origin", origin)
+			}
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers","Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-			
+
 			const basicAuthPrefix string = "Basic "
 
 			// Get the Basic Authentication credentials
