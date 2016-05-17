@@ -45,8 +45,8 @@ func main() {
 
 	if config.Webserver.Enable {
 		router := httprouter.New()
-		if config.Webserver.Api.NewNode {
-			api.NewNodes(config,router,"/api/nodess",nodes)
+		if config.Webserver.Api.NewNodes {
+			api.NewNodes(config,router,"/api/nodes",nodes)
 			log.Println("api nodes started")
 		}
 		if config.Webserver.Api.Aliases {
