@@ -23,6 +23,7 @@ func jsonOutput(w http.ResponseWriter, r *http.Request,data interface{}){
 	}
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers","Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Write(js)
 }
 func BasicAuth(h httprouter.Handle, pass []byte) httprouter.Handle {
@@ -32,6 +33,7 @@ func BasicAuth(h httprouter.Handle, pass []byte) httprouter.Handle {
 			}
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers","Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 			const basicAuthPrefix string = "Basic "
 
