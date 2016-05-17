@@ -35,7 +35,7 @@ func (api *ApiAliases) cleaner(){
 				//counter for the diffrent attribute
 				count := 1
 				if alias.Hostname == nodeinfo.Hostname {
-					count -= 0
+					count -= 1
 				}
 				//delete element
 				if count <= 0 {
