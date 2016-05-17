@@ -27,20 +27,23 @@ func NewAliases (config *models.Config, router *httprouter.Router,prefix string,
 	router.GET(prefix+"/alias/:nodeid",  api.GetOne)
 	router.POST(prefix+"/alias/:nodeid", BasicAuth(api.SaveOne,[]byte(config.Webserver.Api.Passphrase)))
 }
+// clean up the aliases by correct values in nodes
 func (api *ApiAliases) cleaner(){
-	var count int
 	for key,alias := range api.aliases.List {
-		//counter for the diffrent attribute
-		count = 1
-		if alias.Hostname == api.nodes.List[key].Nodeinfo.Hostname {
-			count -= 0
-		}
-		//delete element
-		if count <= 0 {
-			delete(api.aliases.List,key)
+		if node := api.nodes.List[key]; node !=nil {
+			if nodeinfo := node.Nodeinfo; nodeinfo !=nil {
+				//counter for the diffrent attribute
+				count := 1
+				if alias.Hostname == nodeinfo.Hostname {
+					count -= 0
+				}
+				//delete element
+				if count <= 0 {
+					delete(api.aliases.List,key)
+				}
+			}
 		}
 	}
-	// clean up the aliases by correct values in nodes
 }
 func (api *ApiAliases) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	jsonOutput(w,api.aliases.List)
