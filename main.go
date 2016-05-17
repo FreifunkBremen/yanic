@@ -46,10 +46,12 @@ func main() {
 	if config.Webserver.Enable {
 		router := httprouter.New()
 		if config.Webserver.Api.NewNode {
+			api.NewNodes(config,router,"/api/nodess",nodes)
+			log.Println("api nodes started")
 		}
 		if config.Webserver.Api.Aliases {
 			api.NewAliases(config,router,"/api/aliases",nodes)
-			log.Println("api started")
+			log.Println("api aliases started")
 		}
 		router.NotFound = gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot)))
 
