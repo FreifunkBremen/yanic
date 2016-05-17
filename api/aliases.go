@@ -46,12 +46,12 @@ func (api *ApiAliases) cleaner(){
 	}
 }
 func (api *ApiAliases) GetAll(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	jsonOutput(w,api.aliases.List)
+	jsonOutput(w,r,api.aliases.List)
 }
 
 func (api *ApiAliases) GetOne(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if alias := api.aliases.List[ps.ByName("nodeid")]; alias !=nil{
-		jsonOutput(w,alias)
+		jsonOutput(w,r,alias)
 		return
 	}
 	fmt.Fprint(w, "Not found: ", ps.ByName("nodeid"),"\n")
@@ -67,14 +67,14 @@ func (api *ApiAliases) SaveOne(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 	api.aliases.Update(ps.ByName("nodeid"),&alias)
-	jsonOutput(w,alias)
+	jsonOutput(w,r,alias)
 }
 
 func (api *ApiAliases) Cleanup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	api.cleaner()
-	jsonOutput(w,api.aliases.List)
+	jsonOutput(w,r,api.aliases.List)
 }
 func (api *ApiAliases) AnsibleDiff(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	api.cleaner()
-	jsonOutput(w,models.GenerateAnsible(api.nodes,api.aliases.List))
+	jsonOutput(w,r,models.GenerateAnsible(api.nodes,api.aliases.List))
 }

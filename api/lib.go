@@ -10,7 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func jsonOutput(w http.ResponseWriter,data interface{}){
+func jsonOutput(w http.ResponseWriter, r *http.Request,data interface{}){
 	js, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
