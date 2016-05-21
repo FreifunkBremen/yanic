@@ -108,7 +108,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 // Periodically saves the cached DB to json file
 func (nodes *Nodes) worker() {
-	c := time.Tick(time.Second * 5)
+	c := time.Tick(time.Second * time.Duration(nodes.config.Nodes.SaveInterval))
 
 	for range c {
 		log.Println("saving", len(nodes.List), "nodes")
@@ -117,7 +117,7 @@ func (nodes *Nodes) worker() {
 
 		// set node as offline (without statistics)
 		for _,node := range nodes.List {
-			if node.Statistics != nil && node.Lastseen.Unix()+int64(5*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
+			if node.Statistics != nil && node.Lastseen.Unix()+int64(1000*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
 				// node.Statistics.Clients = data.Clients{Wifi: 0, Wifi24: 0, Wifi5: 0, Total: 0}
 				// node.Statistics = &MeshviewerStatistics{
 				node.Statistics = &data.Statistics{
