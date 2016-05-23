@@ -73,6 +73,10 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 	node.Lastseen = now
 
+	if node.Flags !=nil {
+		node.Flags.Online = true
+	}
+
 	// Update neighbours
 	if val := res.Neighbours; val != nil {
 		node.Neighbours = val

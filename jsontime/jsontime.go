@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const TimeFormat = "2006-01-02T15:04:05"
+const TimeFormat = "2006-01-02T15:04:05-0700"
 
 type Time struct {
 	time time.Time
