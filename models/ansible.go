@@ -8,13 +8,13 @@ type Ansible struct {
 }
 type AnsibleHostVars struct {
 	Address      string  `json:"ansible_ssh_host"`
-	Hostname     string  `json:"node_name"`
-	Channel24    int     `json:"radio24_channel"`
-	TxPower24    int     `json:"radio24_txpower"`
-	Channel5     int     `json:"radio5_channel"`
-	TxPower5     int     `json:"radio5_txpower"`
-	GeoLatitude  float64 `json:"geo_latitude"`
-	GeoLongitude float64 `json:"geo_longitude"`
+	Hostname     string  `json:"node_name,omitempty"`
+	Channel24    int     `json:"radio24_channel,omitempty"`
+	TxPower24    int     `json:"radio24_txpower,omitempty"`
+	Channel5     int     `json:"radio5_channel,omitempty"`
+	TxPower5     int     `json:"radio5_txpower,omitempty"`
+	GeoLatitude  float64 `json:"geo_latitude,omitempty"`
+	GeoLongitude float64 `json:"geo_longitude,omitempty"`
 }
 
 func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
@@ -25,14 +25,20 @@ func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 			ansible.Nodes = append(ansible.Nodes, nodeid)
 
 			vars := &AnsibleHostVars{
-				Address:      node.Nodeinfo.Network.Addresses[0],
-				Hostname:     alias.Hostname,
-				Channel24:    alias.Freq24.Channel,
-				Channel5:     alias.Freq5.Channel,
-				TxPower24:    alias.Freq24.TxPower,
-				TxPower5:     alias.Freq5.TxPower,
-				GeoLatitude:  alias.Location.Latitude,
-				GeoLongitude: alias.Location.Longtitude,
+				Address:  node.Nodeinfo.Network.Addresses[0],
+				Hostname: alias.Hostname,
+			}
+			if alias.Freq24 != nil {
+				vars.Channel24 = alias.Freq24.Channel
+				vars.TxPower24 = alias.Freq24.TxPower
+			}
+			if alias.Freq5 != nil {
+				vars.Channel5 = alias.Freq5.Channel
+				vars.TxPower5 = alias.Freq5.TxPower
+			}
+			if alias.Location != nil {
+				vars.GeoLatitude = alias.Location.Latitude
+				vars.GeoLongitude = alias.Location.Longtitude
 			}
 			ansible.Meta.HostVars = append(ansible.Meta.HostVars, vars)
 

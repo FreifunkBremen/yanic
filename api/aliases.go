@@ -38,11 +38,13 @@ func (api *ApiAliases) cleaner() {
 				if alias.Hostname == nodeinfo.Hostname {
 					count -= 1
 				}
-				if alias.Location.Latitude == nodeinfo.Location.Latitude {
-					count -= 1
-				}
-				if alias.Location.Longtitude == nodeinfo.Location.Longtitude {
-					count -= 1
+				if alias.Location != nil && nodeinfo.Location != nil {
+					if alias.Location.Latitude == nodeinfo.Location.Latitude {
+						count -= 1
+					}
+					if alias.Location.Longtitude == nodeinfo.Location.Longtitude {
+						count -= 1
+					}
 				}
 				/*
 					if alias.Freq24.TxPower == nodeinfo.Freq24.TxPower {

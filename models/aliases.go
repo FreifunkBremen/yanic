@@ -11,14 +11,14 @@ import (
 )
 
 type Alias struct {
-	Hostname string         `json:"hostname"`
-	Location *data.Location `json:"location"`
-	Freq24   *Frequence     `json:"freq24"`
-	Freq5    *Frequence     `json:"freq5"`
+	Hostname string         `json:"hostname,omitempty"`
+	Location *data.Location `json:"location,omitempty"`
+	Freq24   *Frequence     `json:"freq24,omitempty"`
+	Freq5    *Frequence     `json:"freq5,omitempty"`
 }
 type Frequence struct {
-	TxPower int `json:"txpower"`
-	Channel int `json:"channel"`
+	TxPower int `json:"txpower,omitempty"`
+	Channel int `json:"channel,omitempty"`
 }
 
 // Nodes struct: cache DB of Node's structs
