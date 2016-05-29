@@ -3,20 +3,31 @@ package models
 import (
 	"encoding/json"
 	"io/ioutil"
-	"sync"
 	"log"
+	"sync"
 	"time"
+
+	"github.com/FreifunkBremen/respond-collector/data"
 )
 
 type Alias struct {
-	Hostname string `json:"hostname"`
+	Hostname string         `json:"hostname"`
+	Location *data.Location `json:"location"`
+	Freq24   *Frequence     `json:"freq24"`
+	Freq5    *Frequence     `json:"freq5"`
 }
+type Frequence struct {
+	TxPower int `json:"txpower"`
+	Channel int `json:"channel"`
+}
+
 // Nodes struct: cache DB of Node's structs
 type Aliases struct {
-	List      map[string]*Alias `json:"nodes"` // the current nodemap, indexed by node ID
-	config    *Config
+	List   map[string]*Alias `json:"nodes"` // the current nodemap, indexed by node ID
+	config *Config
 	sync.Mutex
 }
+
 // NewNodes create Nodes structs
 func NewAliases(config *Config) *Aliases {
 	aliases := &Aliases{

@@ -10,21 +10,17 @@ import (
 
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/jsontime"
+	"github.com/FreifunkBremen/respond-collector/meshviewer"
 )
 
 // Node struct
 type Node struct {
-	Firstseen  jsontime.Time    `json:"firstseen"`
-	Lastseen   jsontime.Time    `json:"lastseen"`
-	Flags      *Flags           `json:"flags,omitempty"`
-	Statistics *MeshviewerStatistics `json:"statistics"`
-	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
-	Neighbours *data.Neighbours `json:"-"`
-}
-
-type Flags struct {
-	Online bool	`json:"online"`
-	Gateway bool	`json:"gateway"`
+	Firstseen  jsontime.Time     `json:"firstseen"`
+	Lastseen   jsontime.Time     `json:"lastseen"`
+	Flags      *meshviewer.Flags `json:"flags,omitempty"`
+	Statistics *data.Statistics  `json:"statistics"`
+	Nodeinfo   *data.NodeInfo    `json:"nodeinfo"`
+	Neighbours *data.Neighbours  `json:"-"`
 }
 
 // Nodes struct: cache DB of Node's structs
@@ -62,8 +58,8 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 	if node == nil {
 		node = &Node{
 			Firstseen: now,
-			Flags: &Flags{
-				Online: true,
+			Flags: &meshviewer.Flags{
+				Online:  true,
 				Gateway: false,
 			},
 		}
@@ -73,7 +69,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 	node.Lastseen = now
 
-	if node.Flags !=nil {
+	if node.Flags != nil {
 		node.Flags.Online = true
 	}
 
@@ -90,21 +86,44 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 	// Update statistics
 	if val := res.Statistics; val != nil {
-		node.Statistics = &MeshviewerStatistics{
-			NodeId: val.NodeId,
-			Clients: 0,
-			Gateway: val.Gateway,
-			RootFsUsage: val.RootFsUsage,
-			LoadAverage: val.LoadAverage,
-			Memory: val.Memory,
-			Uptime: val.Uptime,
-			Idletime: val.Idletime,
-			Processes: val.Processes,
-			MeshVpn: val.MeshVpn,
-			Traffic: val.Traffic,
-		}
-		node.Statistics.Clients = val.Clients.Total
+		node.Statistics = val
 	}
+}
+func (nodes *Nodes) GetMeshviewer() *meshviewer.Nodes {
+	meshviewerNodes := &meshviewer.Nodes{
+		Version:   nodes.Version,
+		List:      make(map[string]*meshviewer.Node),
+		Timestamp: nodes.Timestamp,
+	}
+	for nodeID, _ := range nodes.List {
+		meshviewerNodes.Lock()
+		node, _ := meshviewerNodes.List[nodeID]
+
+		if node == nil {
+			node = &meshviewer.Node{
+				Firstseen: nodes.List[nodeID].Firstseen,
+				Lastseen:  nodes.List[nodeID].Lastseen,
+				Flags:     nodes.List[nodeID].Flags,
+				Nodeinfo:  nodes.List[nodeID].Nodeinfo,
+			}
+			meshviewerNodes.List[nodeID] = node
+		}
+		meshviewerNodes.Unlock()
+		node.Statistics = &meshviewer.Statistics{
+			NodeId:      nodes.List[nodeID].Statistics.NodeId,
+			Clients:     nodes.List[nodeID].Statistics.Clients.Total,
+			Gateway:     nodes.List[nodeID].Statistics.Gateway,
+			RootFsUsage: nodes.List[nodeID].Statistics.RootFsUsage,
+			LoadAverage: nodes.List[nodeID].Statistics.LoadAverage,
+			Memory:      nodes.List[nodeID].Statistics.Memory,
+			Uptime:      nodes.List[nodeID].Statistics.Uptime,
+			Idletime:    nodes.List[nodeID].Statistics.Idletime,
+			Processes:   nodes.List[nodeID].Statistics.Processes,
+			MeshVpn:     nodes.List[nodeID].Statistics.MeshVpn,
+			Traffic:     nodes.List[nodeID].Statistics.Traffic,
+		}
+	}
+	return meshviewerNodes
 }
 
 // Periodically saves the cached DB to json file
@@ -115,21 +134,17 @@ func (nodes *Nodes) worker() {
 		log.Println("saving", len(nodes.List), "nodes")
 		nodes.Timestamp = jsontime.Now()
 		nodes.Lock()
-//
+		//
 		// set node as offline (without statistics)
-		for _,node := range nodes.List {
-			if node.Statistics != nil && node.Lastseen.Unix()+int64(1000*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
-				node.Statistics = &MeshviewerStatistics{
-					NodeId: node.Statistics.NodeId,
-					Clients: 0,
-				}
+		for _, node := range nodes.List {
+			if node.Statistics != nil && node.Lastseen.Unix()+int64(5*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
 				if node.Flags != nil {
 					node.Flags.Online = false
 				}
 			}
 		}
 		// serialize nodes
-		save(nodes, nodes.config.Nodes.NodesPath)
+		save(nodes.GetMeshviewer(), nodes.config.Nodes.NodesPath)
 
 		if path := nodes.config.Nodes.GraphsPath; path != "" {
 			save(nodes.BuildGraph(), path)
@@ -143,8 +158,40 @@ func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.NodesPath
 	log.Println("loading", path)
 
-	if data, err := ioutil.ReadFile(path); err == nil {
-		if err := json.Unmarshal(data, nodes); err == nil {
+	if filedata, err := ioutil.ReadFile(path); err == nil {
+		meshviewerNodes := &meshviewer.Nodes{}
+		if err := json.Unmarshal(filedata, meshviewerNodes); err == nil {
+			nodes.Version = meshviewerNodes.Version
+			nodes.Timestamp = meshviewerNodes.Timestamp
+			nodes.List = make(map[string]*Node)
+			for nodeID, _ := range meshviewerNodes.List {
+				nodes.Lock()
+				node, _ := nodes.List[nodeID]
+
+				if node == nil {
+					node = &Node{
+						Firstseen: meshviewerNodes.List[nodeID].Firstseen,
+						Lastseen:  meshviewerNodes.List[nodeID].Lastseen,
+						Flags:     meshviewerNodes.List[nodeID].Flags,
+						Nodeinfo:  meshviewerNodes.List[nodeID].Nodeinfo,
+					}
+					nodes.List[nodeID] = node
+				}
+				nodes.Unlock()
+				node.Statistics = &data.Statistics{
+					NodeId:      meshviewerNodes.List[nodeID].Statistics.NodeId,
+					Clients:     data.Clients{Total: meshviewerNodes.List[nodeID].Statistics.Clients},
+					Gateway:     meshviewerNodes.List[nodeID].Statistics.Gateway,
+					RootFsUsage: meshviewerNodes.List[nodeID].Statistics.RootFsUsage,
+					LoadAverage: meshviewerNodes.List[nodeID].Statistics.LoadAverage,
+					Memory:      meshviewerNodes.List[nodeID].Statistics.Memory,
+					Uptime:      meshviewerNodes.List[nodeID].Statistics.Uptime,
+					Idletime:    meshviewerNodes.List[nodeID].Statistics.Idletime,
+					Processes:   meshviewerNodes.List[nodeID].Statistics.Processes,
+					MeshVpn:     meshviewerNodes.List[nodeID].Statistics.MeshVpn,
+					Traffic:     meshviewerNodes.List[nodeID].Statistics.Traffic,
+				}
+			}
 			log.Println("loaded", len(nodes.List), "nodes")
 		} else {
 			log.Println("failed to unmarshal nodes:", err)
