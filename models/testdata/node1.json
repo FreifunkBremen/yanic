@@ -1,0 +1,25 @@
+{
+	"nodeinfo":{
+		"node_id":"node1.json",
+		"network":{
+			"mesh":{
+				"bat0":{
+					"interfaces":{
+						"wireless":["a"]
+					}
+				}
+			}
+		}
+	},
+	"neighbours":{
+		"batadv":{
+			"a":{
+					"neighbours":{
+						"b":{"tq":250,"lastseen":0.42},
+						"c":{"tq":250,"lastseen":0.42}
+					}
+				}
+		}
+	}
+
+}

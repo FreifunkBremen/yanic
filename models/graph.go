@@ -106,7 +106,7 @@ func (builder *GraphBuilder) Extract() ([]*GraphNode, []*GraphLink) {
 			if linkPart[1] == node.NodeID {
 				link.Target = i
 				both++
-				break
+				continue
 			}
 		}
 		if both == 2 {
