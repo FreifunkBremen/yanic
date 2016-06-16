@@ -11,32 +11,31 @@ import (
 type Config struct {
 	Respondd struct {
 		Enable          bool   `yaml:"enable"`
-		Port            string `yaml:"port"`
-		Address         string `yaml:"address"`
+		Interface       string `yaml:"interface"`
 		CollectInterval int    `yaml:"collectinterval"`
 	} `yaml:"respondd"`
 	Webserver struct {
-		Enable           bool   `yaml:"enable"`
-		Port             string `yaml:"port"`
-		Address          string `yaml:"address"`
-		Webroot          string `yaml:"webroot"`
-		Api struct {
+		Enable  bool   `yaml:"enable"`
+		Port    string `yaml:"port"`
+		Address string `yaml:"address"`
+		Webroot string `yaml:"webroot"`
+		Api     struct {
 			Passphrase string `yaml:"passphrase"`
-			NewNodes    bool   `yaml:"newnodes"`
-			Aliases bool   `yaml:"aliases"`
+			NewNodes   bool   `yaml:"newnodes"`
+			Aliases    bool   `yaml:"aliases"`
 		} `yaml:"api"`
 	} `yaml:"webserver"`
 	Nodes struct {
-		Enable        bool     `yaml:"enable"`
-		NodesPath     string   `yaml:"nodes_path"`
-		GraphsPath    string   `yaml:"graphs_path"`
-		AliasesPath   string   `yaml:"aliases_path"`
-		SaveInterval  int      `yaml:"saveinterval"`
-		VpnAddresses  []string `yaml:"vpn_addresses"`
+		Enable        bool   `yaml:"enable"`
+		NodesPath     string `yaml:"nodes_path"`
+		NodesMiniPath string `yaml:"nodesmini_path"`
+		GraphsPath    string `yaml:"graphs_path"`
+		AliasesPath   string `yaml:"aliases_path"`
+		SaveInterval  int    `yaml:"saveinterval"`
 	} `yaml:"nodes"`
 	Influxdb struct {
 		Enable   bool   `yaml:"enable"`
-		Addr string `yaml:"host"`
+		Addr     string `yaml:"host"`
 		Database string `yaml:"database"`
 		Username string `yaml:"username"`
 		Password string `yaml:"password"`

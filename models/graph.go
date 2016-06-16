@@ -8,23 +8,23 @@ import (
 type Graph struct {
 	Version int `json:"version"`
 	Batadv  struct {
-		Directed bool `json:"directed"`
-		Graph []string `json:"graph"`
-		Nodes []*GraphNode `json:"nodes"`
-		Links []*GraphLink `json:"links"`
+		Directed bool         `json:"directed"`
+		Graph    []string     `json:"graph"`
+		Nodes    []*GraphNode `json:"nodes"`
+		Links    []*GraphLink `json:"links"`
 	} `json:"batadv"`
 }
 
 type GraphNode struct {
-	ID       string  `json:"id"`
-	NodeID   string  `json:"node_id"`
+	ID     string `json:"id"`
+	NodeID string `json:"node_id"`
 }
 type GraphLink struct {
-	Source   interface{}    `json:"source"`
-	Target   interface{}    `json:"target"`
-	VPN      bool    `json:"vpn"`
-	TQ       float32 `json:"tq"`
-	Bidirect bool    `json:"bidirect"`
+	Source   interface{} `json:"source"`
+	Target   interface{} `json:"target"`
+	VPN      bool        `json:"vpn"`
+	TQ       float32     `json:"tq"`
+	Bidirect bool        `json:"bidirect"`
 }
 
 type GraphBuilder struct {
@@ -50,30 +50,30 @@ func (nodes *Nodes) BuildGraph() *Graph {
 
 func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	// Fill mac->id map
-	for sourceId, node := range nodes {
+	for sourceID, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
 			// is VPN address?
 			if nodeinfo.VPN {
-				builder.vpn[sourceId] = nil
+				builder.vpn[sourceID] = nil
 			}
-			for _,batinterface := range nodeinfo.Network.Mesh {
+			for _, batinterface := range nodeinfo.Network.Mesh {
 				interfaces := batinterface.Interfaces
 				addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
 
 				for _, sourceAddress := range addresses {
-					builder.macToID[sourceAddress] = sourceId
+					builder.macToID[sourceAddress] = sourceID
 				}
 			}
 		}
 	}
 
 	// Add links
-	for sourceId, node := range nodes {
+	for sourceID, node := range nodes {
 		if neighbours := node.Neighbours; neighbours != nil {
 			for _, batadvNeighbours := range neighbours.Batadv {
 				for targetAddress, link := range batadvNeighbours.Neighbours {
-					if targetId, found := builder.macToID[targetAddress]; found {
-						builder.addLink(targetId, sourceId, link.Tq)
+					if targetID, found := builder.macToID[targetAddress]; found {
+						builder.addLink(targetID, sourceID, link.Tq)
 					}
 				}
 			}
@@ -81,7 +81,7 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	}
 }
 
-func (builder *GraphBuilder) Extract() ([]*GraphNode,[]*GraphLink) {
+func (builder *GraphBuilder) Extract() ([]*GraphNode, []*GraphLink) {
 	iNodes := 0
 	iLinks := 0
 	links := make([]*GraphLink, len(builder.links))
@@ -89,32 +89,32 @@ func (builder *GraphBuilder) Extract() ([]*GraphNode,[]*GraphLink) {
 
 	for mac, nodeID := range builder.macToID {
 		nodes[iNodes] = &GraphNode{
-			ID: mac,
+			ID:     mac,
 			NodeID: nodeID,
 		}
-		iNodes += 1
+		iNodes++
 	}
 	for key, link := range builder.links {
-		linkPart :=strings.Split(key,"-")
+		linkPart := strings.Split(key, "-")
 		both := 0
-		for i,node := range nodes{
-			if(linkPart[0] == node.NodeID){
+		for i, node := range nodes {
+			if linkPart[0] == node.NodeID {
 				link.Source = i
-				both += 1
+				both++
 				continue
 			}
-			if(linkPart[1]==node.NodeID){
+			if linkPart[1] == node.NodeID {
 				link.Target = i
-				both += 1
+				both++
 				break
 			}
 		}
 		if both == 2 {
 			links[iLinks] = link
-			iLinks += 1
+			iLinks++
 		}
 	}
-	return  nodes, links[:iLinks]
+	return nodes, links[:iLinks]
 }
 
 func (builder *GraphBuilder) isVPN(ids ...string) bool {
@@ -126,13 +126,13 @@ func (builder *GraphBuilder) isVPN(ids ...string) bool {
 	return false
 }
 
-func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq int) {
+func (builder *GraphBuilder) addLink(targetID string, sourceID string, linkTq int) {
 	// Sort IDs to generate the key
 	var key string
-	if strings.Compare(sourceId, targetId) > 0 {
-		key = fmt.Sprintf("%s-%s", sourceId, targetId)
+	if strings.Compare(sourceID, targetID) > 0 {
+		key = fmt.Sprintf("%s-%s", sourceID, targetID)
 	} else {
-		key = fmt.Sprintf("%s-%s", targetId, sourceId)
+		key = fmt.Sprintf("%s-%s", targetID, sourceID)
 	}
 
 	var tq float32
@@ -142,8 +142,8 @@ func (builder *GraphBuilder) addLink(targetId string, sourceId string, linkTq in
 
 	if link, ok := builder.links[key]; !ok {
 		builder.links[key] = &GraphLink{
-			VPN:    builder.isVPN(sourceId, targetId),
-			TQ:     tq,
+			VPN: builder.isVPN(sourceID, targetID),
+			TQ:  tq,
 		}
 	} else {
 		// Use lowest of both link qualities

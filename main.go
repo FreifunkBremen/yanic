@@ -10,21 +10,21 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/NYTimes/gziphandler"
+	"github.com/julienschmidt/httprouter"
 
+	"github.com/FreifunkBremen/respond-collector/api"
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
-	"github.com/FreifunkBremen/respond-collector/api"
 )
 
 var (
-	configFile       string
-	config           *models.Config
-	collector        *respond.Collector
-	statsDb          *StatsDb
-	nodes            *models.Nodes
+	configFile string
+	config     *models.Config
+	collector  *respond.Collector
+	statsDb    *StatsDb
+	nodes      *models.Nodes
 )
 
 func main() {
@@ -39,18 +39,17 @@ func main() {
 
 	if config.Respondd.Enable {
 		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
-		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive)
+		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive, config.Respondd.Interface)
 	}
-
 
 	if config.Webserver.Enable {
 		router := httprouter.New()
 		if config.Webserver.Api.NewNodes {
-			api.NewNodes(config,router,"/api/nodes",nodes)
+			api.NewNodes(config, router, "/api/nodes", nodes)
 			log.Println("api nodes started")
 		}
 		if config.Webserver.Api.Aliases {
-			api.NewAliases(config,router,"/api/aliases",nodes)
+			api.NewAliases(config, router, "/api/aliases", nodes)
 			log.Println("api aliases started")
 		}
 		router.NotFound = gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot)))

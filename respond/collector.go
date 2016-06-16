@@ -19,7 +19,7 @@ type Collector struct {
 	queue       chan *Response // received responses
 	onReceive   OnReceive
 	msgType     reflect.Type
-
+	intface     string
 	// Ticker and stopper
 	ticker *time.Ticker
 	stop   chan interface{}
@@ -28,7 +28,7 @@ type Collector struct {
 type OnReceive func(net.UDPAddr, *data.ResponseData)
 
 //NewCollector creates a Collector struct
-func NewCollector(CollectType string, interval time.Duration, onReceive OnReceive) *Collector {
+func NewCollector(CollectType string, interval time.Duration, onReceive OnReceive, intface string) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -49,6 +49,7 @@ func NewCollector(CollectType string, interval time.Duration, onReceive OnReceiv
 		ticker:      time.NewTicker(interval),
 		stop:        make(chan interface{}, 1),
 		onReceive:   onReceive,
+		intface:     intface,
 	}
 
 	go collector.receiver()
@@ -74,7 +75,7 @@ func (coll *Collector) Close() {
 }
 
 func (coll *Collector) sendOnce() {
-	coll.sendPacket(net.JoinHostPort(multiCastGroup, port))
+	coll.sendPacket(net.JoinHostPort(multiCastGroup+"%"+coll.intface, port))
 	log.Println("request", coll.CollectType)
 }
 

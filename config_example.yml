@@ -1,6 +1,7 @@
 ---
 respondd:
   enable: true
+  interface: eth0
   collectinterval: 15
 webserver:
   enable: false
@@ -12,7 +13,8 @@ webserver:
     aliases: true
 nodes:
   enable: true
-  nodes_path: /var/www/html/meshviewer/data/nodes.json
+  nodes_path: /var/www/html/meshviewer/data/nodes_all.json
+  nodesmini_path: /var/www/html/meshviewer/data/nodes.json
   graphs_path: /var/www/html/meshviewer/data/graph.json
   saveinterval: 5
   aliases_enable: false

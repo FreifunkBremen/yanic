@@ -44,7 +44,7 @@ func NewNodes(config *Config) *Nodes {
 	}
 	go nodes.worker()
 
-	nodes.Version = 1
+	nodes.Version = 2
 	return nodes
 }
 
@@ -89,9 +89,9 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 		node.Statistics = val
 	}
 }
-func (nodes *Nodes) GetMeshviewer() *meshviewer.Nodes {
+func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 	meshviewerNodes := &meshviewer.Nodes{
-		Version:   nodes.Version,
+		Version:   1,
 		List:      make(map[string]*meshviewer.Node),
 		Timestamp: nodes.Timestamp,
 	}
@@ -144,7 +144,8 @@ func (nodes *Nodes) worker() {
 			}
 		}
 		// serialize nodes
-		save(nodes.GetMeshviewer(), nodes.config.Nodes.NodesPath)
+		save(nodes, nodes.config.Nodes.NodesPath)
+		save(nodes.GetNodesMini(), nodes.config.Nodes.NodesMiniPath)
 
 		if path := nodes.config.Nodes.GraphsPath; path != "" {
 			save(nodes.BuildGraph(), path)
@@ -159,39 +160,7 @@ func (nodes *Nodes) load() {
 	log.Println("loading", path)
 
 	if filedata, err := ioutil.ReadFile(path); err == nil {
-		meshviewerNodes := &meshviewer.Nodes{}
-		if err := json.Unmarshal(filedata, meshviewerNodes); err == nil {
-			nodes.Version = meshviewerNodes.Version
-			nodes.Timestamp = meshviewerNodes.Timestamp
-			nodes.List = make(map[string]*Node)
-			for nodeID, _ := range meshviewerNodes.List {
-				nodes.Lock()
-				node, _ := nodes.List[nodeID]
-
-				if node == nil {
-					node = &Node{
-						Firstseen: meshviewerNodes.List[nodeID].Firstseen,
-						Lastseen:  meshviewerNodes.List[nodeID].Lastseen,
-						Flags:     meshviewerNodes.List[nodeID].Flags,
-						Nodeinfo:  meshviewerNodes.List[nodeID].Nodeinfo,
-					}
-					nodes.List[nodeID] = node
-				}
-				nodes.Unlock()
-				node.Statistics = &data.Statistics{
-					NodeId:      meshviewerNodes.List[nodeID].Statistics.NodeId,
-					Clients:     data.Clients{Total: meshviewerNodes.List[nodeID].Statistics.Clients},
-					Gateway:     meshviewerNodes.List[nodeID].Statistics.Gateway,
-					RootFsUsage: meshviewerNodes.List[nodeID].Statistics.RootFsUsage,
-					LoadAverage: meshviewerNodes.List[nodeID].Statistics.LoadAverage,
-					Memory:      meshviewerNodes.List[nodeID].Statistics.Memory,
-					Uptime:      meshviewerNodes.List[nodeID].Statistics.Uptime,
-					Idletime:    meshviewerNodes.List[nodeID].Statistics.Idletime,
-					Processes:   meshviewerNodes.List[nodeID].Statistics.Processes,
-					MeshVpn:     meshviewerNodes.List[nodeID].Statistics.MeshVpn,
-					Traffic:     meshviewerNodes.List[nodeID].Statistics.Traffic,
-				}
-			}
+		if err := json.Unmarshal(filedata, nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 		} else {
 			log.Println("failed to unmarshal nodes:", err)
