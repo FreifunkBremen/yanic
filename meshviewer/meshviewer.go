@@ -27,7 +27,7 @@ type Nodes struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	sync.Mutex
+	sync.RWMutex
 }
 
 type Statistics struct {

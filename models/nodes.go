@@ -29,7 +29,7 @@ type Nodes struct {
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 	config    *Config
-	sync.Mutex
+	sync.RWMutex
 }
 
 // NewNodes create Nodes structs
@@ -89,38 +89,40 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 		node.Statistics = val
 	}
 }
+
+// GetNodesMini get meshviewer valide JSON
 func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 	meshviewerNodes := &meshviewer.Nodes{
 		Version:   1,
 		List:      make(map[string]*meshviewer.Node),
 		Timestamp: nodes.Timestamp,
 	}
-	for nodeID, _ := range nodes.List {
-		meshviewerNodes.Lock()
-		node, _ := meshviewerNodes.List[nodeID]
+	for nodeID := range nodes.List {
 
+		node, _ := meshviewerNodes.List[nodeID]
+		nodeOrigin := nodes.List[nodeID]
 		if node == nil {
 			node = &meshviewer.Node{
-				Firstseen: nodes.List[nodeID].Firstseen,
-				Lastseen:  nodes.List[nodeID].Lastseen,
-				Flags:     nodes.List[nodeID].Flags,
-				Nodeinfo:  nodes.List[nodeID].Nodeinfo,
+				Firstseen: nodeOrigin.Firstseen,
+				Lastseen:  nodeOrigin.Lastseen,
+				Flags:     nodeOrigin.Flags,
+				Nodeinfo:  nodeOrigin.Nodeinfo,
 			}
 			meshviewerNodes.List[nodeID] = node
 		}
-		meshviewerNodes.Unlock()
+
 		node.Statistics = &meshviewer.Statistics{
-			NodeId:      nodes.List[nodeID].Statistics.NodeId,
-			Clients:     nodes.List[nodeID].Statistics.Clients.Total,
-			Gateway:     nodes.List[nodeID].Statistics.Gateway,
-			RootFsUsage: nodes.List[nodeID].Statistics.RootFsUsage,
-			LoadAverage: nodes.List[nodeID].Statistics.LoadAverage,
-			Memory:      nodes.List[nodeID].Statistics.Memory,
-			Uptime:      nodes.List[nodeID].Statistics.Uptime,
-			Idletime:    nodes.List[nodeID].Statistics.Idletime,
-			Processes:   nodes.List[nodeID].Statistics.Processes,
-			MeshVpn:     nodes.List[nodeID].Statistics.MeshVpn,
-			Traffic:     nodes.List[nodeID].Statistics.Traffic,
+			NodeId:      nodeOrigin.Statistics.NodeId,
+			Clients:     nodeOrigin.Statistics.Clients.Total,
+			Gateway:     nodeOrigin.Statistics.Gateway,
+			RootFsUsage: nodeOrigin.Statistics.RootFsUsage,
+			LoadAverage: nodeOrigin.Statistics.LoadAverage,
+			Memory:      nodeOrigin.Statistics.Memory,
+			Uptime:      nodeOrigin.Statistics.Uptime,
+			Idletime:    nodeOrigin.Statistics.Idletime,
+			Processes:   nodeOrigin.Statistics.Processes,
+			MeshVpn:     nodeOrigin.Statistics.MeshVpn,
+			Traffic:     nodeOrigin.Statistics.Traffic,
 		}
 	}
 	return meshviewerNodes
@@ -160,7 +162,7 @@ func (nodes *Nodes) load() {
 	log.Println("loading", path)
 
 	if filedata, err := ioutil.ReadFile(path); err == nil {
-		if err := json.Unmarshal(filedata, nodes); err == nil {
+		if err = json.Unmarshal(filedata, nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 		} else {
 			log.Println("failed to unmarshal nodes:", err)
