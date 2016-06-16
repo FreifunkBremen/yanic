@@ -20,11 +20,11 @@ type GraphNode struct {
 	NodeID string `json:"node_id"`
 }
 type GraphLink struct {
-	Source   interface{} `json:"source"`
-	Target   interface{} `json:"target"`
-	VPN      bool        `json:"vpn"`
-	TQ       float32     `json:"tq"`
-	Bidirect bool        `json:"bidirect"`
+	Source   int     `json:"source"`
+	Target   int     `json:"target"`
+	VPN      bool    `json:"vpn"`
+	TQ       float32 `json:"tq"`
+	Bidirect bool    `json:"bidirect"`
 }
 
 type GraphBuilder struct {
@@ -82,39 +82,33 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 }
 
 func (builder *GraphBuilder) Extract() ([]*GraphNode, []*GraphLink) {
-	iNodes := 0
-	iLinks := 0
 	links := make([]*GraphLink, len(builder.links))
 	nodes := make([]*GraphNode, len(builder.macToID))
+	idToIndex := make(map[string]int)
 
+	// collect nodes and create mapping to index
+	i := 0
 	for mac, nodeID := range builder.macToID {
-		nodes[iNodes] = &GraphNode{
+		nodes[i] = &GraphNode{
 			ID:     mac,
 			NodeID: nodeID,
 		}
-		iNodes++
+		idToIndex[nodeID] = i
+		i++
 	}
+
+	// collect links
+	i = 0
 	for key, link := range builder.links {
-		linkPart := strings.Split(key, "-")
-		both := 0
-		for i, node := range nodes {
-			if linkPart[0] == node.NodeID {
-				link.Source = i
-				both++
-				continue
-			}
-			if linkPart[1] == node.NodeID {
-				link.Target = i
-				both++
-				continue
-			}
-		}
-		if both == 2 {
-			links[iLinks] = link
-			iLinks++
-		}
+		pos := strings.IndexByte(key, '-')
+
+		link.Source = idToIndex[key[:pos]]
+		link.Target = idToIndex[key[pos+1:]]
+		links[i] = link
+		i++
 	}
-	return nodes, links[:iLinks]
+
+	return nodes, links
 }
 
 func (builder *GraphBuilder) isVPN(ids ...string) bool {
