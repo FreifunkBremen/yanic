@@ -25,7 +25,7 @@ func TestMarshalTime(t *testing.T) {
 	json, err := Time{nativeTime}.MarshalJSON()
 	assert.Nil(err)
 
-	assert.Equal(`"2012-11-01T22:08:41"`, string(json))
+	assert.Equal(`"2012-11-01T22:08:41+0000"`, string(json))
 }
 
 func TestUnmarshalValidTime(t *testing.T) {
@@ -33,7 +33,7 @@ func TestUnmarshalValidTime(t *testing.T) {
 	jsonTime := Time{}
 
 	// valid time
-	err := jsonTime.UnmarshalJSON([]byte(`"2012-11-01T22:08:41"`))
+	err := jsonTime.UnmarshalJSON([]byte(`"2012-11-01T22:08:41+0000"`))
 	assert.Nil(err)
 	assert.False(jsonTime.IsZero())
 }
