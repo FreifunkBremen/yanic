@@ -3,7 +3,7 @@ package models
 type Ansible struct {
 	Nodes []string `json:"nodes"`
 	Meta  struct {
-		HostVars map[string]*AnsibleHostVars `json:"hostvars"`
+		HostVars map[string]*AnsibleHostVars `json:"hostvars,omitempty"`
 	} `json:"_meta"`
 }
 type AnsibleHostVars struct {
