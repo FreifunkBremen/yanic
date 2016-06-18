@@ -9,16 +9,17 @@ type Ansible struct {
 type AnsibleHostVars struct {
 	Address      string  `json:"ansible_ssh_host"`
 	Hostname     string  `json:"node_name,omitempty"`
-	Channel24    int     `json:"radio24_channel,omitempty"`
-	TxPower24    int     `json:"radio24_txpower,omitempty"`
-	Channel5     int     `json:"radio5_channel,omitempty"`
-	TxPower5     int     `json:"radio5_txpower,omitempty"`
+	Channel24    uint32  `json:"radio24_channel,omitempty"`
+	TxPower24    uint32  `json:"radio24_txpower,omitempty"`
+	Channel5     uint32  `json:"radio5_channel,omitempty"`
+	TxPower5     uint32  `json:"radio5_txpower,omitempty"`
 	GeoLatitude  float64 `json:"geo_latitude,omitempty"`
 	GeoLongitude float64 `json:"geo_longitude,omitempty"`
 }
 
 func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 	ansible := &Ansible{Nodes: make([]string, 0)}
+	ansible.Meta.HostVars = make(map[string]*AnsibleHostVars)
 	for nodeid, alias := range aliases {
 		if node := nodes.List[nodeid]; node != nil {
 

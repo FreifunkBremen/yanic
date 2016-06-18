@@ -32,9 +32,10 @@ func NewAliases(config *models.Config, router *httprouter.Router, prefix string,
 func (api *ApiAliases) cleaner() {
 	for key, alias := range api.aliases.List {
 		if node := api.nodes.List[key]; node != nil {
+			//counter for the diffrent attribute
+			count := 0
 			if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-				//counter for the diffrent attribute
-				count := 3
+				count += 3
 				if alias.Hostname == nodeinfo.Hostname {
 					count -= 1
 				}
@@ -46,24 +47,30 @@ func (api *ApiAliases) cleaner() {
 						count -= 1
 					}
 				}
-				/*
-					if alias.Freq24.TxPower == nodeinfo.Freq24.TxPower {
-						count -= 1
+				if nodeinfo.Settings != nil {
+					if nodeinfo.Settings.Freq24 != nil {
+						count += 2
+						if alias.Freq24.TxPower == nodeinfo.Settings.Freq24.TxPower {
+							count -= 1
+						}
+						if alias.Freq24.Channel == nodeinfo.Settings.Freq24.Channel {
+							count -= 1
+						}
 					}
-					if alias.Freq24.Channel == nodeinfo.Freq24.Channel {
-						count -= 1
+					if nodeinfo.Settings.Freq5 != nil {
+						count += 2
+						if alias.Freq5.TxPower == nodeinfo.Settings.Freq5.TxPower {
+							count -= 1
+						}
+						if alias.Freq5.Channel == nodeinfo.Settings.Freq5.Channel {
+							count -= 1
+						}
 					}
-					if alias.Freq5.TxPower == nodeinfo.Freq5.TxPower {
-						count -= 1
-					}
-					if alias.Freq5.Channel == nodeinfo.Freq5.Channel {
-						count -= 1
-					}
-				*/
-				//delete element
-				if count <= 0 {
-					delete(api.aliases.List, key)
 				}
+			}
+			//delete element
+			if count <= 0 {
+				delete(api.aliases.List, key)
 			}
 		}
 	}

@@ -10,6 +10,7 @@ type NodeInfo struct {
 	Software Software  `json:"software"`
 	Hardware Hardware  `json:"hardware"`
 	VPN      bool      `json:"vpn"`
+	Settings *Settings `json:"settings,omitempty"`
 }
 type BatInterface struct {
 	Interfaces struct {
@@ -20,10 +21,10 @@ type BatInterface struct {
 }
 
 type Network struct {
-	Mac       string   `json:"mac"`
-	Addresses []string `json:"addresses"`
-	Mesh      map[string]*BatInterface `json:"mesh"`
-	MeshInterfaces []string `json:"mesh_interfaces"`
+	Mac            string                   `json:"mac"`
+	Addresses      []string                 `json:"addresses"`
+	Mesh           map[string]*BatInterface `json:"mesh"`
+	MeshInterfaces []string                 `json:"mesh_interfaces"`
 }
 
 type Owner struct {
