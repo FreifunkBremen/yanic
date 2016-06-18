@@ -3,7 +3,7 @@ package models
 type Ansible struct {
 	Nodes []string `json:"nodes"`
 	Meta  struct {
-		HostVars []*AnsibleHostVars `json:"hostvars"`
+		HostVars map[string]*AnsibleHostVars `json:"hostvars"`
 	} `json:"_meta"`
 }
 type AnsibleHostVars struct {
@@ -40,7 +40,7 @@ func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 				vars.GeoLatitude = alias.Location.Latitude
 				vars.GeoLongitude = alias.Location.Longtitude
 			}
-			ansible.Meta.HostVars = append(ansible.Meta.HostVars, vars)
+			ansible.Meta.HostVars[nodeid] = vars
 
 		}
 	}
