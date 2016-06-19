@@ -35,11 +35,12 @@ func (api *ApiAliases) cleaner() {
 			//counter for the diffrent attribute
 			count := 0
 			if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-				count += 3
+				count += 1
 				if alias.Hostname == nodeinfo.Hostname {
 					count -= 1
 				}
 				if alias.Location != nil && nodeinfo.Location != nil {
+					count += 2
 					if alias.Location.Latitude == nodeinfo.Location.Latitude {
 						count -= 1
 					}
