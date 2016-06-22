@@ -69,11 +69,13 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 
 	// Add links
 	for sourceID, node := range nodes {
-		if neighbours := node.Neighbours; neighbours != nil {
-			for _, batadvNeighbours := range neighbours.Batadv {
-				for targetAddress, link := range batadvNeighbours.Neighbours {
-					if targetID, found := builder.macToID[targetAddress]; found {
-						builder.addLink(targetID, sourceID, link.Tq)
+		if flag := node.Flags; flag == nil || flag.Online {
+			if neighbours := node.Neighbours; neighbours != nil {
+				for _, batadvNeighbours := range neighbours.Batadv {
+					for targetAddress, link := range batadvNeighbours.Neighbours {
+						if targetID, found := builder.macToID[targetAddress]; found {
+							builder.addLink(targetID, sourceID, link.Tq)
+						}
 					}
 				}
 			}

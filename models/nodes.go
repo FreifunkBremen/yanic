@@ -139,7 +139,7 @@ func (nodes *Nodes) worker() {
 		//
 		// set node as offline (without statistics)
 		for _, node := range nodes.List {
-			if node.Statistics != nil && node.Lastseen.Unix()+int64(5*nodes.config.Respondd.CollectInterval) < nodes.Timestamp.Unix() {
+			if node.Statistics != nil && nodes.Timestamp.After(node.Lastseen.Add( time.Second * time.Duration (5 * nodes.config.Respondd.CollectInterval ))) {
 				if node.Flags != nil {
 					node.Flags.Online = false
 				}

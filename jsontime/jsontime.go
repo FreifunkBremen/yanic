@@ -29,11 +29,20 @@ func (t *Time) UnmarshalJSON(data []byte) (err error) {
 	}
 	return
 }
-
+func (t Time) GetTime() time.Time{
+	return t.time
+}
 func (t Time) Unix() int64 {
 	return t.time.Unix()
 }
 
 func (t Time) IsZero() bool {
 	return t.time.IsZero()
+}
+
+func (t Time) Add(d time.Duration) Time {
+	return Time{time: t.time.Add(d)}
+}
+func (t Time) After(u Time) bool {
+	return t.time.After(u.GetTime())
 }
