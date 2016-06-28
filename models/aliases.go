@@ -11,10 +11,9 @@ import (
 )
 
 type Alias struct {
-	Hostname string          `json:"hostname,omitempty"`
-	Location *data.Location  `json:"location,omitempty"`
-	Freq24   *data.Frequence `json:"freq24,omitempty"`
-	Freq5    *data.Frequence `json:"freq5,omitempty"`
+	Hostname string         `json:"hostname,omitempty"`
+	Location *data.Location `json:"location,omitempty"`
+	Wireless *data.Wireless `json:"wireless,omitempty"`
 }
 
 // Nodes struct: cache DB of Node's structs

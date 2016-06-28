@@ -29,13 +29,11 @@ func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 				Address:  node.Nodeinfo.Network.Addresses[0],
 				Hostname: alias.Hostname,
 			}
-			if alias.Freq24 != nil {
-				vars.Channel24 = alias.Freq24.Channel
-				vars.TxPower24 = alias.Freq24.TxPower
-			}
-			if alias.Freq5 != nil {
-				vars.Channel5 = alias.Freq5.Channel
-				vars.TxPower5 = alias.Freq5.TxPower
+			if alias.Wireless != nil {
+				vars.Channel24 = alias.Wireless.Channel24
+				vars.TxPower24 = alias.Wireless.TxPower24
+				vars.Channel5 = alias.Wireless.Channel5
+				vars.TxPower5 = alias.Wireless.TxPower5
 			}
 			if alias.Location != nil {
 				vars.GeoLatitude = alias.Location.Latitude

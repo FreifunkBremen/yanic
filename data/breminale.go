@@ -1,13 +1,10 @@
 package data
 
-type Frequence struct {
-	TxPower uint32 `json:"txpower"`
-	Channel uint32 `json:"channel"`
-}
-
-type Settings struct {
-	Freq24 *Frequence `json:"freq24,omitempty"`
-	Freq5  *Frequence `json:"freq5,omitempty"`
+type Wireless struct {
+	TxPower24 uint32 `json:"txpower24"`
+	Channel24 uint32 `json:"channel24"`
+	TxPower5  uint32 `json:"txpower5"`
+	Channel5  uint32 `json:"channel5"`
 }
 type SwitchPort struct {
 	Speed uint32 `json:"speed"`

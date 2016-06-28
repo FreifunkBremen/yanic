@@ -48,24 +48,19 @@ func (api *ApiAliases) cleaner() {
 						count -= 1
 					}
 				}
-				if nodeinfo.Settings != nil {
-					if nodeinfo.Settings.Freq24 != nil {
-						count += 2
-						if alias.Freq24.TxPower == nodeinfo.Settings.Freq24.TxPower {
-							count -= 1
-						}
-						if alias.Freq24.Channel == nodeinfo.Settings.Freq24.Channel {
-							count -= 1
-						}
+				if nodeinfo.Wireless != nil {
+					count += 4
+					if alias.Wireless.Channel24 == nodeinfo.Wireless.Channel24 {
+						count -= 1
 					}
-					if nodeinfo.Settings.Freq5 != nil {
-						count += 2
-						if alias.Freq5.TxPower == nodeinfo.Settings.Freq5.TxPower {
-							count -= 1
-						}
-						if alias.Freq5.Channel == nodeinfo.Settings.Freq5.Channel {
-							count -= 1
-						}
+					if alias.Wireless.TxPower24 == nodeinfo.Wireless.TxPower24 {
+						count -= 1
+					}
+					if alias.Wireless.Channel5 == nodeinfo.Wireless.Channel5 {
+						count -= 1
+					}
+					if alias.Wireless.TxPower5 == nodeinfo.Wireless.TxPower5 {
+						count -= 1
 					}
 				}
 			}

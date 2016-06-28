@@ -10,7 +10,7 @@ type NodeInfo struct {
 	Software Software  `json:"software"`
 	Hardware Hardware  `json:"hardware"`
 	VPN      bool      `json:"vpn"`
-	Settings *Settings `json:"settings,omitempty"`
+	Wireless *Wireless `json:"wireless,omitempty"`
 }
 type BatInterface struct {
 	Interfaces struct {
