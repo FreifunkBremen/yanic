@@ -48,7 +48,7 @@ func (api *ApiAliases) cleaner() {
 						count -= 1
 					}
 				}
-				if nodeinfo.Wireless != nil {
+				if nodeinfo.Wireless != nil && alias.Wireless != nil {
 					count += 4
 					if alias.Wireless.Channel24 == nodeinfo.Wireless.Channel24 {
 						count -= 1
