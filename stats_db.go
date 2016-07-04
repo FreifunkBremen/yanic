@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 	"sync"
 	"time"
 
@@ -83,6 +84,26 @@ func (c *StatsDb) Add(stats *data.Statistics) {
 		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
 		fields["traffic.mgmt_tx.packets"] = t.Packets
 	}
+	if w := stats.Wireless; w != nil {
+		if time := w.Airtime24; time != nil {
+			fields["airtime24.active"] = time.Active
+			fields["airtime24.busy"] = time.Busy
+			fields["airtime24.tx"] = time.Tx
+			fields["airtime24.rx"] = time.Rx
+			fields["airtime24.noise"] = time.Noise
+			fields["airtime24.frequency"] = time.Frequency
+			tags["frequency24"] = strconv.Itoa(int(time.Frequency))
+		}
+		if time := w.Airtime5; time != nil {
+			fields["airtime5.active"] = time.Active
+			fields["airtime5.busy"] = time.Busy
+			fields["airtime5.tx"] = time.Tx
+			fields["airtime5.rx"] = time.Rx
+			fields["airtime5.noise"] = time.Noise
+			fields["airtime5.frequency"] = time.Frequency
+			tags["frequency5"] = strconv.Itoa(int(time.Frequency))
+		}
+	}
 
 	point, err := client.NewPoint("node", tags, fields, time.Now())
 	if err != nil {
@@ -119,7 +140,7 @@ func (c *StatsDb) worker() {
 					// create new batch
 					timer.Reset(batchDuration)
 					if bp, err = client.NewBatchPoints(bpConfig); err != nil {
-						panic(err)
+						log.Fatal(err)
 					}
 				}
 				bp.AddPoint(point)
@@ -139,7 +160,7 @@ func (c *StatsDb) worker() {
 			log.Println("saving", len(bp.Points()), "points")
 
 			if err = c.client.Write(bp); err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 			writeNow = false
 			bp = nil
