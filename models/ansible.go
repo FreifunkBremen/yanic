@@ -9,6 +9,7 @@ type Ansible struct {
 type AnsibleHostVars struct {
 	Address      string  `json:"ansible_ssh_host"`
 	Hostname     string  `json:"node_name,omitempty"`
+	Owner        string  `json:"owner,omitempty"`
 	Channel24    uint32  `json:"radio24_channel,omitempty"`
 	TxPower24    uint32  `json:"radio24_txpower,omitempty"`
 	Channel5     uint32  `json:"radio5_channel,omitempty"`
@@ -28,6 +29,7 @@ func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 			vars := &AnsibleHostVars{
 				Address:  node.Nodeinfo.Network.Addresses[0],
 				Hostname: alias.Hostname,
+				Owner:    alias.Owner,
 			}
 			if alias.Wireless != nil {
 				vars.Channel24 = alias.Wireless.Channel24
