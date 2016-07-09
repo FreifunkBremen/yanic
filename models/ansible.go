@@ -27,9 +27,11 @@ func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 			ansible.Nodes = append(ansible.Nodes, nodeid)
 
 			vars := &AnsibleHostVars{
-				Address:  node.Nodeinfo.Network.Addresses[0],
 				Hostname: alias.Hostname,
 				Owner:    alias.Owner,
+			}
+			if node.Nodeinfo.Network.Addresses != nil {
+				vars.Address = node.Nodeinfo.Network.Addresses[0]
 			}
 			if alias.Wireless != nil {
 				vars.Channel24 = alias.Wireless.Channel24
