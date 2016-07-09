@@ -14,6 +14,7 @@ type Alias struct {
 	Hostname string         `json:"hostname,omitempty"`
 	Location *data.Location `json:"location,omitempty"`
 	Wireless *data.Wireless `json:"wireless,omitempty"`
+	Owner    string         `json:"owner,omitempty"`
 }
 
 // Nodes struct: cache DB of Node's structs

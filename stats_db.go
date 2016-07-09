@@ -44,9 +44,13 @@ func NewStatsDb() *StatsDb {
 	return db
 }
 
-func (c *StatsDb) Add(stats *data.Statistics) {
+func (c *StatsDb) Add(stats *data.Statistics, node *data.NodeInfo) {
 	tags := map[string]string{
 		"nodeid": stats.NodeId,
+	}
+	// Maybe a If
+	if owner := node.Owner; owner != nil {
+		tags["owner"] = owner.Contact
 	}
 	fields := map[string]interface{}{
 		"load":              stats.LoadAverage,
