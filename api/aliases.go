@@ -51,14 +51,12 @@ func (api *ApiAliases) cleaner() {
 					count += 1
 					if alias.Hostname == nodeinfo.Hostname {
 						count -= 1
-						alias.Hostname = ""
 					}
 				}
 				if len(alias.Owner) > 0 {
 					count += 1
 					if nodeinfo.Owner != nil && alias.Owner == nodeinfo.Owner.Contact {
 						count -= 1
-						alias.Owner = ""
 					}
 				}
 				if alias.Location != nil {
