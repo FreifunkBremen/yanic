@@ -97,10 +97,6 @@ func onReceive(addr net.UDPAddr, res *data.ResponseData) {
 	nodes.Update(nodeId, res)
 
 	if val := res.Statistics; val != nil && statsDb != nil {
-		if node := res.NodeInfo; val != nil && statsDb != nil {
-			statsDb.Add(val, node)
-		} else {
-			statsDb.Add(val, nil)
-		}
+		statsDb.Add(val, res.NodeInfo)
 	}
 }
