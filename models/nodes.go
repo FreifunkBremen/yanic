@@ -111,9 +111,14 @@ func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 			meshviewerNodes.List[nodeID] = node
 		}
 
+		// Calculate Total
+		total := nodeOrigin.Statistics.Clients.Total
+		if total == 0 {
+			total = nodeOrigin.Statistics.Clients.Wifi24 + nodeOrigin.Statistics.Clients.Wifi5
+		}
+
 		node.Statistics = &meshviewer.Statistics{
 			NodeId:      nodeOrigin.Statistics.NodeId,
-			Clients:     nodeOrigin.Statistics.Clients.Total,
 			Gateway:     nodeOrigin.Statistics.Gateway,
 			RootFsUsage: nodeOrigin.Statistics.RootFsUsage,
 			LoadAverage: nodeOrigin.Statistics.LoadAverage,
@@ -123,6 +128,7 @@ func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 			Processes:   nodeOrigin.Statistics.Processes,
 			MeshVpn:     nodeOrigin.Statistics.MeshVpn,
 			Traffic:     nodeOrigin.Statistics.Traffic,
+			Clients:     total,
 		}
 	}
 	return meshviewerNodes
@@ -139,7 +145,7 @@ func (nodes *Nodes) worker() {
 		//
 		// set node as offline (without statistics)
 		for _, node := range nodes.List {
-			if node.Statistics != nil && nodes.Timestamp.After(node.Lastseen.Add( time.Second * time.Duration (5 * nodes.config.Respondd.CollectInterval ))) {
+			if node.Statistics != nil && nodes.Timestamp.After(node.Lastseen.Add(time.Second*time.Duration(5*nodes.config.Respondd.CollectInterval))) {
 				if node.Flags != nil {
 					node.Flags.Online = false
 				}
