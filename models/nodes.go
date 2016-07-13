@@ -49,7 +49,7 @@ func NewNodes(config *Config) *Nodes {
 }
 
 // Update a Node
-func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
+func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	now := jsontime.Now()
 
 	nodes.Lock()
@@ -86,8 +86,16 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) {
 
 	// Update statistics
 	if val := res.Statistics; val != nil {
+
+		// Update channel utilization if previous statistics are present
+		if node.Statistics != nil && node.Statistics.Wireless != nil && val.Wireless != nil {
+			val.Wireless.SetUtilization(node.Statistics.Wireless)
+		}
+
 		node.Statistics = val
 	}
+
+	return node
 }
 
 // GetNodesMini get meshviewer valide JSON

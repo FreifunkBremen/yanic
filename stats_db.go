@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/respond-collector/data"
+	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/influxdata/influxdb/client/v2"
 )
 
@@ -44,14 +45,19 @@ func NewStatsDb() *StatsDb {
 	return db
 }
 
-func (c *StatsDb) Add(stats *data.Statistics, node *data.NodeInfo) {
+func (c *StatsDb) Add(nodeId string, node *models.Node) {
+	stats := node.Statistics
+
 	tags := map[string]string{
-		"nodeid": stats.NodeId,
+		"nodeid": nodeId,
 	}
-	// Maybe a If
-	if owner := node.Owner; owner != nil {
-		tags["owner"] = owner.Contact
+
+	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		if owner := nodeinfo.Owner; owner != nil {
+			tags["owner"] = owner.Contact
+		}
 	}
+
 	fields := map[string]interface{}{
 		"load":              stats.LoadAverage,
 		"idletime":          int64(stats.Idletime),
@@ -89,23 +95,21 @@ func (c *StatsDb) Add(stats *data.Statistics, node *data.NodeInfo) {
 		fields["traffic.mgmt_tx.packets"] = t.Packets
 	}
 	if w := stats.Wireless; w != nil {
+		addAirtime := func(suffix string, time *data.WirelessAirtime) {
+			fields["airtime"+suffix+".chan_util"] = time.ChanUtil
+			fields["airtime"+suffix+".rx_util"] = time.RxUtil
+			fields["airtime"+suffix+".tx_util"] = time.TxUtil
+			fields["airtime"+suffix+".noise"] = time.Noise
+			fields["airtime"+suffix+".frequency"] = time.Frequency
+			tags["frequency"+suffix+""] = strconv.Itoa(int(time.Frequency))
+		}
+
 		if time := w.Airtime24; time != nil {
-			fields["airtime24.active"] = time.Active
-			fields["airtime24.busy"] = time.Busy
-			fields["airtime24.tx"] = time.Tx
-			fields["airtime24.rx"] = time.Rx
-			fields["airtime24.noise"] = time.Noise
-			fields["airtime24.frequency"] = time.Frequency
-			tags["frequency24"] = strconv.Itoa(int(time.Frequency))
+			addAirtime("24", w.Airtime24)
+
 		}
 		if time := w.Airtime5; time != nil {
-			fields["airtime5.active"] = time.Active
-			fields["airtime5.busy"] = time.Busy
-			fields["airtime5.tx"] = time.Tx
-			fields["airtime5.rx"] = time.Rx
-			fields["airtime5.noise"] = time.Noise
-			fields["airtime5.frequency"] = time.Frequency
-			tags["frequency5"] = strconv.Itoa(int(time.Frequency))
+			addAirtime("5", w.Airtime5)
 		}
 	}
 

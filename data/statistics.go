@@ -62,3 +62,7 @@ type Memory struct {
 	Buffers uint32 `json:"buffers"`
 	Free    uint32 `json:"free"`
 }
+
+type SwitchPort struct {
+	Speed uint32 `json:"speed"`
+}

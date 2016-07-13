@@ -94,9 +94,9 @@ func onReceive(addr net.UDPAddr, res *data.ResponseData) {
 		return
 	}
 
-	nodes.Update(nodeId, res)
+	node := nodes.Update(nodeId, res)
 
-	if val := res.Statistics; val != nil && statsDb != nil {
-		statsDb.Add(val, res.NodeInfo)
+	if statsDb != nil && node.Statistics != nil {
+		statsDb.Add(nodeId, node)
 	}
 }
