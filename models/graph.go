@@ -56,6 +56,8 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 			if nodeinfo.VPN {
 				builder.vpn[sourceID] = nil
 			}
+
+			// Batman neighbours
 			for _, batinterface := range nodeinfo.Network.Mesh {
 				interfaces := batinterface.Interfaces
 				addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
@@ -65,16 +67,32 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 				}
 			}
 		}
+
+		// Iterate over local MAC addresses from LLDP
+		if neighbours := node.Neighbours; neighbours != nil {
+			for sourceAddr, _ := range neighbours.LLDP {
+				builder.macToID[sourceAddr] = sourceID
+			}
+		}
 	}
 
 	// Add links
 	for sourceID, node := range nodes {
 		if flag := node.Flags; flag == nil || flag.Online {
 			if neighbours := node.Neighbours; neighbours != nil {
+				// Batman neighbours
 				for _, batadvNeighbours := range neighbours.Batadv {
 					for targetAddress, link := range batadvNeighbours.Neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
 							builder.addLink(targetID, sourceID, link.Tq)
+						}
+					}
+				}
+				// LLDP
+				for _, neighbours := range neighbours.LLDP {
+					for targetAddress, _ := range neighbours {
+						if targetID, found := builder.macToID[targetAddress]; found {
+							builder.addLink(targetID, sourceID, 255)
 						}
 					}
 				}
