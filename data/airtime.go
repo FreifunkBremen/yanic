@@ -1,5 +1,9 @@
 package data
 
+import (
+	"math"
+)
+
 type Wireless struct {
 	TxPower24 uint32 `json:"txpower24,omitempty"`
 	Channel24 uint32 `json:"channel24,omitempty"`
@@ -41,15 +45,15 @@ func (cur *WirelessAirtime) SetUtilization(prev *WirelessAirtime) {
 		return
 	}
 
-	active := float32(cur.Active_time) - float32(prev.Active_time)
-	busy := float32(cur.Busy_time) - float32(prev.Busy_time)
-	rx := float32(cur.Tx_time) - float32(prev.Tx_time)
-	tx := float32(cur.Rx_time) - float32(prev.Rx_time)
+	active := float64(cur.Active_time) - float64(prev.Active_time)
+	busy := float64(cur.Busy_time) - float64(prev.Busy_time)
+	rx := float64(cur.Tx_time) - float64(prev.Tx_time)
+	tx := float64(cur.Rx_time) - float64(prev.Rx_time)
 
 	// Calculate utilizations
 	if active > 0 {
-		cur.ChanUtil = 100 * (busy + rx + tx) / active
-		cur.RxUtil = 100 * rx / active
-		cur.TxUtil = 100 * tx / active
+		cur.ChanUtil = float32(math.Min(100, 100*(busy+rx+tx)/active))
+		cur.RxUtil = float32(math.Min(100, 100*rx/active))
+		cur.TxUtil = float32(math.Min(100, 100*tx/active))
 	}
 }
