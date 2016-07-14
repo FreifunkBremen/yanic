@@ -44,8 +44,8 @@ func (cur *WirelessAirtime) SetUtilization(prev *WirelessAirtime) {
 
 	// Calculate utilizations
 	if active > 0 {
-		cur.ChanUtil = (busy + rx + tx) / active
-		cur.RxUtil = rx / active
-		cur.TxUtil = tx / active
+		cur.ChanUtil = 100 * (busy + rx + tx) / active
+		cur.RxUtil = 100 * rx / active
+		cur.TxUtil = 100 * tx / active
 	}
 }

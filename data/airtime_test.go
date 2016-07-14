@@ -35,12 +35,12 @@ func TestUtilization(t *testing.T) {
 
 	t2.SetUtilization(t1)
 	assert.NotZero(t2.ChanUtil)
-	assert.EqualValues(0.45, t2.ChanUtil)
-	assert.EqualValues(0.2, t2.RxUtil)
-	assert.EqualValues(0.15, t2.TxUtil)
+	assert.EqualValues(45, t2.ChanUtil)
+	assert.EqualValues(20, t2.RxUtil)
+	assert.EqualValues(15, t2.TxUtil)
 
 	t3.SetUtilization(t2)
-	assert.EqualValues(0.5, t3.ChanUtil)
-	assert.EqualValues(0.125, t3.RxUtil)
+	assert.EqualValues(50, t3.ChanUtil)
+	assert.EqualValues(12.5, t3.RxUtil)
 	assert.EqualValues(0, t3.TxUtil)
 }
