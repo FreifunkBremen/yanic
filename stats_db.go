@@ -56,6 +56,8 @@ func (c *StatsDb) Add(nodeId string, node *models.Node) {
 		if owner := nodeinfo.Owner; owner != nil {
 			tags["owner"] = owner.Contact
 		}
+		// morpheus needs
+		tags["hostname"] = nodeinfo.Hostname
 	}
 
 	fields := map[string]interface{}{
