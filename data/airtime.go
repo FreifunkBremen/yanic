@@ -27,8 +27,12 @@ type WirelessAirtime struct {
 
 // Calculates the utilization values in regard to the previous values
 func (cur *WirelessStatistics) SetUtilization(prev *WirelessStatistics) {
-	cur.Airtime24.SetUtilization(prev.Airtime24)
-	cur.Airtime5.SetUtilization(prev.Airtime5)
+	if cur.Airtime24 != nil {
+		cur.Airtime24.SetUtilization(prev.Airtime24)
+	}
+	if cur.Airtime5 != nil {
+		cur.Airtime5.SetUtilization(prev.Airtime5)
+	}
 }
 
 // Calculates the utilization values in regard to the previous values
