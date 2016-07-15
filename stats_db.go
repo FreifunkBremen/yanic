@@ -52,14 +52,6 @@ func (c *StatsDb) Add(nodeId string, node *models.Node) {
 		"nodeid": nodeId,
 	}
 
-	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-		if owner := nodeinfo.Owner; owner != nil {
-			tags["owner"] = owner.Contact
-		}
-		// morpheus needs
-		tags["hostname"] = nodeinfo.Hostname
-	}
-
 	fields := map[string]interface{}{
 		"load":              stats.LoadAverage,
 		"idletime":          int64(stats.Idletime),
@@ -73,6 +65,18 @@ func (c *StatsDb) Add(nodeId string, node *models.Node) {
 		"memory.cached":     stats.Memory.Cached,
 		"memory.free":       stats.Memory.Free,
 		"memory.total":      stats.Memory.Total,
+	}
+
+	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		if owner := nodeinfo.Owner; owner != nil {
+			tags["owner"] = owner.Contact
+		}
+		if wireless := nodeinfo.Wireless; wireless != nil {
+			fields["wireless.txpower24"] = wireless.TxPower24
+			fields["wireless.txpower5"] = wireless.TxPower5
+		}
+		// morpheus needs
+		tags["hostname"] = nodeinfo.Hostname
 	}
 
 	if t := stats.Traffic.Rx; t != nil {
