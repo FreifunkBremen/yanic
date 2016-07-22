@@ -18,6 +18,7 @@ const (
 type StatsDb struct {
 	points chan *client.Point
 	wg     sync.WaitGroup
+	nodes  *models.Nodes
 	client client.Client
 }
 
@@ -36,6 +37,7 @@ func NewStatsDb() *StatsDb {
 	db := &StatsDb{
 		client: c,
 		points: make(chan *client.Point, 500),
+		nodes:  nodes,
 	}
 
 	// start worker
@@ -143,11 +145,21 @@ func (c *StatsDb) worker() {
 	var err error
 	var writeNow, closed bool
 	timer := time.NewTimer(batchDuration)
+	globalDuration := time.Second * time.Duration(config.Nodes.SaveInterval)
+	globalTimer := time.NewTimer(globalDuration)
 
 	for !closed {
 
 		// wait for new points
 		select {
+		case <-globalTimer.C:
+			point, err := client.NewPoint("global", nil, nodes.GetStats(), time.Now())
+			if err != nil {
+				panic(err)
+			}
+			c.points <- point
+			globalTimer.Reset(globalDuration)
+			log.Print("saving global point")
 		case point, ok := <-c.points:
 			if ok {
 				if bp == nil {
@@ -180,7 +192,7 @@ func (c *StatsDb) worker() {
 			bp = nil
 		}
 	}
-
+	globalTimer.Stop()
 	timer.Stop()
 	c.wg.Done()
 }

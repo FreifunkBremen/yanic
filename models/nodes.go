@@ -171,6 +171,36 @@ func (nodes *Nodes) worker() {
 	}
 }
 
+func (nodes *Nodes) GetStats() map[string]interface{} {
+	var nodesCount uint32
+	var clientsCount uint32
+	var clientsWifiCount uint32
+	var clientsWifi24Count uint32
+	var clientsWifi5Count uint32
+
+	nodes.Lock()
+	for _, node := range nodes.List {
+		if node.Flags.Online {
+			nodesCount += 1
+			if stats := node.Statistics; stats != nil {
+				clientsCount += stats.Clients.Total
+				clientsWifi24Count += stats.Clients.Wifi24
+				clientsWifi5Count += stats.Clients.Wifi5
+				clientsWifiCount += stats.Clients.Wifi
+			}
+		}
+	}
+	nodes.Unlock()
+
+	return map[string]interface{}{
+		"nodes":          nodesCount,
+		"clients.total":  clientsCount,
+		"clients.wifi":   clientsWifiCount,
+		"clients.wifi24": clientsWifi24Count,
+		"clients.wifi5":  clientsWifi5Count,
+	}
+}
+
 func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.NodesPath
 	log.Println("loading", path)
