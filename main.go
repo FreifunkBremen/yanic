@@ -37,10 +37,11 @@ func main() {
 
 	if config.Influxdb.Enable {
 		db = database.New(config)
+		defer db.Close()
 
 		if importPath != "" {
 			importRRD(importPath)
-			os.Exit(0)
+			return
 		}
 	}
 
@@ -48,6 +49,7 @@ func main() {
 	if config.Respondd.Enable {
 		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
 		collector = respond.NewCollector(db, nodes, collectInterval, config.Respondd.Interface)
+		defer collector.Close()
 	}
 
 	if config.Webserver.Enable {
@@ -73,14 +75,6 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-sigs
 	log.Println("received", sig)
-
-	// Close everything at the end
-	if collector != nil {
-		collector.Close()
-	}
-	if db != nil {
-		db.Close()
-	}
 }
 
 func importRRD(path string) {
@@ -96,5 +90,4 @@ func importRRD(path string) {
 			ds.Time,
 		)
 	}
-	db.Close()
 }
