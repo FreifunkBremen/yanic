@@ -170,7 +170,8 @@ func (nodes *Nodes) worker() {
 }
 
 // Returns global statistics for InfluxDB
-func (nodes *Nodes) GlobalStats() (result GlobalStats) {
+func (nodes *Nodes) GlobalStats() (result *GlobalStats) {
+	result = &GlobalStats{}
 	nodes.Lock()
 	for _, node := range nodes.List {
 		if node.Flags.Online {
