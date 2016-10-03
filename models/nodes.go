@@ -13,16 +13,6 @@ import (
 	"github.com/FreifunkBremen/respond-collector/meshviewer"
 )
 
-// Node struct
-type Node struct {
-	Firstseen  jsontime.Time     `json:"firstseen"`
-	Lastseen   jsontime.Time     `json:"lastseen"`
-	Flags      *meshviewer.Flags `json:"flags,omitempty"`
-	Statistics *data.Statistics  `json:"statistics"`
-	Nodeinfo   *data.NodeInfo    `json:"nodeinfo"`
-	Neighbours *data.Neighbours  `json:"-"`
-}
-
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
 	Version   int              `json:"version"`
@@ -30,6 +20,14 @@ type Nodes struct {
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 	config    *Config
 	sync.RWMutex
+}
+
+type GlobalStats struct {
+	Nodes         uint32
+	Clients       uint32
+	ClientsWifi   uint32
+	ClientsWifi24 uint32
+	ClientsWifi5  uint32
 }
 
 // NewNodes create Nodes structs
@@ -171,33 +169,32 @@ func (nodes *Nodes) worker() {
 	}
 }
 
-func (nodes *Nodes) GetStats() map[string]interface{} {
-	var nodesCount uint32
-	var clientsCount uint32
-	var clientsWifiCount uint32
-	var clientsWifi24Count uint32
-	var clientsWifi5Count uint32
-
+// Returns global statistics for InfluxDB
+func (nodes *Nodes) GlobalStats() (result GlobalStats) {
 	nodes.Lock()
 	for _, node := range nodes.List {
 		if node.Flags.Online {
-			nodesCount += 1
+			result.Nodes += 1
 			if stats := node.Statistics; stats != nil {
-				clientsCount += stats.Clients.Total
-				clientsWifi24Count += stats.Clients.Wifi24
-				clientsWifi5Count += stats.Clients.Wifi5
-				clientsWifiCount += stats.Clients.Wifi
+				result.Clients += stats.Clients.Total
+				result.ClientsWifi24 += stats.Clients.Wifi24
+				result.ClientsWifi5 += stats.Clients.Wifi5
+				result.ClientsWifi += stats.Clients.Wifi
 			}
 		}
 	}
 	nodes.Unlock()
+	return
+}
 
+// Returns fields for InfluxDB
+func (stats *GlobalStats) Fields() map[string]interface{} {
 	return map[string]interface{}{
-		"nodes":          nodesCount,
-		"clients.total":  clientsCount,
-		"clients.wifi":   clientsWifiCount,
-		"clients.wifi24": clientsWifi24Count,
-		"clients.wifi5":  clientsWifi5Count,
+		"nodes":          stats.Nodes,
+		"clients.total":  stats.Clients,
+		"clients.wifi":   stats.ClientsWifi,
+		"clients.wifi24": stats.ClientsWifi24,
+		"clients.wifi5":  stats.ClientsWifi5,
 	}
 }
 

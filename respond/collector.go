@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/respond-collector/data"
+	"github.com/FreifunkBremen/respond-collector/database"
+	"github.com/FreifunkBremen/respond-collector/models"
 )
 
 //Collector for a specificle respond messages
@@ -17,18 +19,17 @@ type Collector struct {
 	CollectType string
 	connection  *net.UDPConn   // UDP socket
 	queue       chan *Response // received responses
-	onReceive   OnReceive
 	msgType     reflect.Type
-	intface     string
+	iface       string // interface name for the multicast binding
+	db          *database.DB
+	nodes       *models.Nodes
 	// Ticker and stopper
 	ticker *time.Ticker
 	stop   chan interface{}
 }
 
-type OnReceive func(net.UDPAddr, *data.ResponseData)
-
-//NewCollector creates a Collector struct
-func NewCollector(CollectType string, interval time.Duration, onReceive OnReceive, intface string) *Collector {
+// Creates a Collector struct
+func NewCollector(db *database.DB, nodes *models.Nodes, interval time.Duration, iface string) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
 	if err != nil {
@@ -43,13 +44,13 @@ func NewCollector(CollectType string, interval time.Duration, onReceive OnReceiv
 	conn.SetReadBuffer(maxDataGramSize)
 
 	collector := &Collector{
-		CollectType: CollectType,
+		CollectType: "nodeinfo statistics neighbours",
 		connection:  conn,
+		nodes:       nodes,
+		iface:       iface,
 		queue:       make(chan *Response, 400),
 		ticker:      time.NewTicker(interval),
 		stop:        make(chan interface{}, 1),
-		onReceive:   onReceive,
-		intface:     intface,
 	}
 
 	go collector.receiver()
@@ -75,7 +76,7 @@ func (coll *Collector) Close() {
 }
 
 func (coll *Collector) sendOnce() {
-	coll.sendPacket(net.JoinHostPort(multiCastGroup+"%"+coll.intface, port))
+	coll.sendPacket(net.JoinHostPort(multiCastGroup+"%"+coll.iface, port))
 	log.Println("request", coll.CollectType)
 }
 
@@ -104,25 +105,47 @@ func (coll *Collector) sender() {
 
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
-		if err := coll.parse(obj); err != nil {
+		if data, err := obj.parse(); err != nil {
 			log.Println("unable to decode response from", obj.Address.String(), err, "\n", string(obj.Raw))
+		} else {
+			coll.saveResponse(obj.Address, data)
 		}
 	}
 }
 
-func (coll *Collector) parse(response *Response) (err error) {
-
+func (res *Response) parse() (*data.ResponseData, error) {
 	// Deflate
-	deflater := flate.NewReader(bytes.NewReader(response.Raw))
+	deflater := flate.NewReader(bytes.NewReader(res.Raw))
 	defer deflater.Close()
 
 	// Unmarshal
-	res := &data.ResponseData{}
-	if err = json.NewDecoder(deflater).Decode(res); err == nil {
-		coll.onReceive(response.Address, res)
+	rdata := &data.ResponseData{}
+	err := json.NewDecoder(deflater).Decode(rdata)
+
+	return rdata, err
+}
+
+func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
+	// Search for NodeID
+	var nodeId string
+	if val := res.NodeInfo; val != nil {
+		nodeId = val.NodeId
+	} else if val := res.Neighbours; val != nil {
+		nodeId = val.NodeId
+	} else if val := res.Statistics; val != nil {
+		nodeId = val.NodeId
 	}
 
-	return
+	// Updates nodes if NodeID found
+	if len(nodeId) != 12 {
+		log.Printf("invalid NodeID '%s' from %s", nodeId, addr.String())
+		return
+	}
+	node := coll.nodes.Update(nodeId, res)
+
+	if coll.db != nil && node.Statistics != nil {
+		coll.db.Add(nodeId, node)
+	}
 }
 
 func (coll *Collector) receiver() {

@@ -14,7 +14,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/FreifunkBremen/respond-collector/api"
-	"github.com/FreifunkBremen/respond-collector/data"
+	"github.com/FreifunkBremen/respond-collector/database"
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
 )
@@ -23,7 +23,7 @@ var (
 	configFile string
 	config     *models.Config
 	collector  *respond.Collector
-	statsDb    *StatsDb
+	db         *database.DB
 	nodes      *models.Nodes
 )
 
@@ -31,15 +31,15 @@ func main() {
 	flag.StringVar(&configFile, "config", "config.yml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
 	config = models.ReadConfigFile(configFile)
-	nodes = models.NewNodes(config)
 
 	if config.Influxdb.Enable {
-		statsDb = NewStatsDb()
+		db = database.New(config)
 	}
 
+	nodes = models.NewNodes(config)
 	if config.Respondd.Enable {
 		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
-		collector = respond.NewCollector("nodeinfo statistics neighbours", collectInterval, onReceive, config.Respondd.Interface)
+		collector = respond.NewCollector(db, nodes, collectInterval, config.Respondd.Interface)
 	}
 
 	if config.Webserver.Enable {
@@ -70,33 +70,7 @@ func main() {
 	if collector != nil {
 		collector.Close()
 	}
-	if statsDb != nil {
-		statsDb.Close()
-	}
-}
-
-// called for every parsed announced-message
-func onReceive(addr net.UDPAddr, res *data.ResponseData) {
-
-	// Search for NodeID
-	var nodeId string
-	if val := res.NodeInfo; val != nil {
-		nodeId = val.NodeId
-	} else if val := res.Neighbours; val != nil {
-		nodeId = val.NodeId
-	} else if val := res.Statistics; val != nil {
-		nodeId = val.NodeId
-	}
-
-	// Updates nodes if NodeID found
-	if len(nodeId) != 12 {
-		log.Printf("invalid NodeID '%s' from %s", nodeId, addr.String())
-		return
-	}
-
-	node := nodes.Update(nodeId, res)
-
-	if statsDb != nil && node.Statistics != nil {
-		statsDb.Add(nodeId, node)
+	if db != nil {
+		db.Close()
 	}
 }
