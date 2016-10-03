@@ -17,6 +17,7 @@ import (
 	"github.com/FreifunkBremen/respond-collector/database"
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
+	"github.com/FreifunkBremen/respond-collector/rrd"
 )
 
 var (
@@ -28,12 +29,19 @@ var (
 )
 
 func main() {
+	var importPath string
+	flag.StringVar(&importPath, "import", "", "import global statistics from the given RRD file, requires influxdb")
 	flag.StringVar(&configFile, "config", "config.yml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
 	config = models.ReadConfigFile(configFile)
 
 	if config.Influxdb.Enable {
 		db = database.New(config)
+
+		if importPath != "" {
+			importRRD(importPath)
+			os.Exit(0)
+		}
 	}
 
 	nodes = models.NewNodes(config)
@@ -73,4 +81,20 @@ func main() {
 	if db != nil {
 		db.Close()
 	}
+}
+
+func importRRD(path string) {
+	log.Println("importing RRD from", path)
+	for ds := range rrd.Read(path) {
+		db.AddPoint(
+			database.MeasurementGlobal,
+			nil,
+			map[string]interface{}{
+				"nodes":         ds.Nodes,
+				"clients.total": ds.Clients,
+			},
+			ds.Time,
+		)
+	}
+	db.Close()
 }
