@@ -105,7 +105,7 @@ func (db *DB) worker() {
 		}
 
 		// write batch now?
-		if bp != nil && (writeNow || closed) || len(bp.Points()) >= batchMaxSize {
+		if bp != nil && (writeNow || closed || len(bp.Points()) >= batchMaxSize) {
 			log.Println("saving", len(bp.Points()), "points")
 
 			if err = db.client.Write(bp); err != nil {

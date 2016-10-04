@@ -45,6 +45,7 @@ func NewCollector(db *database.DB, nodes *models.Nodes, interval time.Duration, 
 
 	collector := &Collector{
 		connection:    conn,
+		db:            db,
 		nodes:         nodes,
 		multicastAddr: net.JoinHostPort(multiCastGroup+"%"+iface, port),
 		queue:         make(chan *Response, 400),
