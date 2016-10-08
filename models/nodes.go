@@ -56,20 +56,13 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	if node == nil {
 		node = &Node{
 			Firstseen: now,
-			Flags: &meshviewer.Flags{
-				Online:  true,
-				Gateway: false,
-			},
 		}
 		nodes.List[nodeID] = node
 	}
 	nodes.Unlock()
 
 	node.Lastseen = now
-
-	if node.Flags != nil {
-		node.Flags.Online = true
-	}
+	node.Flags.Online = true
 
 	// Update neighbours
 	if val := res.Neighbours; val != nil {
@@ -174,9 +167,7 @@ func (nodes *Nodes) expire() {
 			delete(nodes.List, id)
 		} else if node.Lastseen.Before(offlineTime) {
 			// set to offline
-			if node.Flags != nil {
-				node.Flags.Online = false
-			}
+			node.Flags.Online = false
 		}
 	}
 }

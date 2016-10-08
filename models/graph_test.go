@@ -35,7 +35,11 @@ func testGetNodesByFile(files ...string) *Nodes {
 	}
 
 	for _, file := range files {
-		nodes.List[file] = testGetNodeByFile(file)
+		node := testGetNodeByFile(file)
+		nodes.Update(file, &data.ResponseData{
+			NodeInfo:   node.Nodeinfo,
+			Neighbours: node.Neighbours,
+		})
 	}
 
 	return nodes
