@@ -2,7 +2,9 @@
 respondd:
   enable: true
   interface: eth0
-  collectinterval: 15
+
+  # Collected data every n seconds
+  collectinterval: 60
 webserver:
   enable: false
   port: 8080
@@ -16,9 +18,15 @@ nodes:
   nodes_path: /var/www/html/meshviewer/data/nodes_all.json
   nodesmini_path: /var/www/html/meshviewer/data/nodes.json
   graphs_path: /var/www/html/meshviewer/data/graph.json
-  saveinterval: 5
   aliases_enable: false
   aliases_path: /var/www/html/meshviewer/data/aliases.json
+
+  # Export nodes and graph every n seconds
+  saveinterval: 5
+
+  # Expire offline nodes after n days
+  max_age: 7
+
 influxdb:
   enable: false
   host: http://localhost:8086

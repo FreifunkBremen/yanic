@@ -31,7 +31,8 @@ type Config struct {
 		NodesMiniPath string `yaml:"nodesmini_path"`
 		GraphsPath    string `yaml:"graphs_path"`
 		AliasesPath   string `yaml:"aliases_path"`
-		SaveInterval  int    `yaml:"saveinterval"`
+		SaveInterval  int    `yaml:"saveinterval"` // Save nodes every n seconds
+		MaxAge        int    `yaml:"max_age"`      // Remove nodes after n days of inactivity
 	} `yaml:"nodes"`
 	Influxdb struct {
 		Enable   bool   `yaml:"enable"`
