@@ -11,7 +11,7 @@ import (
 type Node struct {
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
-	Flags      *Flags           `json:"flags,omitempty"`
+	Flags      Flags            `json:"flags"`
 	Statistics *Statistics      `json:"statistics"`
 	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"-"`

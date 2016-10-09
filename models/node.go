@@ -11,12 +11,12 @@ import (
 
 // Node struct
 type Node struct {
-	Firstseen  jsontime.Time     `json:"firstseen"`
-	Lastseen   jsontime.Time     `json:"lastseen"`
-	Flags      *meshviewer.Flags `json:"flags,omitempty"`
-	Statistics *data.Statistics  `json:"statistics"`
-	Nodeinfo   *data.NodeInfo    `json:"nodeinfo"`
-	Neighbours *data.Neighbours  `json:"-"`
+	Firstseen  jsontime.Time    `json:"firstseen"`
+	Lastseen   jsontime.Time    `json:"lastseen"`
+	Flags      meshviewer.Flags `json:"flags"`
+	Statistics *data.Statistics `json:"statistics"`
+	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
+	Neighbours *data.Neighbours `json:"-"`
 }
 
 // Returns tags and fields for InfluxDB

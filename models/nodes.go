@@ -56,20 +56,13 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	if node == nil {
 		node = &Node{
 			Firstseen: now,
-			Flags: &meshviewer.Flags{
-				Online:  true,
-				Gateway: false,
-			},
 		}
 		nodes.List[nodeID] = node
 	}
 	nodes.Unlock()
 
 	node.Lastseen = now
-
-	if node.Flags != nil {
-		node.Flags.Online = true
-	}
+	node.Flags.Online = true
 
 	// Update neighbours
 	if val := res.Neighbours; val != nil {
@@ -145,27 +138,51 @@ func (nodes *Nodes) worker() {
 	c := time.Tick(time.Second * time.Duration(nodes.config.Nodes.SaveInterval))
 
 	for range c {
-		log.Println("saving", len(nodes.List), "nodes")
-		nodes.Timestamp = jsontime.Now()
-		nodes.Lock()
-		//
-		// set node as offline (without statistics)
-		for _, node := range nodes.List {
-			if node.Statistics != nil && nodes.Timestamp.After(node.Lastseen.Add(time.Second*time.Duration(10*nodes.config.Respondd.CollectInterval))) {
-				if node.Flags != nil {
-					node.Flags.Online = false
-				}
-			}
-		}
-		// serialize nodes
-		save(nodes, nodes.config.Nodes.NodesPath)
-		save(nodes.GetNodesMini(), nodes.config.Nodes.NodesMiniPath)
+		nodes.expire()
+		nodes.save()
+	}
+}
 
-		if path := nodes.config.Nodes.GraphsPath; path != "" {
-			save(nodes.BuildGraph(), path)
-		}
+// Expires nodes and set nodes offline
+func (nodes *Nodes) expire() {
+	nodes.Timestamp = jsontime.Now()
 
-		nodes.Unlock()
+	// Nodes last seen before expireTime will be removed
+	maxAge := nodes.config.Nodes.MaxAge
+	if maxAge <= 0 {
+		maxAge = 7 // our default
+	}
+	expireTime := nodes.Timestamp.Add(-time.Duration(maxAge) * time.Hour * 24)
+
+	// Nodes last seen before offlineTime are changed to 'offline'
+	offlineTime := nodes.Timestamp.Add(-time.Minute * 10)
+
+	// Locking foo
+	nodes.Lock()
+	defer nodes.Unlock()
+
+	for id, node := range nodes.List {
+		if node.Lastseen.Before(expireTime) {
+			// expire
+			delete(nodes.List, id)
+		} else if node.Lastseen.Before(offlineTime) {
+			// set to offline
+			node.Flags.Online = false
+		}
+	}
+}
+
+func (nodes *Nodes) save() {
+	// Locking foo
+	nodes.RLock()
+	defer nodes.RUnlock()
+
+	// serialize nodes
+	save(nodes, nodes.config.Nodes.NodesPath)
+	save(nodes.GetNodesMini(), nodes.config.Nodes.NodesMiniPath)
+
+	if path := nodes.config.Nodes.GraphsPath; path != "" {
+		save(nodes.BuildGraph(), path)
 	}
 }
 

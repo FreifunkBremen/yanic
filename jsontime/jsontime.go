@@ -29,7 +29,7 @@ func (t *Time) UnmarshalJSON(data []byte) (err error) {
 	}
 	return
 }
-func (t Time) GetTime() time.Time{
+func (t Time) GetTime() time.Time {
 	return t.time
 }
 func (t Time) Unix() int64 {
@@ -45,4 +45,8 @@ func (t Time) Add(d time.Duration) Time {
 }
 func (t Time) After(u Time) bool {
 	return t.time.After(u.GetTime())
+}
+
+func (t Time) Before(u Time) bool {
+	return t.time.Before(u.GetTime())
 }
