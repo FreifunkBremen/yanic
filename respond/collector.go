@@ -98,7 +98,9 @@ func (coll *Collector) sender() {
 			return
 		case <-coll.ticker.C:
 			// save global statistics
-			coll.db.AddPoint(database.MeasurementGlobal, nil, coll.nodes.GlobalStats().Fields(), time.Now())
+			if coll.db != nil {
+				coll.db.AddPoint(database.MeasurementGlobal, nil, coll.nodes.GlobalStats().Fields(), time.Now())
+			}
 
 			// send the multicast packet to request per-node statistics
 			coll.sendOnce()
