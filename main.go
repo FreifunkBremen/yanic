@@ -86,8 +86,8 @@ func importRRD(path string) {
 			database.MeasurementGlobal,
 			nil,
 			map[string]interface{}{
-				"nodes":         ds.Nodes,
-				"clients.total": ds.Clients,
+				"nodes":         uint32(ds.Nodes),
+				"clients.total": uint32(ds.Clients),
 			},
 			ds.Time,
 		)
