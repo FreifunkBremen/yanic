@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"sync"
@@ -172,6 +171,20 @@ func (nodes *Nodes) expire() {
 	}
 }
 
+func (nodes *Nodes) load() {
+	path := nodes.config.Nodes.NodesPath
+
+	if f, err := os.Open(path); err == nil {
+		if err := json.NewDecoder(f).Decode(nodes); err == nil {
+			log.Println("loaded", len(nodes.List), "nodes")
+		} else {
+			log.Println("failed to unmarshal nodes:", err)
+		}
+	} else {
+		log.Println("failed to load cached nodes:", err)
+	}
+}
+
 func (nodes *Nodes) save() {
 	// Locking foo
 	nodes.RLock()
@@ -216,34 +229,21 @@ func (stats *GlobalStats) Fields() map[string]interface{} {
 	}
 }
 
-func (nodes *Nodes) load() {
-	path := nodes.config.Nodes.NodesPath
-	log.Println("loading", path)
-
-	if filedata, err := ioutil.ReadFile(path); err == nil {
-		if err = json.Unmarshal(filedata, nodes); err == nil {
-			log.Println("loaded", len(nodes.List), "nodes")
-		} else {
-			log.Println("failed to unmarshal nodes:", err)
-		}
-
-	} else {
-		log.Println("failed loading cached nodes:", err)
-	}
-}
-
+// Marshals the input and writes it into the given file
 func save(input interface{}, outputFile string) {
-	data, err := json.Marshal(input)
+	tmpFile := outputFile + ".tmp"
+
+	f, err := os.OpenFile(tmpFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	tmpFile := outputFile + ".tmp"
-
-	if err := ioutil.WriteFile(tmpFile, data, 0644); err != nil {
+	err = json.NewEncoder(f).Encode(input)
+	if err != nil {
 		log.Panic(err)
 	}
 
+	f.Close()
 	if err := os.Rename(tmpFile, outputFile); err != nil {
 		log.Panic(err)
 	}
