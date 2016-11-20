@@ -44,3 +44,19 @@ func TestUtilization(t *testing.T) {
 	assert.EqualValues(12.5, t3.RxUtil)
 	assert.EqualValues(0, t3.TxUtil)
 }
+
+func TestUtilizationStatistics(t *testing.T) {
+	assert := assert.New(t)
+	stats := WirelessStatistics{
+		Airtime24: &WirelessAirtime{Active_time: 20},
+		Airtime5:  &WirelessAirtime{Active_time: 20},
+	}
+
+	stats.SetUtilization(&WirelessStatistics{
+		Airtime24: &WirelessAirtime{},
+		Airtime5:  &WirelessAirtime{},
+	})
+
+	assert.Equal(20, int(stats.Airtime24.Active_time))
+	assert.Equal(20, int(stats.Airtime5.Active_time))
+}
