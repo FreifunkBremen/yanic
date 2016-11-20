@@ -49,7 +49,7 @@ func TestLoadAndSave(t *testing.T) {
 	config := &Config{}
 	config.Nodes.NodesPath = "testdata/nodes.json"
 
-	nodes := &Nodes{config: config}
+	nodes := NewNodes(config)
 	nodes.load()
 
 	tmpfile, _ := ioutil.TempFile("/tmp", "nodes")
@@ -72,4 +72,30 @@ func TestUpdateNodes(t *testing.T) {
 	nodes.Update("abcdef012345", res)
 
 	assert.Equal(1, len(nodes.List))
+}
+
+func TestGlobalStats(t *testing.T) {
+	stats := createTestNodes().GlobalStats()
+
+	assert := assert.New(t)
+	assert.EqualValues(uint32(1), stats.Nodes)
+	assert.EqualValues(uint32(23), stats.Clients)
+}
+
+func TestNodesMini(t *testing.T) {
+	mini := createTestNodes().GetNodesMini()
+
+	assert := assert.New(t)
+	assert.Equal(1, len(mini.List))
+}
+
+func createTestNodes() *Nodes {
+	nodes := NewNodes(&Config{})
+
+	res := &data.ResponseData{
+		Statistics: &data.Statistics{},
+	}
+	res.Statistics.Clients.Total = 23
+	nodes.Update("abcdef012345", res)
+	return nodes
 }

@@ -39,10 +39,13 @@ func NewNodes(config *Config) *Nodes {
 	if config.Nodes.NodesPath != "" {
 		nodes.load()
 	}
-	go nodes.worker()
 
 	nodes.Version = 2
 	return nodes
+}
+
+func (nodes *Nodes) Start() {
+	go nodes.worker()
 }
 
 // Update a Node
@@ -95,8 +98,8 @@ func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 		List:      make(map[string]*meshviewer.Node),
 		Timestamp: nodes.Timestamp,
 	}
-	for nodeID := range nodes.List {
 
+	for nodeID := range nodes.List {
 		node, _ := meshviewerNodes.List[nodeID]
 		nodeOrigin := nodes.List[nodeID]
 		if node == nil {

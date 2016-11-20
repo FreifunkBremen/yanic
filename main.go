@@ -46,6 +46,8 @@ func main() {
 	}
 
 	nodes = models.NewNodes(config)
+	nodes.Start()
+
 	if config.Respondd.Enable {
 		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
 		collector = respond.NewCollector(db, nodes, collectInterval, config.Respondd.Interface)
