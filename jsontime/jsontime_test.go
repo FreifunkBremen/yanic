@@ -47,3 +47,18 @@ func TestUnmarshalInvalidTime(t *testing.T) {
 	assert.EqualError(err, "invalid jsontime")
 	assert.True(jsonTime.IsZero())
 }
+
+func TestGetTime(t *testing.T) {
+	assert := assert.New(t)
+	now := Now()
+
+	assert.Equal(now.GetTime(), now.time)
+}
+
+func TestAddAfterBefore(t *testing.T) {
+	assert := assert.New(t)
+	now := Now()
+
+	assert.True(now.Before(now.Add(time.Second)))
+	assert.True(now.After(now.Add(-time.Second)))
+}
