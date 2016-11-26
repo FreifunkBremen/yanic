@@ -35,11 +35,14 @@ type Config struct {
 		MaxAge        int    `yaml:"max_age"`      // Remove nodes after n days of inactivity
 	} `yaml:"nodes"`
 	Influxdb struct {
-		Enable   bool   `yaml:"enable"`
-		Addr     string `yaml:"host"`
-		Database string `yaml:"database"`
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
+		Enable         bool   `yaml:"enable"`
+		Addr           string `yaml:"host"`
+		Database       string `yaml:"database"`
+		Username       string `yaml:"username"`
+		Password       string `yaml:"password"`
+		SaveInterval   int    `yaml:"saveinterval"`   // Save nodes every n seconds
+		DeleteInterval int    `yaml:"deleteinterval"` // Delete stats of nodes every n minutes
+		DeleteTill     int    `yaml:"deletetill"`     // Delete stats of nodes till now-deletetill n minutes
 	}
 }
 
