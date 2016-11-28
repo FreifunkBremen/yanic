@@ -53,6 +53,7 @@ func New(config *models.Config) *DB {
 
 func (db *DB) DeletePoints() {
 	query := fmt.Sprintf("delete from %s where time < now() - %dm", MeasurementNode, db.config.Influxdb.DeleteTill)
+	log.Println("delete", MeasurementNode, "older than", db.config.Influxdb.DeleteTill, "minutes")
 	db.client.Query(client.NewQuery(query, db.config.Influxdb.Database, "m"))
 }
 
