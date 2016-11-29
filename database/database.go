@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -13,7 +14,6 @@ import (
 const (
 	MeasurementNode   = "node"   // Measurement for per-node statistics
 	MeasurementGlobal = "global" // Measurement for summarized global statistics
-	batchDuration     = time.Second * 5
 	batchMaxSize      = 500
 )
 
@@ -22,6 +22,7 @@ type DB struct {
 	client client.Client
 	points chan *client.Point
 	wg     sync.WaitGroup
+	quit   chan struct{}
 }
 
 func New(config *models.Config) *DB {
@@ -40,12 +41,20 @@ func New(config *models.Config) *DB {
 		config: config,
 		client: c,
 		points: make(chan *client.Point, 1000),
+		quit:   make(chan struct{}),
 	}
 
 	db.wg.Add(1)
-	go db.worker()
+	go db.addWorker()
+	go db.deleteWorker()
 
 	return db
+}
+
+func (db *DB) DeletePoints() {
+	query := fmt.Sprintf("delete from %s where time < now() - %dm", MeasurementNode, db.config.Influxdb.DeleteTill)
+	log.Println("delete", MeasurementNode, "older than", db.config.Influxdb.DeleteTill, "minutes")
+	db.client.Query(client.NewQuery(query, db.config.Influxdb.Database, "m"))
 }
 
 func (db *DB) AddPoint(name string, tags imodels.Tags, fields imodels.Fields, time time.Time) {
@@ -63,13 +72,27 @@ func (db *DB) Add(nodeId string, node *models.Node) {
 }
 
 func (db *DB) Close() {
+	close(db.quit)
 	close(db.points)
 	db.wg.Wait()
 	db.client.Close()
 }
+func (db *DB) deleteWorker() {
+	duration := time.Minute * time.Duration(db.config.Influxdb.DeleteInterval)
+	ticker := time.NewTicker(duration)
+	for {
+		select {
+		case <-ticker.C:
+			db.DeletePoints()
+		case <-db.quit:
+			ticker.Stop()
+			return
+		}
+	}
+}
 
 // stores data points in batches into the influxdb
-func (db *DB) worker() {
+func (db *DB) addWorker() {
 	bpConfig := client.BatchPointsConfig{
 		Database:  db.config.Influxdb.Database,
 		Precision: "m",
@@ -78,6 +101,7 @@ func (db *DB) worker() {
 	var bp client.BatchPoints
 	var err error
 	var writeNow, closed bool
+	batchDuration := time.Second * time.Duration(db.config.Influxdb.SaveInterval)
 	timer := time.NewTimer(batchDuration)
 
 	for !closed {
