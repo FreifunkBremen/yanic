@@ -33,4 +33,3 @@ Collecting data from respondd:
 Respondd for servers:
 * [respondd branch of ffnord-alfred-announce](https://github.com/ffnord/ffnord-alfred-announce/tree/respondd) from FreiFunkNord
 * [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
-* [respondd](https://github.com/FreifunkBremen/respondd) from Freifunk Bremen (just a proof of concept)
