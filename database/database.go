@@ -77,6 +77,8 @@ func (db *DB) Close() {
 	db.wg.Wait()
 	db.client.Close()
 }
+
+// prunes node-specific data periodically
 func (db *DB) deleteWorker() {
 	duration := time.Minute * time.Duration(db.config.Influxdb.DeleteInterval)
 	ticker := time.NewTicker(duration)
