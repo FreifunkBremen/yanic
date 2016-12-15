@@ -42,23 +42,23 @@ type Location struct {
 }
 
 type Software struct {
-	Autoupdater *struct {
-		Enabled bool   `json:"enabled"`
-		Branch  string `json:"branch"`
+	Autoupdater struct {
+		Enabled bool   `json:"enabled,omitempty"`
+		Branch  string `json:"branch,omitempty"`
 	} `json:"autoupdater,omitempty"`
-	BatmanAdv *struct {
-		Version string `json:"version"`
-		Compat  int    `json:"compat"`
+	BatmanAdv struct {
+		Version string `json:"version,omitempty"`
+		Compat  int    `json:"compat,omitempty"`
 	} `json:"batman-adv,omitempty"`
-	Fastd *struct {
-		Enabled bool   `json:"enabled"`
-		Version string `json:"version"`
+	Fastd struct {
+		Enabled bool   `json:"enabled,omitempty"`
+		Version string `json:"version,omitempty"`
 	} `json:"fastd,omitempty"`
-	Firmware *struct {
-		Base    string `json:"base"`
-		Release string `json:"release"`
+	Firmware struct {
+		Base    string `json:"base,omitempty"`
+		Release string `json:"release,omitempty"`
 	} `json:"firmware,omitempty"`
-	StatusPage *struct {
+	StatusPage struct {
 		Api int `json:"api"`
 	} `json:"status-page,omitempty"`
 }
