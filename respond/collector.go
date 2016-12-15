@@ -56,6 +56,10 @@ func NewCollector(db *database.DB, nodes *models.Nodes, interval time.Duration, 
 	go collector.receiver()
 	go collector.parser()
 
+	if collector.db != nil {
+		go collector.globalStatsWorker()
+	}
+
 	// Run senders
 	go func() {
 		collector.sendOnce() // immediately
@@ -97,11 +101,6 @@ func (coll *Collector) sender() {
 		case <-coll.stop:
 			return
 		case <-coll.ticker.C:
-			// save global statistics
-			if coll.db != nil {
-				coll.db.AddPoint(database.MeasurementGlobal, nil, coll.nodes.GlobalStats().Fields(), time.Now())
-			}
-
 			// send the multicast packet to request per-node statistics
 			coll.sendOnce()
 		}
@@ -171,4 +170,25 @@ func (coll *Collector) receiver() {
 			Raw:     raw,
 		}
 	}
+}
+
+func (coll *Collector) globalStatsWorker() {
+	ticker := time.NewTicker(time.Minute)
+	for {
+		select {
+		case <-coll.stop:
+			return
+		case <-ticker.C:
+			coll.saveGlobalStats()
+		}
+	}
+}
+
+// saves global statistics
+func (coll *Collector) saveGlobalStats() {
+	stats := models.NewGlobalStats(coll.nodes)
+
+	coll.db.AddPoint(database.MeasurementGlobal, nil, stats.Fields(), time.Now())
+	coll.db.AddCounterMap(database.MeasurementFirmware, stats.Firmwares)
+	coll.db.AddCounterMap(database.MeasurementModel, stats.Models)
 }

@@ -12,9 +12,11 @@ import (
 )
 
 const (
-	MeasurementNode   = "node"   // Measurement for per-node statistics
-	MeasurementGlobal = "global" // Measurement for summarized global statistics
-	batchMaxSize      = 500
+	MeasurementNode     = "node"     // Measurement for per-node statistics
+	MeasurementGlobal   = "global"   // Measurement for summarized global statistics
+	MeasurementFirmware = "firmware" // Measurement for firmware statistics
+	MeasurementModel    = "model"    // Measurement for model statistics
+	batchMaxSize        = 500
 )
 
 type DB struct {
@@ -63,6 +65,23 @@ func (db *DB) AddPoint(name string, tags imodels.Tags, fields imodels.Fields, ti
 		panic(err)
 	}
 	db.points <- point
+}
+
+// Saves the values of a CounterMap in the database.
+// The key are used as 'value' tag.
+// The value is used as 'counter' field.
+func (db *DB) AddCounterMap(name string, m models.CounterMap) {
+	now := time.Now()
+	for key, count := range m {
+		db.AddPoint(
+			name,
+			imodels.Tags{
+				imodels.Tag{Key: []byte("value"), Value: []byte(key)},
+			},
+			imodels.Fields{"count": count},
+			now,
+		)
+	}
 }
 
 // Add data for a single node

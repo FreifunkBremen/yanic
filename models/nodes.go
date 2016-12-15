@@ -21,14 +21,6 @@ type Nodes struct {
 	sync.RWMutex
 }
 
-type GlobalStats struct {
-	Nodes         uint32
-	Clients       uint32
-	ClientsWifi   uint32
-	ClientsWifi24 uint32
-	ClientsWifi5  uint32
-}
-
 // NewNodes create Nodes structs
 func NewNodes(config *Config) *Nodes {
 	nodes := &Nodes{
@@ -204,36 +196,6 @@ func (nodes *Nodes) save() {
 
 	if path := nodes.config.Nodes.GraphsPath; path != "" {
 		save(nodes.BuildGraph(), path)
-	}
-}
-
-// Returns global statistics for InfluxDB
-func (nodes *Nodes) GlobalStats() (result *GlobalStats) {
-	result = &GlobalStats{}
-	nodes.Lock()
-	for _, node := range nodes.List {
-		if node.Flags.Online {
-			result.Nodes += 1
-			if stats := node.Statistics; stats != nil {
-				result.Clients += stats.Clients.Total
-				result.ClientsWifi24 += stats.Clients.Wifi24
-				result.ClientsWifi5 += stats.Clients.Wifi5
-				result.ClientsWifi += stats.Clients.Wifi
-			}
-		}
-	}
-	nodes.Unlock()
-	return
-}
-
-// Returns fields for InfluxDB
-func (stats *GlobalStats) Fields() map[string]interface{} {
-	return map[string]interface{}{
-		"nodes":          stats.Nodes,
-		"clients.total":  stats.Clients,
-		"clients.wifi":   stats.ClientsWifi,
-		"clients.wifi24": stats.ClientsWifi24,
-		"clients.wifi5":  stats.ClientsWifi5,
 	}
 }
 
