@@ -102,6 +102,11 @@ func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
 	for nodeID := range nodes.List {
 		node, _ := meshviewerNodes.List[nodeID]
 		nodeOrigin := nodes.List[nodeID]
+
+		if nodeOrigin.Statistics == nil {
+			continue
+		}
+
 		if node == nil {
 			node = &meshviewer.Node{
 				Firstseen: nodeOrigin.Firstseen,
