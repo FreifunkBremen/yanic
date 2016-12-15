@@ -74,28 +74,25 @@ func TestUpdateNodes(t *testing.T) {
 	assert.Equal(1, len(nodes.List))
 }
 
-func TestGlobalStats(t *testing.T) {
-	stats := createTestNodes().GlobalStats()
-
+func TestToInflux(t *testing.T) {
 	assert := assert.New(t)
-	assert.EqualValues(uint32(1), stats.Nodes)
-	assert.EqualValues(uint32(23), stats.Clients)
-}
 
-func TestNodesMini(t *testing.T) {
-	mini := createTestNodes().GetNodesMini()
-
-	assert := assert.New(t)
-	assert.Equal(1, len(mini.List))
-}
-
-func createTestNodes() *Nodes {
-	nodes := NewNodes(&Config{})
-
-	res := &data.ResponseData{
-		Statistics: &data.Statistics{},
+	node := Node{
+		Statistics: &data.Statistics{
+			NodeId:      "foobar",
+			LoadAverage: 0.5,
+		},
+		Nodeinfo: &data.NodeInfo{
+			Owner: &data.Owner{
+				Contact: "nobody",
+			},
+		},
+		Neighbours: &data.Neighbours{},
 	}
-	res.Statistics.Clients.Total = 23
-	nodes.Update("abcdef012345", res)
-	return nodes
+
+	tags, fields := node.ToInflux()
+
+	assert.Equal("foobar", tags.GetString("nodeid"))
+	assert.Equal("nobody", tags.GetString("owner"))
+	assert.Equal(0.5, fields["load"])
 }
