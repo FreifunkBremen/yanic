@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/FreifunkBremen/respond-collector.svg?branch=master)](https://travis-ci.org/FreifunkBremen/respond-collector)
 [![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/respond-collector/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/respond-collector?branch=master)
 
-`respond-collector` is a respond client that fetches, stores and publishes information about a Freifunk network. The goals:
+`respond-collector` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
 * Generating JSON for [MeshViewer](https://github.com/ffnord/meshviewer) (Works with branch [JSONv2](https://github.com/FreifunkBremen/meshviewer/tree/JSONv2))
 * Storing statistics in [InfluxDB](https://influxdata.com/) to be analyzed by [Grafana](http://grafana.org/)
 * Provide information via JSON-APIs
@@ -16,12 +16,12 @@ Usage of ./respond-collector:
 
 ## Development
 ### respond
-It send the `gluon-neighbour-info` request and collect them together.
+It sends the `gluon-neighbour-info` request and collects the answers.
 
-It will send UDP packetes by the multicast group `ff02:0:0:0:0:0:2:1001` and port `1001`.
+It will send UDP packets with multicast group `ff02:0:0:0:0:0:2:1001` and port `1001`.
 
 ### nodes.Nodes
-It cached the information of the Nodes and will save them periodical to a JSON file.
+It caches the information of the nodes and will save them periodical to a JSON file.
 The current nodes are saved default under `nodes.json`.
 
 ## Related projects
