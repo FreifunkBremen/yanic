@@ -11,10 +11,7 @@ type Wireless struct {
 	Channel5  uint32 `json:"channel5,omitempty"`
 }
 
-type WirelessStatistics struct {
-	Airtime24 *WirelessAirtime `json:"airtime24,omitempty"`
-	Airtime5  *WirelessAirtime `json:"airtime5,omitempty"`
-}
+type WirelessStatistics []*WirelessAirtime
 
 type WirelessAirtime struct {
 	ChanUtil float32 // Channel utilization
@@ -29,19 +26,28 @@ type WirelessAirtime struct {
 	Frequency   uint32 `json:"frequency"`
 }
 
-// Calculates the utilization values in regard to the previous values
-func (cur *WirelessStatistics) SetUtilization(prev *WirelessStatistics) {
-	if cur.Airtime24 != nil {
-		cur.Airtime24.SetUtilization(prev.Airtime24)
+func (airtime WirelessAirtime) FrequencyName() string {
+	if airtime.Frequency < 5000 {
+		return "11g"
+	} else {
+		return "11a"
 	}
-	if cur.Airtime5 != nil {
-		cur.Airtime5.SetUtilization(prev.Airtime5)
+}
+
+// Calculates the utilization values in regard to the previous values
+func (current WirelessStatistics) SetUtilization(previous WirelessStatistics) {
+	for _, c := range current {
+		for _, p := range previous {
+			if c.Frequency == p.Frequency {
+				c.SetUtilization(p)
+			}
+		}
 	}
 }
 
 // Calculates the utilization values in regard to the previous values
 func (cur *WirelessAirtime) SetUtilization(prev *WirelessAirtime) {
-	if prev == nil || cur.Active_time <= prev.Active_time {
+	if cur.Active_time <= prev.Active_time {
 		return
 	}
 

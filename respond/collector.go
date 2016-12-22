@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/flate"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net"
 	"reflect"

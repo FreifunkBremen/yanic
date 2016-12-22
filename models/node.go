@@ -1,12 +1,11 @@
 package models
 
 import (
-	"strconv"
-
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/jsontime"
 	"github.com/FreifunkBremen/respond-collector/meshviewer"
 	imodels "github.com/influxdata/influxdb/models"
+	"strconv"
 )
 
 // Node struct
@@ -73,22 +72,15 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
 		fields["traffic.mgmt_tx.packets"] = t.Packets
 	}
-	if w := stats.Wireless; w != nil {
-		addAirtime := func(suffix string, time *data.WirelessAirtime) {
-			fields["airtime"+suffix+".chan_util"] = time.ChanUtil
-			fields["airtime"+suffix+".rx_util"] = time.RxUtil
-			fields["airtime"+suffix+".tx_util"] = time.TxUtil
-			fields["airtime"+suffix+".noise"] = time.Noise
-			fields["airtime"+suffix+".frequency"] = time.Frequency
-			tags.SetString("frequency"+suffix, strconv.Itoa(int(time.Frequency)))
-		}
 
-		if time := w.Airtime24; time != nil {
-			addAirtime("24", w.Airtime24)
-		}
-		if time := w.Airtime5; time != nil {
-			addAirtime("5", w.Airtime5)
-		}
+	for _, airtime := range stats.Wireless {
+		suffix := airtime.FrequencyName()
+		fields["airtime"+suffix+".chan_util"] = airtime.ChanUtil
+		fields["airtime"+suffix+".rx_util"] = airtime.RxUtil
+		fields["airtime"+suffix+".tx_util"] = airtime.TxUtil
+		fields["airtime"+suffix+".noise"] = airtime.Noise
+		fields["airtime"+suffix+".frequency"] = airtime.Frequency
+		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
 
 	return

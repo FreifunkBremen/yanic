@@ -27,7 +27,7 @@ type Statistics struct {
 		MgmtRx  *Traffic `json:"mgmt_rx"`
 	} `json:"traffic,omitempty"`
 	Switch   map[string]*SwitchPort `json:"switch,omitempty"`
-	Wireless *WirelessStatistics    `json:"wireless,omitempty"`
+	Wireless WirelessStatistics     `json:"wireless,omitempty"`
 }
 
 type MeshVPNPeerLink struct {
