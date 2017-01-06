@@ -28,11 +28,14 @@ func NewNodes(config *Config) *Nodes {
 		config: config,
 	}
 
-	if config.Nodes.NodesPath != "" {
+	if config.Nodes.NodesDynamicPath != "" {
 		nodes.load()
 	}
-
-	nodes.Version = 2
+        /**
+         * Version '-1' because the nodes.json would not be defined,
+         * it would be change with the change of the respondd application on gluon
+         */
+	nodes.Version = -1
 	return nodes
 }
 
@@ -83,51 +86,53 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	return node
 }
 
-// GetNodesMini get meshviewer valide JSON
-func (nodes *Nodes) GetNodesMini() *meshviewer.Nodes {
-	meshviewerNodes := &meshviewer.Nodes{
+// GetNodesV1 get meshviewer valide JSON
+func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
+	meshviewerNodes := &meshviewer.NodesV1{
 		Version:   1,
 		List:      make(map[string]*meshviewer.Node),
 		Timestamp: nodes.Timestamp,
 	}
 
 	for nodeID := range nodes.List {
-		node, _ := meshviewerNodes.List[nodeID]
 		nodeOrigin := nodes.List[nodeID]
 
 		if nodeOrigin.Statistics == nil {
 			continue
 		}
 
-		if node == nil {
-			node = &meshviewer.Node{
-				Firstseen: nodeOrigin.Firstseen,
-				Lastseen:  nodeOrigin.Lastseen,
-				Flags:     nodeOrigin.Flags,
-				Nodeinfo:  nodeOrigin.Nodeinfo,
-			}
-			meshviewerNodes.List[nodeID] = node
+		node := &meshviewer.Node{
+			Firstseen: nodeOrigin.Firstseen,
+			Lastseen:  nodeOrigin.Lastseen,
+			Flags:     nodeOrigin.Flags,
+			Nodeinfo:  nodeOrigin.Nodeinfo,
 		}
+		node.Statistics = meshviewer.NewStatistics(nodeOrigin.Statistics)
+		meshviewerNodes.List[nodeID] = node
+	}
+	return meshviewerNodes
+}
 
-		// Calculate Total
-		total := nodeOrigin.Statistics.Clients.Total
-		if total == 0 {
-			total = nodeOrigin.Statistics.Clients.Wifi24 + nodeOrigin.Statistics.Clients.Wifi5
-		}
+// GetNodesV2 get meshviewer valide JSON
+func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
+	meshviewerNodes := &meshviewer.NodesV2{
+		Version:   2,
+		Timestamp: nodes.Timestamp,
+	}
+	for nodeID := range nodes.List {
 
-		node.Statistics = &meshviewer.Statistics{
-			NodeId:      nodeOrigin.Statistics.NodeId,
-			Gateway:     nodeOrigin.Statistics.Gateway,
-			RootFsUsage: nodeOrigin.Statistics.RootFsUsage,
-			LoadAverage: nodeOrigin.Statistics.LoadAverage,
-			Memory:      nodeOrigin.Statistics.Memory,
-			Uptime:      nodeOrigin.Statistics.Uptime,
-			Idletime:    nodeOrigin.Statistics.Idletime,
-			Processes:   nodeOrigin.Statistics.Processes,
-			MeshVpn:     nodeOrigin.Statistics.MeshVpn,
-			Traffic:     nodeOrigin.Statistics.Traffic,
-			Clients:     total,
+		nodeOrigin := nodes.List[nodeID]
+		if nodeOrigin.Statistics == nil {
+			continue
 		}
+		node := &meshviewer.Node{
+			Firstseen: nodeOrigin.Firstseen,
+			Lastseen:  nodeOrigin.Lastseen,
+			Flags:     nodeOrigin.Flags,
+			Nodeinfo:  nodeOrigin.Nodeinfo,
+		}
+		node.Statistics = meshviewer.NewStatistics(nodeOrigin.Statistics)
+		meshviewerNodes.List = append(meshviewerNodes.List, node)
 	}
 	return meshviewerNodes
 }
@@ -172,7 +177,7 @@ func (nodes *Nodes) expire() {
 }
 
 func (nodes *Nodes) load() {
-	path := nodes.config.Nodes.NodesPath
+	path := nodes.config.Nodes.NodesDynamicPath
 
 	if f, err := os.Open(path); err == nil {
 		if err := json.NewDecoder(f).Decode(nodes); err == nil {
@@ -191,15 +196,19 @@ func (nodes *Nodes) save() {
 	defer nodes.RUnlock()
 
 	// serialize nodes
-	save(nodes, nodes.config.Nodes.NodesPath)
-	save(nodes.GetNodesMini(), nodes.config.Nodes.NodesMiniPath)
+	save(nodes, nodes.config.Nodes.NodesDynamicPath)
+	if nodes.config.Nodes.NodesV1Path != "" {
+		save(nodes.GetNodesV1(), nodes.config.Nodes.NodesV1Path)
+	}
+	if nodes.config.Nodes.NodesV2Path != "" {
+		save(nodes.GetNodesV2(), nodes.config.Nodes.NodesV2Path)
+	}
 
 	if path := nodes.config.Nodes.GraphsPath; path != "" {
 		save(nodes.BuildGraph(), path)
 	}
 }
 
-// Marshals the input and writes it into the given file
 func save(input interface{}, outputFile string) {
 	tmpFile := outputFile + ".tmp"
 

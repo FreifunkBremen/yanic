@@ -26,13 +26,14 @@ type Config struct {
 		} `yaml:"api"`
 	} `yaml:"webserver"`
 	Nodes struct {
-		Enable        bool   `yaml:"enable"`
-		NodesPath     string `yaml:"nodes_path"`
-		NodesMiniPath string `yaml:"nodesmini_path"`
-		GraphsPath    string `yaml:"graphs_path"`
-		AliasesPath   string `yaml:"aliases_path"`
-		SaveInterval  int    `yaml:"saveinterval"` // Save nodes every n seconds
-		MaxAge        int    `yaml:"max_age"`      // Remove nodes after n days of inactivity
+		Enable           bool   `yaml:"enable"`
+		NodesDynamicPath string `yaml:"nodes_path"`
+		NodesV1Path      string `yaml:"nodesv1_path"`
+		NodesV2Path      string `yaml:"nodesv2_path"`
+		GraphsPath       string `yaml:"graphs_path"`
+		AliasesPath      string `yaml:"aliases_path"`
+		SaveInterval     int    `yaml:"saveinterval"` // Save nodes every n seconds
+		MaxAge           int    `yaml:"max_age"`      // Remove nodes after n days of inactivity
 	} `yaml:"nodes"`
 	Influxdb struct {
 		Enable         bool   `yaml:"enable"`

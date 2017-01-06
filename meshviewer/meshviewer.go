@@ -23,10 +23,17 @@ type Flags struct {
 }
 
 // Nodes struct: cache DB of Node's structs
-type Nodes struct {
+type NodesV1 struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
+	sync.RWMutex
+}
+
+type NodesV2 struct {
+	Version   int           `json:"version"`
+	Timestamp jsontime.Time `json:"timestamp"`
+	List      []*Node       `json:"nodes"` // the current nodemap, as array
 	sync.RWMutex
 }
 
@@ -51,4 +58,25 @@ type Statistics struct {
 		MgmtTx  *data.Traffic `json:"mgmt_tx"`
 		MgmtRx  *data.Traffic `json:"mgmt_rx"`
 	} `json:"traffic,omitempty"`
+}
+
+func NewStatistics(stats *data.Statistics) *Statistics {
+	total := stats.Clients.Total
+	if total == 0 {
+		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
+	}
+
+	return &Statistics{
+		NodeId:      stats.NodeId,
+		Gateway:     stats.Gateway,
+		RootFsUsage: stats.RootFsUsage,
+		LoadAverage: stats.LoadAverage,
+		Memory:      stats.Memory,
+		Uptime:      stats.Uptime,
+		Idletime:    stats.Idletime,
+		Processes:   stats.Processes,
+		MeshVpn:     stats.MeshVpn,
+		Traffic:     stats.Traffic,
+		Clients:     total,
+	}
 }
