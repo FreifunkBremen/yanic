@@ -1,8 +1,6 @@
 package meshviewer
 
 import (
-	"sync"
-
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/jsontime"
 )
@@ -27,25 +25,23 @@ type NodesV1 struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	sync.RWMutex
 }
 
 type NodesV2 struct {
 	Version   int           `json:"version"`
 	Timestamp jsontime.Time `json:"timestamp"`
 	List      []*Node       `json:"nodes"` // the current nodemap, as array
-	sync.RWMutex
 }
 
 type Statistics struct {
-	NodeId      string      `json:"node_id"`
-	Clients     uint32      `json:"clients"`
-	RootFsUsage float64     `json:"rootfs_usage,omitempty"`
-	LoadAverage float64     `json:"loadavg,omitempty"`
-	Memory      data.Memory `json:"memory,omitempty"`
-	Uptime      float64     `json:"uptime,omitempty"`
-	Idletime    float64     `json:"idletime,omitempty"`
-	Gateway     string      `json:"gateway,omitempty"`
+	NodeId      string  `json:"node_id"`
+	Clients     uint32  `json:"clients"`
+	RootFsUsage float64 `json:"rootfs_usage,omitempty"`
+	LoadAverage float64 `json:"loadavg,omitempty"`
+	MemoryUsage float64 `json:"memory_usage,omitempty"`
+	Uptime      float64 `json:"uptime,omitempty"`
+	Idletime    float64 `json:"idletime,omitempty"`
+	Gateway     string  `json:"gateway,omitempty"`
 	Processes   struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
@@ -65,13 +61,17 @@ func NewStatistics(stats *data.Statistics) *Statistics {
 	if total == 0 {
 		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
 	}
+	/* The Meshviewer could not handle absolute memory output
+         * calc the used memory as a float witch 100% equal 1.0
+         */
+	memoryUsage := (float64(stats.Memory.Total) - float64(stats.Memory.Free)) / float64(stats.Memory.Total)
 
 	return &Statistics{
 		NodeId:      stats.NodeId,
 		Gateway:     stats.Gateway,
 		RootFsUsage: stats.RootFsUsage,
 		LoadAverage: stats.LoadAverage,
-		Memory:      stats.Memory,
+		MemoryUsage: memoryUsage,
 		Uptime:      stats.Uptime,
 		Idletime:    stats.Idletime,
 		Processes:   stats.Processes,
