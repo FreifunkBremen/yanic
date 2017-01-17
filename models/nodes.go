@@ -86,7 +86,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	return node
 }
 
-// GetNodesV1 get meshviewer valide JSON
+// GetNodesV1 transform data to legacy meshviewer
 func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
 	meshviewerNodes := &meshviewer.NodesV1{
 		Version:   1,
@@ -113,7 +113,7 @@ func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
 	return meshviewerNodes
 }
 
-// GetNodesV2 get meshviewer valide JSON
+// GetNodesV2 transform data to modern meshviewers
 func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
 	meshviewerNodes := &meshviewer.NodesV2{
 		Version:   2,
@@ -179,7 +179,7 @@ func (nodes *Nodes) expire() {
 func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.NodesDynamicPath
 
-	if f, err := os.Open(path); err == nil {
+	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err := json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 		} else {
@@ -197,11 +197,11 @@ func (nodes *Nodes) save() {
 
 	// serialize nodes
 	save(nodes, nodes.config.Nodes.NodesDynamicPath)
-	if nodes.config.Nodes.NodesV1Path != "" {
-		save(nodes.GetNodesV1(), nodes.config.Nodes.NodesV1Path)
+	if path := nodes.config.Nodes.NodesV1Path; path != "" {
+		save(nodes.GetNodesV1(), path)
 	}
-	if nodes.config.Nodes.NodesV2Path != "" {
-		save(nodes.GetNodesV2(), nodes.config.Nodes.NodesV2Path)
+	if path := nodes.config.Nodes.NodesV2Path; path != "" {
+		save(nodes.GetNodesV2(), path)
 	}
 
 	if path := nodes.config.Nodes.GraphsPath; path != "" {
