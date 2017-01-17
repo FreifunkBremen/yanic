@@ -20,13 +20,16 @@ type Flags struct {
 	Gateway bool `json:"gateway"`
 }
 
-// Nodes struct: cache DB of Node's structs
+// NodesV1 struct, to support legacy meshviewer (which are in master branch)
+//  z.B. https://github.com/ffnord/meshviewer/tree/master
 type NodesV1 struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"`
 	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 }
 
+// NodesV2 struct, to support new version of meshviewer (which are in legacy develop branch or newer)
+//  z.B. https://github.com/ffnord/meshviewer/tree/dev or https://github.com/ffrgb/meshviewer/tree/develop
 type NodesV2 struct {
 	Version   int           `json:"version"`
 	Timestamp jsontime.Time `json:"timestamp"`
