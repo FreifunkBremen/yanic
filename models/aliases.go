@@ -10,6 +10,7 @@ import (
 	"github.com/FreifunkBremen/respond-collector/data"
 )
 
+// Alias a change request for other nodes
 type Alias struct {
 	Hostname string         `json:"hostname,omitempty"`
 	Location *data.Location `json:"location,omitempty"`
@@ -17,14 +18,14 @@ type Alias struct {
 	Owner    string         `json:"owner,omitempty"`
 }
 
-// Nodes struct: cache DB of Node's structs
+// Aliases struct: cache DB of Node's structs
 type Aliases struct {
 	List   map[string]*Alias `json:"nodes"` // the current nodemap, indexed by node ID
 	config *Config
 	sync.Mutex
 }
 
-// NewNodes create Nodes structs
+// NewAliases create Nodes structs
 func NewAliases(config *Config) *Aliases {
 	aliases := &Aliases{
 		List:   make(map[string]*Alias),
@@ -39,6 +40,7 @@ func NewAliases(config *Config) *Aliases {
 	return aliases
 }
 
+// Update a alias in aliases cache
 func (e *Aliases) Update(nodeID string, newalias *Alias) {
 	e.Lock()
 	e.List[nodeID] = newalias
@@ -51,7 +53,7 @@ func (e *Aliases) load() {
 	log.Println("loading", path)
 
 	if data, err := ioutil.ReadFile(path); err == nil {
-		if err := json.Unmarshal(data, e); err == nil {
+		if err = json.Unmarshal(data, e); err == nil {
 			log.Println("loaded", len(e.List), "aliases")
 		} else {
 			log.Println("failed to unmarshal nodes:", err)

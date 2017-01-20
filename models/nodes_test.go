@@ -79,7 +79,7 @@ func TestToInflux(t *testing.T) {
 
 	node := Node{
 		Statistics: &data.Statistics{
-			NodeId:      "foobar",
+			NodeID:      "foobar",
 			LoadAverage: 0.5,
 		},
 		Nodeinfo: &data.NodeInfo{

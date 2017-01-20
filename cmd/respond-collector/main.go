@@ -57,11 +57,11 @@ func main() {
 
 	if config.Webserver.Enable {
 		router := httprouter.New()
-		if config.Webserver.Api.NewNodes {
+		if config.Webserver.API.NewNodes {
 			api.NewNodes(config, router, "/api/nodes", nodes)
 			log.Println("api nodes started")
 		}
-		if config.Webserver.Api.Aliases {
+		if config.Webserver.API.Aliases {
 			api.NewAliases(config, router, "/api/aliases", nodes)
 			log.Println("api aliases started")
 		}

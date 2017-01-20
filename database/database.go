@@ -85,11 +85,12 @@ func (db *DB) AddCounterMap(name string, m models.CounterMap) {
 }
 
 // Add data for a single node
-func (db *DB) Add(nodeId string, node *models.Node) {
+func (db *DB) Add(nodeID string, node *models.Node) {
 	tags, fields := node.ToInflux()
 	db.AddPoint(MeasurementNode, tags, fields, time.Now())
 }
 
+// Close all connection and clean up
 func (db *DB) Close() {
 	close(db.quit)
 	close(db.points)

@@ -5,8 +5,9 @@ package data
 	They always return float.
 */
 
+//Statistics struct
 type Statistics struct {
-	NodeId      string  `json:"node_id"`
+	NodeID      string  `json:"node_id"`
 	Clients     Clients `json:"clients"`
 	RootFsUsage float64 `json:"rootfs_usage,omitempty"`
 	LoadAverage float64 `json:"loadavg,omitempty"`
@@ -30,25 +31,30 @@ type Statistics struct {
 	Wireless WirelessStatistics     `json:"wireless,omitempty"`
 }
 
+// MeshVPNPeerLink struct
 type MeshVPNPeerLink struct {
 	Established float64 `json:"established"`
 }
 
+// MeshVPNPeerGroup struct
 type MeshVPNPeerGroup struct {
 	Peers  map[string]*MeshVPNPeerLink  `json:"peers"`
 	Groups map[string]*MeshVPNPeerGroup `json:"groups"`
 }
 
+// MeshVPN struct
 type MeshVPN struct {
 	Groups map[string]*MeshVPNPeerGroup `json:"groups,omitempty"`
 }
 
+// Traffic struct
 type Traffic struct {
 	Bytes   float64 `json:"bytes,omitempty"`
 	Packets float64 `json:"packets,omitempty"`
 	Dropped float64 `json:"dropped,omitempty"`
 }
 
+// Clients struct
 type Clients struct {
 	Wifi   uint32 `json:"wifi"`
 	Wifi24 uint32 `json:"wifi24"`
@@ -56,6 +62,7 @@ type Clients struct {
 	Total  uint32 `json:"total"`
 }
 
+// Memory struct
 type Memory struct {
 	Cached  uint32 `json:"cached"`
 	Total   uint32 `json:"total"`
@@ -63,6 +70,7 @@ type Memory struct {
 	Free    uint32 `json:"free"`
 }
 
+// SwitchPort struct
 type SwitchPort struct {
 	Speed uint32 `json:"speed"`
 }

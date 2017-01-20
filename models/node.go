@@ -22,7 +22,7 @@ type Node struct {
 func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 	stats := node.Statistics
 
-	tags.SetString("nodeid", stats.NodeId)
+	tags.SetString("nodeid", stats.NodeID)
 
 	fields = map[string]interface{}{
 		"load":           stats.LoadAverage,

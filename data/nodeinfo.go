@@ -1,7 +1,8 @@
 package data
 
+// NodeInfo struct
 type NodeInfo struct {
-	NodeId   string    `json:"node_id"`
+	NodeID   string    `json:"node_id"`
 	Network  Network   `json:"network"`
 	Owner    *Owner    `json:"-"` // Removed for privacy reasons
 	System   System    `json:"system"`
@@ -12,6 +13,8 @@ type NodeInfo struct {
 	VPN      bool      `json:"vpn"`
 	Wireless *Wireless `json:"wireless,omitempty"`
 }
+
+// BatInterface struct
 type BatInterface struct {
 	Interfaces struct {
 		Wireless []string `json:"wireless,omitempty"`
@@ -20,6 +23,7 @@ type BatInterface struct {
 	} `json:"interfaces"`
 }
 
+// Network struct
 type Network struct {
 	Mac            string                   `json:"mac"`
 	Addresses      []string                 `json:"addresses"`
@@ -27,20 +31,24 @@ type Network struct {
 	MeshInterfaces []string                 `json:"mesh_interfaces"`
 }
 
+// Owner struct
 type Owner struct {
 	Contact string `json:"contact"`
 }
 
+// System struct
 type System struct {
 	SiteCode string `json:"site_code"`
 }
 
+// Location struct
 type Location struct {
 	Longtitude float64 `json:"longitude"`
 	Latitude   float64 `json:"latitude"`
 	Altitude   float64 `json:"altitude,omitempty"`
 }
 
+// Software struct
 type Software struct {
 	Autoupdater struct {
 		Enabled bool   `json:"enabled,omitempty"`
@@ -59,10 +67,11 @@ type Software struct {
 		Release string `json:"release,omitempty"`
 	} `json:"firmware,omitempty"`
 	StatusPage struct {
-		Api int `json:"api"`
+		API int `json:"api"`
 	} `json:"status-page,omitempty"`
 }
 
+// Hardware struct
 type Hardware struct {
 	Nproc int    `json:"nproc"`
 	Model string `json:"model"`

@@ -19,7 +19,7 @@ type Config struct {
 		Port    string `yaml:"port"`
 		Address string `yaml:"address"`
 		Webroot string `yaml:"webroot"`
-		Api     struct {
+		API     struct {
 			Passphrase string `yaml:"passphrase"`
 			NewNodes   bool   `yaml:"newnodes"`
 			Aliases    bool   `yaml:"aliases"`
@@ -47,7 +47,7 @@ type Config struct {
 	}
 }
 
-// reads a config models by path to a yml file
+// ReadConfigFile reads a config model from path of a yml file
 func ReadConfigFile(path string) *Config {
 	config := &Config{}
 	file, _ := ioutil.ReadFile(path)

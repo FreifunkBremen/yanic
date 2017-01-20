@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Graph a struct for all links between the nodes
 type Graph struct {
 	Version int `json:"version"`
 	Batadv  struct {
@@ -15,10 +16,13 @@ type Graph struct {
 	} `json:"batadv"`
 }
 
+// GraphNode small struct of a node for the graph struct
 type GraphNode struct {
 	ID     string `json:"id"`
 	NodeID string `json:"node_id"`
 }
+
+// GraphLink a struct  for the link between two nodes
 type GraphLink struct {
 	Source   int     `json:"source"`
 	Target   int     `json:"target"`
@@ -27,14 +31,16 @@ type GraphLink struct {
 	Bidirect bool    `json:"bidirect"`
 }
 
-type GraphBuilder struct {
+// GraphBuilder a temporaty struct during fill the graph from the node neighbours
+type graphBuilder struct {
 	macToID map[string]string      // mapping from MAC address to node id
 	links   map[string]*GraphLink  // mapping from $idA-$idB to existing link
 	vpn     map[string]interface{} // IDs/addresses of VPN servers
 }
 
+// BuildGraph transform from nodes (Neighbours) to Graph
 func (nodes *Nodes) BuildGraph() *Graph {
-	builder := &GraphBuilder{
+	builder := &graphBuilder{
 		macToID: make(map[string]string),
 		links:   make(map[string]*GraphLink),
 		vpn:     make(map[string]interface{}),
@@ -44,11 +50,11 @@ func (nodes *Nodes) BuildGraph() *Graph {
 
 	graph := &Graph{Version: 1}
 	graph.Batadv.Directed = false
-	graph.Batadv.Nodes, graph.Batadv.Links = builder.Extract()
+	graph.Batadv.Nodes, graph.Batadv.Links = builder.extract()
 	return graph
 }
 
-func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
+func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
 	// Fill mac->id map
 	for sourceID, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
@@ -70,7 +76,7 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 
 		// Iterate over local MAC addresses from LLDP
 		if neighbours := node.Neighbours; neighbours != nil {
-			for sourceAddr, _ := range neighbours.LLDP {
+			for sourceAddr := range neighbours.LLDP {
 				builder.macToID[sourceAddr] = sourceID
 			}
 		}
@@ -90,7 +96,7 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 				}
 				// LLDP
 				for _, neighbours := range neighbours.LLDP {
-					for targetAddress, _ := range neighbours {
+					for targetAddress := range neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
 							builder.addLink(targetID, sourceID, 255)
 						}
@@ -101,7 +107,7 @@ func (builder *GraphBuilder) readNodes(nodes map[string]*Node) {
 	}
 }
 
-func (builder *GraphBuilder) Extract() ([]*GraphNode, []*GraphLink) {
+func (builder *graphBuilder) extract() ([]*GraphNode, []*GraphLink) {
 	links := make([]*GraphLink, len(builder.links))
 	nodes := make([]*GraphNode, len(builder.macToID))
 	idToIndex := make(map[string]int)
@@ -131,7 +137,7 @@ func (builder *GraphBuilder) Extract() ([]*GraphNode, []*GraphLink) {
 	return nodes, links
 }
 
-func (builder *GraphBuilder) isVPN(ids ...string) bool {
+func (builder *graphBuilder) isVPN(ids ...string) bool {
 	for _, id := range ids {
 		if _, found := builder.vpn[id]; found {
 			return true
@@ -140,7 +146,7 @@ func (builder *GraphBuilder) isVPN(ids ...string) bool {
 	return false
 }
 
-func (builder *GraphBuilder) addLink(targetID string, sourceID string, linkTq int) {
+func (builder *graphBuilder) addLink(targetID string, sourceID string, linkTq int) {
 	// Sort IDs to generate the key
 	var key string
 	if strings.Compare(sourceID, targetID) > 0 {

@@ -15,6 +15,7 @@ type Node struct {
 	Neighbours *data.Neighbours `json:"-"`
 }
 
+// Flags status of node set by collector for the meshviewer
 type Flags struct {
 	Online  bool `json:"online"`
 	Gateway bool `json:"gateway"`
@@ -36,8 +37,9 @@ type NodesV2 struct {
 	List      []*Node       `json:"nodes"` // the current nodemap, as array
 }
 
+// Statistics a meshviewer spezifisch struct, diffrent from respondd
 type Statistics struct {
-	NodeId      string  `json:"node_id"`
+	NodeID      string  `json:"node_id"`
 	Clients     uint32  `json:"clients"`
 	RootFsUsage float64 `json:"rootfs_usage,omitempty"`
 	LoadAverage float64 `json:"loadavg,omitempty"`
@@ -59,18 +61,19 @@ type Statistics struct {
 	} `json:"traffic,omitempty"`
 }
 
+// NewStatistics transform respond Statistics to meshviewer Statistics
 func NewStatistics(stats *data.Statistics) *Statistics {
 	total := stats.Clients.Total
 	if total == 0 {
 		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
 	}
 	/* The Meshviewer could not handle absolute memory output
-         * calc the used memory as a float witch 100% equal 1.0
-         */
+	 * calc the used memory as a float witch 100% equal 1.0
+	 */
 	memoryUsage := (float64(stats.Memory.Total) - float64(stats.Memory.Free)) / float64(stats.Memory.Total)
 
 	return &Statistics{
-		NodeId:      stats.NodeId,
+		NodeID:      stats.NodeID,
 		Gateway:     stats.Gateway,
 		RootFsUsage: stats.RootFsUsage,
 		LoadAverage: stats.LoadAverage,

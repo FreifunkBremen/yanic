@@ -13,7 +13,7 @@ func TestStatistics(t *testing.T) {
 	obj := &Statistics{}
 	testfile("statistics.json", obj)
 
-	assert.Equal("f81a67a601ea", obj.NodeId)
+	assert.Equal("f81a67a601ea", obj.NodeID)
 	assert.Equal("52:54:00:a9:f7:6e", obj.Gateway)
 	assert.Equal(float64(57861871176), obj.Traffic.Rx.Bytes)
 	assert.Equal(uint32(35), obj.Clients.Total)

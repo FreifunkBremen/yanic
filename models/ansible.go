@@ -1,11 +1,14 @@
 package models
 
+// Ansible struct
 type Ansible struct {
 	Nodes []string `json:"nodes"`
 	Meta  struct {
 		HostVars map[string]*AnsibleHostVars `json:"hostvars,omitempty"`
 	} `json:"_meta"`
 }
+
+// AnsibleHostVars new values for a node
 type AnsibleHostVars struct {
 	Address      string  `json:"ansible_ssh_host"`
 	Hostname     string  `json:"node_name,omitempty"`
@@ -18,6 +21,7 @@ type AnsibleHostVars struct {
 	GeoLongitude float64 `json:"geo_longitude,omitempty"`
 }
 
+// GenerateAnsible but nodes and aliases together to a ansible change output
 func GenerateAnsible(nodes *Nodes, aliases map[string]*Alias) *Ansible {
 	ansible := &Ansible{Nodes: make([]string, 0)}
 	ansible.Meta.HostVars = make(map[string]*AnsibleHostVars)

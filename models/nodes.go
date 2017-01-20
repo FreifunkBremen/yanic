@@ -31,14 +31,15 @@ func NewNodes(config *Config) *Nodes {
 	if config.Nodes.NodesDynamicPath != "" {
 		nodes.load()
 	}
-        /**
-         * Version '-1' because the nodes.json would not be defined,
-         * it would be change with the change of the respondd application on gluon
-         */
+	/**
+	 * Version '-1' because the nodes.json would not be defined,
+	 * it would be change with the change of the respondd application on gluon
+	 */
 	nodes.Version = -1
 	return nodes
 }
 
+//Start all services to manage Nodes
 func (nodes *Nodes) Start() {
 	go nodes.worker()
 }
@@ -180,7 +181,7 @@ func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.NodesDynamicPath
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
-		if err := json.NewDecoder(f).Decode(nodes); err == nil {
+		if err = json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 		} else {
 			log.Println("failed to unmarshal nodes:", err)

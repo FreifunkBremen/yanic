@@ -28,7 +28,7 @@ type Collector struct {
 	stop   chan interface{}
 }
 
-// Creates a Collector struct
+// NewCollector creates a Collector struct
 func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector {
 	// Parse address
 	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
@@ -140,24 +140,24 @@ func (res *Response) parse() (*data.ResponseData, error) {
 
 func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 	// Search for NodeID
-	var nodeId string
+	var nodeID string
 	if val := res.NodeInfo; val != nil {
-		nodeId = val.NodeId
+		nodeID = val.NodeID
 	} else if val := res.Neighbours; val != nil {
-		nodeId = val.NodeId
+		nodeID = val.NodeID
 	} else if val := res.Statistics; val != nil {
-		nodeId = val.NodeId
+		nodeID = val.NodeID
 	}
 
 	// Updates nodes if NodeID found
-	if len(nodeId) != 12 {
-		log.Printf("invalid NodeID '%s' from %s", nodeId, addr.String())
+	if len(nodeID) != 12 {
+		log.Printf("invalid NodeID '%s' from %s", nodeID, addr.String())
 		return
 	}
-	node := coll.nodes.Update(nodeId, res)
+	node := coll.nodes.Update(nodeID, res)
 
 	if coll.db != nil && node.Statistics != nil {
-		coll.db.Add(nodeId, node)
+		coll.db.Add(nodeID, node)
 	}
 }
 

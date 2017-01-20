@@ -1,7 +1,9 @@
 package models
 
+// CounterMap to manage multiple values
 type CounterMap map[string]uint32
 
+// GlobalStats struct
 type GlobalStats struct {
 	Clients       uint32
 	ClientsWifi   uint32
@@ -14,7 +16,7 @@ type GlobalStats struct {
 	Models    CounterMap
 }
 
-// Returns global statistics for InfluxDB
+//NewGlobalStats returns global statistics for InfluxDB
 func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 	result = &GlobalStats{
 		Firmwares: make(CounterMap),
@@ -24,7 +26,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 	nodes.Lock()
 	for _, node := range nodes.List {
 		if node.Flags.Online {
-			result.Nodes += 1
+			result.Nodes++
 			if stats := node.Statistics; stats != nil {
 				result.Clients += stats.Clients.Total
 				result.ClientsWifi24 += stats.Clients.Wifi24
@@ -32,7 +34,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 				result.ClientsWifi += stats.Clients.Wifi
 			}
 			if node.Flags.Gateway {
-				result.Gateways += 1
+				result.Gateways++
 			}
 			if info := node.Nodeinfo; info != nil {
 				result.Models.Increment(info.Hardware.Model)
@@ -53,7 +55,7 @@ func (m CounterMap) Increment(key string) {
 	}
 }
 
-// Returns fields for InfluxDB
+// Fields returns fields for InfluxDB
 func (stats *GlobalStats) Fields() map[string]interface{} {
 	return map[string]interface{}{
 		"nodes":          stats.Nodes,

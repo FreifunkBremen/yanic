@@ -18,22 +18,22 @@ func TestUtilization(t *testing.T) {
 	assert := assert.New(t)
 
 	t1 := &WirelessAirtime{
-		Active_time: 20,
-		Busy_time:   0,
-		Tx_time:     5,
-		Rx_time:     0,
+		ActiveTime: 20,
+		BusyTime:   0,
+		TxTime:     5,
+		RxTime:     0,
 	}
 	t2 := &WirelessAirtime{
-		Active_time: 120,
-		Busy_time:   10,
-		Tx_time:     25,
-		Rx_time:     15,
+		ActiveTime: 120,
+		BusyTime:   10,
+		TxTime:     25,
+		RxTime:     15,
 	}
 	t3 := &WirelessAirtime{
-		Active_time: 200,
-		Busy_time:   40,
-		Tx_time:     35,
-		Rx_time:     15,
+		ActiveTime: 200,
+		BusyTime:   40,
+		TxTime:     35,
+		RxTime:     15,
 	}
 
 	t1.SetUtilization(t2)
@@ -58,23 +58,23 @@ func TestWirelessStatistics(t *testing.T) {
 
 	stats := WirelessStatistics([]*WirelessAirtime{{
 		Frequency:   2400,
-		Active_time: 20,
-		Tx_time:     10,
+		ActiveTime: 20,
+		TxTime:     10,
 	}})
 
 	// Different Frequency, should not change anything
 	stats.SetUtilization([]*WirelessAirtime{{
 		Frequency:   5000,
-		Active_time: 15,
-		Tx_time:     1,
+		ActiveTime: 15,
+		TxTime:     1,
 	}})
 	assert.EqualValues(0, stats[0].ChanUtil)
 
 	// Same Frequency, should set the utilization
 	stats.SetUtilization([]*WirelessAirtime{{
 		Frequency:   2400,
-		Active_time: 10,
-		Tx_time:     5,
+		ActiveTime: 10,
+		TxTime:     5,
 	}})
 	assert.EqualValues(50, stats[0].ChanUtil)
 }
