@@ -25,11 +25,17 @@ func TestGlobalStats(t *testing.T) {
 	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
 }
 
-func TestNodesMini(t *testing.T) {
-	mini := createTestNodes().GetNodesMini()
+func TestNodesV1(t *testing.T) {
+	nodes := createTestNodes().GetNodesV1()
 
 	assert := assert.New(t)
-	assert.Equal(2, len(mini.List))
+	assert.Equal(2, len(nodes.List))
+}
+func TestNodesV2(t *testing.T) {
+	nodes := createTestNodes().GetNodesV2()
+
+	assert := assert.New(t)
+	assert.Equal(2, len(nodes.List))
 }
 
 func createTestNodes() *Nodes {
