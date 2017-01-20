@@ -19,7 +19,7 @@ type Statistics struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
 	} `json:"processes,omitempty"`
-	MeshVpn *MeshVPN `json:"mesh_vpn,omitempty"`
+	MeshVPN *MeshVPN `json:"mesh_vpn,omitempty"`
 	Traffic struct {
 		Tx      *Traffic `json:"tx"`
 		Rx      *Traffic `json:"rx"`

@@ -23,6 +23,11 @@ func TestGlobalStats(t *testing.T) {
 	// check firmwares
 	assert.EqualValues(1, len(stats.Firmwares))
 	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
+
+	fields := stats.Fields()
+
+	// check fields
+	assert.EqualValues(3, fields["nodes"])
 }
 
 func TestNodesV1(t *testing.T) {
