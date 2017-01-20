@@ -51,7 +51,7 @@ type Statistics struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
 	} `json:"processes,omitempty"`
-	MeshVpn *data.MeshVPN `json:"mesh_vpn,omitempty"`
+	MeshVPN *data.MeshVPN `json:"mesh_vpn,omitempty"`
 	Traffic struct {
 		Tx      *data.Traffic `json:"tx"`
 		Rx      *data.Traffic `json:"rx"`
@@ -81,7 +81,7 @@ func NewStatistics(stats *data.Statistics) *Statistics {
 		Uptime:      stats.Uptime,
 		Idletime:    stats.Idletime,
 		Processes:   stats.Processes,
-		MeshVpn:     stats.MeshVpn,
+		MeshVPN:     stats.MeshVPN,
 		Traffic:     stats.Traffic,
 		Clients:     total,
 	}

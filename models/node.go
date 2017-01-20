@@ -18,7 +18,7 @@ type Node struct {
 	Neighbours *data.Neighbours `json:"-"`
 }
 
-// Returns tags and fields for InfluxDB
+// ToInflux Returns tags and fields for InfluxDB
 func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 	stats := node.Statistics
 
@@ -49,6 +49,35 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 		}
 		// morpheus needs
 		tags.SetString("hostname", nodeinfo.Hostname)
+	}
+
+	if neighbours := node.Neighbours; neighbours != nil {
+		// VPN Neighbours are Neighbours but includet in one protocol
+		vpn := 0
+		if meshvpn := stats.MeshVPN; meshvpn != nil {
+			for _, group := range meshvpn.Groups {
+				for _, link := range group.Peers {
+					if link.Established > 1 {
+						vpn++
+					}
+				}
+			}
+		}
+		fields["neighbours.vpn"] = vpn
+
+		// protocol: Batman Advance
+		batadv := 0
+		for _, batadvNeighbours := range neighbours.Batadv {
+			batadv += len(batadvNeighbours.Neighbours)
+		}
+		fields["neighbours.batadv"] = batadv
+
+		// protocol: LLDP
+		lldp := len(neighbours.LLDP)
+		fields["neighbours.lldp"] = lldp
+
+		// total is the sum of all protocols
+		fields["neighbours.total"] = batadv + lldp
 	}
 
 	if t := stats.Traffic.Rx; t != nil {
