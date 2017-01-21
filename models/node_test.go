@@ -36,6 +36,7 @@ func TestToInflux(t *testing.T) {
 						Peers: map[string]*data.MeshVPNPeerLink{
 							"vpn01": &data.MeshVPNPeerLink{Established: 3},
 							"vpn02": &data.MeshVPNPeerLink{},
+							"trash": nil,
 							"vpn03": &data.MeshVPNPeerLink{Established: 0},
 						},
 					},
@@ -59,6 +60,7 @@ func TestToInflux(t *testing.T) {
 					},
 				},
 			},
+			LLDP: map[string]data.LLDPNeighbours{},
 		},
 	}
 

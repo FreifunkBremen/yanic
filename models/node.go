@@ -57,7 +57,7 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 		if meshvpn := stats.MeshVPN; meshvpn != nil {
 			for _, group := range meshvpn.Groups {
 				for _, link := range group.Peers {
-					if link.Established > 1 {
+					if link != nil && link.Established > 1 {
 						vpn++
 					}
 				}
@@ -73,7 +73,10 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 		fields["neighbours.batadv"] = batadv
 
 		// protocol: LLDP
-		lldp := len(neighbours.LLDP)
+		lldp := 0
+		for _, lldpNeighbours := range neighbours.LLDP {
+			lldp += len(lldpNeighbours)
+		}
 		fields["neighbours.lldp"] = lldp
 
 		// total is the sum of all protocols
