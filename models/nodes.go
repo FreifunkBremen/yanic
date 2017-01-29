@@ -14,10 +14,8 @@ import (
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
-	Version   int              `json:"version"`
-	Timestamp jsontime.Time    `json:"timestamp"`
-	List      map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	config    *Config
+	List   map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
+	config *Config
 	sync.RWMutex
 }
 
@@ -31,11 +29,7 @@ func NewNodes(config *Config) *Nodes {
 	if config.Nodes.StatePath != "" {
 		nodes.load()
 	}
-	/**
-	 * Version '-1' because the nodes.json would not be defined,
-	 * it would be change with the change of the respondd application on gluon
-	 */
-	nodes.Version = -1
+
 	return nodes
 }
 
@@ -92,7 +86,7 @@ func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
 	meshviewerNodes := &meshviewer.NodesV1{
 		Version:   1,
 		List:      make(map[string]*meshviewer.Node),
-		Timestamp: nodes.Timestamp,
+		Timestamp: jsontime.Now(),
 	}
 
 	for nodeID := range nodes.List {
@@ -118,7 +112,7 @@ func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
 func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
 	meshviewerNodes := &meshviewer.NodesV2{
 		Version:   2,
-		Timestamp: nodes.Timestamp,
+		Timestamp: jsontime.Now(),
 	}
 	for nodeID := range nodes.List {
 
@@ -150,17 +144,17 @@ func (nodes *Nodes) worker() {
 
 // Expires nodes and set nodes offline
 func (nodes *Nodes) expire() {
-	nodes.Timestamp = jsontime.Now()
+	now := jsontime.Now()
 
 	// Nodes last seen before expireTime will be removed
 	pruneAfter := nodes.config.Nodes.PruneAfter.Duration
 	if pruneAfter == 0 {
 		pruneAfter = time.Hour * 24 * 7 // our default
 	}
-	expireTime := nodes.Timestamp.Add(-pruneAfter)
+	expireTime := now.Add(-pruneAfter)
 
 	// Nodes last seen before offlineTime are changed to 'offline'
-	offlineTime := nodes.Timestamp.Add(-time.Minute * 10)
+	offlineTime := now.Add(-time.Minute * 10)
 
 	// Locking foo
 	nodes.Lock()
