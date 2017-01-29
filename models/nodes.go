@@ -146,25 +146,25 @@ func (nodes *Nodes) worker() {
 func (nodes *Nodes) expire() {
 	now := jsontime.Now()
 
-	// Nodes last seen before expireTime will be removed
-	pruneAfter := nodes.config.Nodes.PruneAfter.Duration
-	if pruneAfter == 0 {
-		pruneAfter = time.Hour * 24 * 7 // our default
+	// Nodes last seen before expireAfter will be removed
+	prunePeriod := nodes.config.Nodes.PruneAfter.Duration
+	if prunePeriod == 0 {
+		prunePeriod = time.Hour * 24 * 7 // our default
 	}
-	expireTime := now.Add(-pruneAfter)
+	pruneAfter := now.Add(-prunePeriod)
 
-	// Nodes last seen before offlineTime are changed to 'offline'
-	offlineTime := now.Add(-time.Minute * 10)
+	// Nodes last seen within OfflineAfter are changed to 'offline'
+	offlineAfter := now.Add(-nodes.config.Nodes.OfflineAfter.Duration)
 
 	// Locking foo
 	nodes.Lock()
 	defer nodes.Unlock()
 
 	for id, node := range nodes.List {
-		if node.Lastseen.Before(expireTime) {
+		if node.Lastseen.Before(pruneAfter) {
 			// expire
 			delete(nodes.List, id)
-		} else if node.Lastseen.Before(offlineTime) {
+		} else if node.Lastseen.Before(offlineAfter) {
 			// set to offline
 			node.Flags.Online = false
 		}

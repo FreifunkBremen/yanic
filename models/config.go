@@ -25,6 +25,7 @@ type Config struct {
 		GraphPath    string
 		StatePath    string
 		SaveInterval Duration // Save nodes periodically
+		OfflineAfter Duration // Set node to offline if not seen within this period
 		PruneAfter   Duration // Remove nodes after n days of inactivity
 	}
 	Influxdb struct {

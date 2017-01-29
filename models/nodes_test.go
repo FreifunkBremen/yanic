@@ -13,6 +13,7 @@ import (
 func TestExpire(t *testing.T) {
 	assert := assert.New(t)
 	config := &Config{}
+	config.Nodes.OfflineAfter.Duration = time.Minute * 10
 	config.Nodes.PruneAfter.Duration = time.Hour * 24 * 6
 	nodes := &Nodes{
 		config: config,
