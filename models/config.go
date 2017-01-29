@@ -34,7 +34,6 @@ type Config struct {
 		Database       string
 		Username       string
 		Password       string
-		SaveInterval   Duration // Save nodes every n seconds
 		DeleteInterval Duration // Delete stats of nodes every n minutes
 		DeleteAfter    Duration // Delete stats of nodes till now-deletetill n minutes
 	}

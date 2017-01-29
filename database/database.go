@@ -17,6 +17,7 @@ const (
 	MeasurementFirmware = "firmware" // Measurement for firmware statistics
 	MeasurementModel    = "model"    // Measurement for model statistics
 	batchMaxSize        = 500
+	batchTimeout        = 5 * time.Second
 )
 
 type DB struct {
@@ -121,8 +122,7 @@ func (db *DB) addWorker() {
 	var bp client.BatchPoints
 	var err error
 	var writeNow, closed bool
-	batchDuration := db.config.Influxdb.SaveInterval.Duration
-	timer := time.NewTimer(batchDuration)
+	timer := time.NewTimer(batchTimeout)
 
 	for !closed {
 		// wait for new points
@@ -131,7 +131,7 @@ func (db *DB) addWorker() {
 			if ok {
 				if bp == nil {
 					// create new batch
-					timer.Reset(batchDuration)
+					timer.Reset(batchTimeout)
 					if bp, err = client.NewBatchPoints(bpConfig); err != nil {
 						log.Fatal(err)
 					}
@@ -142,7 +142,7 @@ func (db *DB) addWorker() {
 			}
 		case <-timer.C:
 			if bp == nil {
-				timer.Reset(batchDuration)
+				timer.Reset(batchTimeout)
 			} else {
 				writeNow = true
 			}
