@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/julienschmidt/httprouter"
@@ -31,7 +30,7 @@ var (
 func main() {
 	var importPath string
 	flag.StringVar(&importPath, "import", "", "import global statistics from the given RRD file, requires influxdb")
-	flag.StringVar(&configFile, "config", "config.yml", "path of configuration file (default:config.yaml)")
+	flag.StringVar(&configFile, "config", "config.toml", "path of configuration file (default:config.yaml)")
 	flag.Parse()
 	config = models.ReadConfigFile(configFile)
 
@@ -49,9 +48,8 @@ func main() {
 	nodes.Start()
 
 	if config.Respondd.Enable {
-		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
 		collector = respond.NewCollector(db, nodes, config.Respondd.Interface)
-		collector.Start(collectInterval)
+		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}
 

@@ -11,7 +11,7 @@
 ## Usage
 ```
 Usage of ./respond-collector:
-  -config path/to/config.yml
+  -config path/to/config.toml
 ```
 
 ## Development

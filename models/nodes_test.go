@@ -13,7 +13,7 @@ import (
 func TestExpire(t *testing.T) {
 	assert := assert.New(t)
 	config := &Config{}
-	config.Nodes.MaxAge = 6
+	config.Nodes.PruneAfter.Duration = time.Hour * 24 * 6
 	nodes := &Nodes{
 		config: config,
 		List:   make(map[string]*Node),

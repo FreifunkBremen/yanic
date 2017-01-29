@@ -1,0 +1,31 @@
+[respondd]
+enable           = true
+interface        = "eth0"
+collect_interval = "1m"
+
+[webserver]
+enable  = false
+port    = "8080"
+address = "127.0.0.1"
+webroot = "webroot"
+
+[nodes]
+enable         = true
+nodes_version  = 2
+nodes_path     = "/var/www/html/meshviewer/data/nodes_all.json"
+graphs_path    = "/var/www/html/meshviewer/data/graph.json"
+aliases_path   = "/var/www/html/meshviewer/data/aliases.json"
+
+# Export nodes and graph periodically
+save_interval = "5s"
+
+# Prune offline nodes after a time of inactivity
+prune_after = "7d"
+
+
+[influxdb]
+enable   = false
+address  = "http://localhost:8086"
+database = "ffhb"
+username = ""
+password = ""
