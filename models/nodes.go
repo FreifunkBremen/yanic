@@ -211,7 +211,7 @@ func (nodes *Nodes) save() {
 		}
 	}
 
-	if path := nodes.config.Nodes.GraphsPath; path != "" {
+	if path := nodes.config.Nodes.GraphPath; path != "" {
 		save(nodes.BuildGraph(), path)
 	}
 }

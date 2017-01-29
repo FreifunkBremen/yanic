@@ -3,20 +3,15 @@ package main
 import (
 	"flag"
 	"log"
-	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/NYTimes/gziphandler"
-	"github.com/julienschmidt/httprouter"
-
-	"github.com/FreifunkBremen/respond-collector/api"
 	"github.com/FreifunkBremen/respond-collector/database"
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
 	"github.com/FreifunkBremen/respond-collector/rrd"
+	"github.com/FreifunkBremen/respond-collector/webserver"
 )
 
 var (
@@ -54,21 +49,9 @@ func main() {
 	}
 
 	if config.Webserver.Enable {
-		router := httprouter.New()
-		if config.Webserver.API.NewNodes {
-			api.NewNodes(config, router, "/api/nodes", nodes)
-			log.Println("api nodes started")
-		}
-		if config.Webserver.API.Aliases {
-			api.NewAliases(config, router, "/api/aliases", nodes)
-			log.Println("api aliases started")
-		}
-		router.NotFound = gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webserver.Webroot)))
-
-		address := net.JoinHostPort(config.Webserver.Address, config.Webserver.Port)
-		log.Println("starting webserver on", address)
-		// TODO bad
-		log.Fatal(http.ListenAndServe(address, router))
+		log.Println("starting webserver on", config.Webserver.Bind)
+		srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
+		go srv.Close()
 	}
 
 	// Wait for INT/TERM
