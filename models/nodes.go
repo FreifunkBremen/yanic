@@ -140,7 +140,7 @@ func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
 
 // Periodically saves the cached DB to json file
 func (nodes *Nodes) worker() {
-	c := time.Tick(time.Second * time.Duration(nodes.config.Nodes.SaveInterval))
+	c := time.Tick(nodes.config.Nodes.SaveInterval.Duration)
 
 	for range c {
 		nodes.expire()
@@ -153,11 +153,11 @@ func (nodes *Nodes) expire() {
 	nodes.Timestamp = jsontime.Now()
 
 	// Nodes last seen before expireTime will be removed
-	maxAge := nodes.config.Nodes.MaxAge
-	if maxAge <= 0 {
-		maxAge = 7 // our default
+	pruneAfter := nodes.config.Nodes.PruneAfter.Duration
+	if pruneAfter == 0 {
+		pruneAfter = time.Hour * 24 * 7 // our default
 	}
-	expireTime := nodes.Timestamp.Add(-time.Duration(maxAge) * time.Hour * 24)
+	expireTime := nodes.Timestamp.Add(-pruneAfter)
 
 	// Nodes last seen before offlineTime are changed to 'offline'
 	offlineTime := nodes.Timestamp.Add(-time.Minute * 10)
@@ -198,11 +198,17 @@ func (nodes *Nodes) save() {
 
 	// serialize nodes
 	save(nodes, nodes.config.Nodes.NodesDynamicPath)
-	if path := nodes.config.Nodes.NodesV1Path; path != "" {
-		save(nodes.GetNodesV1(), path)
-	}
-	if path := nodes.config.Nodes.NodesV2Path; path != "" {
-		save(nodes.GetNodesV2(), path)
+
+	if path := nodes.config.Nodes.NodesPath; path != "" {
+		version := nodes.config.Nodes.NodesVersion
+		switch version {
+		case 1:
+			save(nodes.GetNodesV1(), path)
+		case 2:
+			save(nodes.GetNodesV2(), path)
+		default:
+			log.Panicf("invalid nodes version: %d", version)
+		}
 	}
 
 	if path := nodes.config.Nodes.GraphsPath; path != "" {
