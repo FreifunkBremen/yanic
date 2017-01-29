@@ -19,13 +19,13 @@ type Config struct {
 		Webroot string
 	}
 	Nodes struct {
-		Enable           bool
-		NodesVersion     int
-		NodesPath        string
-		NodesDynamicPath string
-		GraphPath        string
-		SaveInterval     Duration // Save nodes periodically
-		PruneAfter       Duration // Remove nodes after n days of inactivity
+		Enable       bool
+		NodesVersion int
+		NodesPath    string
+		GraphPath    string
+		StatePath    string
+		SaveInterval Duration // Save nodes periodically
+		PruneAfter   Duration // Remove nodes after n days of inactivity
 	}
 	Influxdb struct {
 		Enable         bool

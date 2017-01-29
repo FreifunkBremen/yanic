@@ -28,7 +28,7 @@ func NewNodes(config *Config) *Nodes {
 		config: config,
 	}
 
-	if config.Nodes.NodesDynamicPath != "" {
+	if config.Nodes.StatePath != "" {
 		nodes.load()
 	}
 	/**
@@ -178,7 +178,7 @@ func (nodes *Nodes) expire() {
 }
 
 func (nodes *Nodes) load() {
-	path := nodes.config.Nodes.NodesDynamicPath
+	path := nodes.config.Nodes.StatePath
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
@@ -197,7 +197,7 @@ func (nodes *Nodes) save() {
 	defer nodes.RUnlock()
 
 	// serialize nodes
-	save(nodes, nodes.config.Nodes.NodesDynamicPath)
+	save(nodes, nodes.config.Nodes.StatePath)
 
 	if path := nodes.config.Nodes.NodesPath; path != "" {
 		version := nodes.config.Nodes.NodesVersion

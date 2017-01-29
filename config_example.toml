@@ -13,8 +13,9 @@ webroot = "webroot"
 [nodes]
 enable         = true
 nodes_version  = 2
-nodes_path     = "/var/www/html/meshviewer/data/nodes_all.json"
+nodes_path     = "/var/www/html/meshviewer/data/nodes.json"
 graph_path     = "/var/www/html/meshviewer/data/graph.json"
+state_path     = "/var/lib/collector/state.json"
 
 # Export nodes and graph periodically
 save_interval = "5s"

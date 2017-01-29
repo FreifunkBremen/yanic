@@ -47,7 +47,7 @@ func TestLoadAndSave(t *testing.T) {
 	assert := assert.New(t)
 
 	config := &Config{}
-	config.Nodes.NodesDynamicPath = "testdata/nodes.json"
+	config.Nodes.StatePath = "testdata/nodes.json"
 
 	nodes := NewNodes(config)
 	nodes.load()
