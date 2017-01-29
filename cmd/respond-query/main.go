@@ -2,11 +2,13 @@ package main
 
 import (
 	"log"
+	"net"
 	"os"
+
+	"time"
 
 	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/FreifunkBremen/respond-collector/respond"
-	"time"
 )
 
 // Usage: respond-query wlp4s0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"
@@ -19,7 +21,7 @@ func main() {
 	nodes := models.NewNodes(&models.Config{})
 
 	collector := respond.NewCollector(nil, nodes, iface)
-	collector.SendPacket(dstAddress)
+	collector.SendPacket(net.ParseIP(dstAddress))
 
 	time.Sleep(time.Second)
 

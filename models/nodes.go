@@ -33,7 +33,7 @@ func NewNodes(config *Config) *Nodes {
 	return nodes
 }
 
-//Start all services to manage Nodes
+// Start all services to manage Nodes
 func (nodes *Nodes) Start() {
 	go nodes.worker()
 }
@@ -114,8 +114,8 @@ func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
 		Version:   2,
 		Timestamp: jsontime.Now(),
 	}
-	for nodeID := range nodes.List {
 
+	for nodeID := range nodes.List {
 		nodeOrigin := nodes.List[nodeID]
 		if nodeOrigin.Statistics == nil {
 			continue
@@ -130,6 +130,20 @@ func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
 		meshviewerNodes.List = append(meshviewerNodes.List, node)
 	}
 	return meshviewerNodes
+}
+
+// Select selects a list of nodes to be returned
+func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
+	nodes.RLock()
+	defer nodes.RUnlock()
+
+	result := make([]*Node, 0, len(nodes.List))
+	for _, node := range nodes.List {
+		if f(node) {
+			result = append(result, node)
+		}
+	}
+	return result
 }
 
 // Periodically saves the cached DB to json file

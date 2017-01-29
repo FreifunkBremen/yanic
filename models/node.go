@@ -1,15 +1,18 @@
 package models
 
 import (
+	"net"
+	"strconv"
+
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/jsontime"
 	"github.com/FreifunkBremen/respond-collector/meshviewer"
 	imodels "github.com/influxdata/influxdb/models"
-	"strconv"
 )
 
 // Node struct
 type Node struct {
+	Address    net.IP           `json:"address"` // the last known IP address
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
 	Flags      meshviewer.Flags `json:"flags"`

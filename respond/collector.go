@@ -10,18 +10,19 @@ import (
 
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/database"
+	"github.com/FreifunkBremen/respond-collector/jsontime"
 	"github.com/FreifunkBremen/respond-collector/models"
 )
 
-//Collector for a specificle respond messages
+// Collector for a specificle respond messages
 type Collector struct {
-	connection    *net.UDPConn   // UDP socket
-	queue         chan *Response // received responses
-	multicastAddr string
-	db            *database.DB
-	nodes         *models.Nodes
-	interval      time.Duration // Interval for multicast packets
-	stop          chan interface{}
+	connection *net.UDPConn   // UDP socket
+	queue      chan *Response // received responses
+	iface      string
+	db         *database.DB
+	nodes      *models.Nodes
+	interval   time.Duration // Interval for multicast packets
+	stop       chan interface{}
 }
 
 // NewCollector creates a Collector struct
@@ -40,12 +41,12 @@ func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector
 	conn.SetReadBuffer(maxDataGramSize)
 
 	collector := &Collector{
-		connection:    conn,
-		db:            db,
-		nodes:         nodes,
-		multicastAddr: net.JoinHostPort(multiCastGroup+"%"+iface, port),
-		queue:         make(chan *Response, 400),
-		stop:          make(chan interface{}),
+		connection: conn,
+		db:         db,
+		nodes:      nodes,
+		iface:      iface,
+		queue:      make(chan *Response, 400),
+		stop:       make(chan interface{}),
 	}
 
 	go collector.receiver()
@@ -82,17 +83,45 @@ func (coll *Collector) Close() {
 }
 
 func (coll *Collector) sendOnce() {
-	coll.SendPacket(coll.multicastAddr)
+	now := jsontime.Now()
+	coll.sendMulticast()
+
+	// Wait for the multicast responses to be processed and send unicasts
+	time.Sleep(coll.interval / 2)
+	coll.sendUnicasts(now)
 }
 
-// SendPacket send a UDP request to the given unicast or multicast address
-func (coll *Collector) SendPacket(address string) {
-	addr, err := net.ResolveUDPAddr("udp", address)
-	if err != nil {
-		log.Panic(err)
+func (coll *Collector) sendMulticast() {
+	log.Println("sending multicast")
+	coll.SendPacket(net.ParseIP(multiCastGroup))
+}
+
+// Send unicast packets to nodes that did not answer the multicast
+func (coll *Collector) sendUnicasts(seenBefore jsontime.Time) {
+	seenAfter := seenBefore.Add(-time.Minute * 10)
+
+	// Select online nodes that has not been seen recently
+	nodes := coll.nodes.Select(func(n *models.Node) bool {
+		return n.Lastseen.After(seenAfter) && n.Lastseen.Before(seenBefore) && n.Address != nil
+	})
+
+	// Send unicast packets
+	log.Printf("sending unicast to %d nodes", len(nodes))
+	for _, node := range nodes {
+		coll.SendPacket(node.Address)
+		time.Sleep(10 * time.Millisecond)
+	}
+}
+
+// SendPacket sends a UDP request to the given unicast or multicast address
+func (coll *Collector) SendPacket(address net.IP) {
+	addr := net.UDPAddr{
+		IP:   address,
+		Port: port,
+		Zone: coll.iface,
 	}
 
-	if _, err := coll.connection.WriteToUDP([]byte("GET nodeinfo statistics neighbours"), addr); err != nil {
+	if _, err := coll.connection.WriteToUDP([]byte("GET nodeinfo statistics neighbours"), &addr); err != nil {
 		log.Println("WriteToUDP failed:", err)
 	}
 }
@@ -151,8 +180,9 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 		return
 	}
 
-	// Process the data
+	// Process the data and update IP address
 	node := coll.nodes.Update(nodeID, res)
+	node.Address = addr.IP
 
 	// Store statistics in InfluxDB
 	if coll.db != nil && node.Statistics != nil {
