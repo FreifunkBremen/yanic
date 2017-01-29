@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/julienschmidt/httprouter"
@@ -49,9 +48,8 @@ func main() {
 	nodes.Start()
 
 	if config.Respondd.Enable {
-		collectInterval := time.Second * time.Duration(config.Respondd.CollectInterval)
 		collector = respond.NewCollector(db, nodes, config.Respondd.Interface)
-		collector.Start(collectInterval)
+		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}
 

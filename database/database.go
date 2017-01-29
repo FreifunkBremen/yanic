@@ -30,7 +30,7 @@ type DB struct {
 func New(config *models.Config) *DB {
 	// Make client
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     config.Influxdb.Addr,
+		Addr:     config.Influxdb.Address,
 		Username: config.Influxdb.Username,
 		Password: config.Influxdb.Password,
 	})
@@ -54,8 +54,7 @@ func New(config *models.Config) *DB {
 }
 
 func (db *DB) DeletePoints() {
-	query := fmt.Sprintf("delete from %s where time < now() - %dm", MeasurementNode, db.config.Influxdb.DeleteTill)
-	log.Println("delete", MeasurementNode, "older than", db.config.Influxdb.DeleteTill, "minutes")
+	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, db.config.Influxdb.DeleteAfter.Duration/time.Second)
 	db.client.Query(client.NewQuery(query, db.config.Influxdb.Database, "m"))
 }
 
@@ -100,8 +99,7 @@ func (db *DB) Close() {
 
 // prunes node-specific data periodically
 func (db *DB) deleteWorker() {
-	duration := time.Minute * time.Duration(db.config.Influxdb.DeleteInterval)
-	ticker := time.NewTicker(duration)
+	ticker := time.NewTicker(db.config.Influxdb.DeleteInterval.Duration)
 	for {
 		select {
 		case <-ticker.C:
@@ -123,7 +121,7 @@ func (db *DB) addWorker() {
 	var bp client.BatchPoints
 	var err error
 	var writeNow, closed bool
-	batchDuration := time.Second * time.Duration(db.config.Influxdb.SaveInterval)
+	batchDuration := db.config.Influxdb.SaveInterval.Duration
 	timer := time.NewTimer(batchDuration)
 
 	for !closed {
