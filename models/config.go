@@ -15,22 +15,15 @@ type Config struct {
 	}
 	Webserver struct {
 		Enable  bool
-		Port    string
-		Address string
+		Bind    string
 		Webroot string
-		API     struct {
-			Passphrase string
-			NewNodes   bool
-			Aliases    bool
-		}
 	}
 	Nodes struct {
 		Enable           bool
-		NodesDynamicPath string
-		NodesPath        string
 		NodesVersion     int
-		GraphsPath       string
-		AliasesPath      string
+		NodesPath        string
+		NodesDynamicPath string
+		GraphPath        string
 		SaveInterval     Duration // Save nodes periodically
 		PruneAfter       Duration // Remove nodes after n days of inactivity
 	}
