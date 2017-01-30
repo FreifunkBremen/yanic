@@ -24,9 +24,16 @@ var (
 
 func main() {
 	var importPath string
+	var timestamps bool
 	flag.StringVar(&importPath, "import", "", "import global statistics from the given RRD file, requires influxdb")
 	flag.StringVar(&configFile, "config", "config.toml", "path of configuration file (default:config.yaml)")
+	flag.BoolVar(&timestamps, "timestamps", true, "print timestamps in output")
 	flag.Parse()
+
+	if !timestamps {
+		log.SetFlags(0)
+	}
+
 	config = models.ReadConfigFile(configFile)
 
 	if config.Influxdb.Enable {
