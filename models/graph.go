@@ -112,26 +112,35 @@ func (builder *graphBuilder) extract() ([]*GraphNode, []*GraphLink) {
 	nodes := make([]*GraphNode, len(builder.macToID))
 	idToIndex := make(map[string]int)
 
-	// collect nodes and create mapping to index
-	i := 0
-	for mac, nodeID := range builder.macToID {
-		nodes[i] = &GraphNode{
-			ID:     mac,
-			NodeID: nodeID,
-		}
-		idToIndex[nodeID] = i
-		i++
-	}
-
 	// collect links
-	i = 0
+	iLink := 0
+	iNode := 0
 	for key, link := range builder.links {
 		pos := strings.IndexByte(key, '-')
 
-		link.Source = idToIndex[key[:pos]]
-		link.Target = idToIndex[key[pos+1:]]
-		links[i] = link
-		i++
+		nodeID := key[:pos]
+		if idToIndex[nodeID] == 0 {
+			nodes[iNode] = &GraphNode{
+				ID:     nodeID,
+				NodeID: nodeID,
+			}
+			idToIndex[nodeID] = iNode
+			iNode++
+		}
+		link.Source = idToIndex[nodeID]
+
+		nodeID = key[pos+1:]
+		if idToIndex[nodeID] == 0 {
+			nodes[iNode] = &GraphNode{
+				ID:     nodeID,
+				NodeID: nodeID,
+			}
+			idToIndex[nodeID] = iNode
+			iNode++
+		}
+		link.Target = idToIndex[nodeID]
+		links[iLink] = link
+		iLink++
 	}
 
 	return nodes, links
