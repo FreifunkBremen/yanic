@@ -8,6 +8,8 @@ import (
 	"net"
 	"time"
 
+	"fmt"
+
 	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/FreifunkBremen/respond-collector/database"
 	"github.com/FreifunkBremen/respond-collector/jsontime"
@@ -27,14 +29,16 @@ type Collector struct {
 
 // NewCollector creates a Collector struct
 func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector {
-	// Parse address
-	addr, err := net.ResolveUDPAddr("udp", "[::]:0")
+	linkLocalAddr, err := getLinkLocalAddr(iface)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	// Open socket
-	conn, err := net.ListenUDP("udp", addr)
+	conn, err := net.ListenUDP("udp", &net.UDPAddr{
+		IP:   linkLocalAddr,
+		Zone: iface,
+	})
 	if err != nil {
 		log.Panic(err)
 	}
@@ -57,6 +61,26 @@ func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector
 	}
 
 	return collector
+}
+
+// Returns the first link local unicast address for the given interface name
+func getLinkLocalAddr(ifname string) (net.IP, error) {
+	iface, err := net.InterfaceByName(ifname)
+	if err != nil {
+		return nil, err
+	}
+
+	addresses, err := iface.Addrs()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, addr := range addresses {
+		if ipnet := addr.(*net.IPNet); ipnet.IP.IsLinkLocalUnicast() {
+			return ipnet.IP, nil
+		}
+	}
+	return nil, fmt.Errorf("unable to find link local unicast address for %s", ifname)
 }
 
 // Start Collector
