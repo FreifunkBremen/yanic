@@ -17,15 +17,16 @@ type TestNode struct {
 
 func TestGenerateGraph(t *testing.T) {
 	assert := assert.New(t)
-	nodes := testGetNodesByFile("node1.json", "node2.json", "node3.json")
+	nodes := testGetNodesByFile("node1.json", "node2.json", "node3.json", "node4.json")
 
 	graph := nodes.BuildGraph()
 	assert.NotNil(graph)
 	assert.Equal(1, graph.Version, "Wrong Version")
 	assert.NotNil(graph.Batadv, "no Batadv")
 	assert.Equal(false, graph.Batadv.Directed, "directed batadv")
-	assert.Equal(3, len(graph.Batadv.Nodes), "wrong Nodes count")
-	assert.Equal(2, len(graph.Batadv.Links), "wrong Links count")
+	assert.Len(graph.Batadv.Links, 3, "wrong Links count")
+	assert.Equal(4, testNodesCountWithLinks(graph.Batadv.Links), "wrong unneed nodes in graph")
+	assert.Len(graph.Batadv.Nodes, 4, "wrong Nodes count")
 	// TODO more tests required
 }
 
@@ -64,4 +65,13 @@ func testfile(name string, obj interface{}) {
 	if err := json.Unmarshal(file, obj); err != nil {
 		panic(err)
 	}
+}
+
+func testNodesCountWithLinks(links []*GraphLink) int {
+	indexMap := make(map[int]bool)
+	for _, l := range links {
+		indexMap[l.Source] = true
+		indexMap[l.Target] = true
+	}
+	return len(indexMap)
 }

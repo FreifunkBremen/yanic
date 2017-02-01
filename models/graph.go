@@ -34,6 +34,7 @@ type GraphLink struct {
 // GraphBuilder a temporaty struct during fill the graph from the node neighbours
 type graphBuilder struct {
 	macToID map[string]string      // mapping from MAC address to node id
+	idToMac map[string]string      // mapping from node id to one MAC address
 	links   map[string]*GraphLink  // mapping from $idA-$idB to existing link
 	vpn     map[string]interface{} // IDs/addresses of VPN servers
 }
@@ -42,11 +43,14 @@ type graphBuilder struct {
 func (nodes *Nodes) BuildGraph() *Graph {
 	builder := &graphBuilder{
 		macToID: make(map[string]string),
+		idToMac: make(map[string]string),
 		links:   make(map[string]*GraphLink),
 		vpn:     make(map[string]interface{}),
 	}
 
+	nodes.RLock()
 	builder.readNodes(nodes.List)
+	nodes.RUnlock()
 
 	graph := &Graph{Version: 1}
 	graph.Batadv.Directed = false
@@ -61,6 +65,10 @@ func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
 			// is VPN address?
 			if nodeinfo.VPN {
 				builder.vpn[sourceID] = nil
+			}
+
+			if len(nodeinfo.Network.Mac) > 0 {
+				builder.macToID[sourceID] = nodeinfo.Network.Mac
 			}
 
 			// Batman neighbours
@@ -107,43 +115,49 @@ func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
 	}
 }
 
+type graphNodeCache struct {
+	idToMac   map[string]string
+	idToIndex map[string]int
+	count     int
+	Nodes     []*GraphNode
+}
+
+func newGraphNodeCache(idToMac map[string]string) *graphNodeCache {
+	return &graphNodeCache{
+		idToMac:   idToMac,
+		idToIndex: make(map[string]int),
+	}
+}
+
+func (gn *graphNodeCache) getIndex(nodeID string) int {
+	index, ok := gn.idToIndex[nodeID]
+	if !ok {
+		node := &GraphNode{
+			ID:     gn.idToMac[nodeID],
+			NodeID: nodeID,
+		}
+		gn.Nodes = append(gn.Nodes, node)
+		gn.idToIndex[nodeID] = gn.count
+		index = gn.count
+		gn.count++
+	}
+	return index
+}
+
 func (builder *graphBuilder) extract() ([]*GraphNode, []*GraphLink) {
 	links := make([]*GraphLink, len(builder.links))
-	nodes := make([]*GraphNode, len(builder.macToID))
-	idToIndex := make(map[string]int)
+	cache := newGraphNodeCache(builder.idToMac)
 
 	// collect links
-	iLink := 0
-	iNode := 0
+	i := 0
 	for key, link := range builder.links {
 		pos := strings.IndexByte(key, '-')
-
-		nodeID := key[:pos]
-		if idToIndex[nodeID] == 0 {
-			nodes[iNode] = &GraphNode{
-				ID:     nodeID,
-				NodeID: nodeID,
-			}
-			idToIndex[nodeID] = iNode
-			iNode++
-		}
-		link.Source = idToIndex[nodeID]
-
-		nodeID = key[pos+1:]
-		if idToIndex[nodeID] == 0 {
-			nodes[iNode] = &GraphNode{
-				ID:     nodeID,
-				NodeID: nodeID,
-			}
-			idToIndex[nodeID] = iNode
-			iNode++
-		}
-		link.Target = idToIndex[nodeID]
-		links[iLink] = link
-		iLink++
+		link.Source = cache.getIndex(key[:pos])
+		link.Target = cache.getIndex(key[pos+1:])
+		links[i] = link
+		i++
 	}
-
-	return nodes, links
+	return cache.Nodes, links
 }
 
 func (builder *graphBuilder) isVPN(ids ...string) bool {
