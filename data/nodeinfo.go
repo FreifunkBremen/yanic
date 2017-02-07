@@ -38,7 +38,7 @@ type Owner struct {
 
 // System struct
 type System struct {
-	SiteCode string `json:"site_code"`
+	SiteCode string `json:"site_code,omitempty"`
 }
 
 // Location struct
@@ -74,5 +74,5 @@ type Software struct {
 // Hardware struct
 type Hardware struct {
 	Nproc int    `json:"nproc"`
-	Model string `json:"model"`
+	Model string `json:"model,omitempty"`
 }
