@@ -7,13 +7,12 @@ import (
 	"log"
 	"net"
 	"time"
-
 	"fmt"
 
-	"github.com/FreifunkBremen/respond-collector/data"
-	"github.com/FreifunkBremen/respond-collector/database"
-	"github.com/FreifunkBremen/respond-collector/jsontime"
-	"github.com/FreifunkBremen/respond-collector/models"
+	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/database"
+	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/models"
 )
 
 // Collector for a specificle respond messages

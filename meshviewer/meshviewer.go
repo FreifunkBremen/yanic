@@ -1,8 +1,8 @@
 package meshviewer
 
 import (
-	"github.com/FreifunkBremen/respond-collector/data"
-	"github.com/FreifunkBremen/respond-collector/jsontime"
+	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/jsontime"
 )
 
 // Node struct

@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/FreifunkBremen/yanic/data"
 )
 
 func TestExpire(t *testing.T) {

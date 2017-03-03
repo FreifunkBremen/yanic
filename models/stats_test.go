@@ -3,8 +3,9 @@ package models
 import (
 	"testing"
 
-	"github.com/FreifunkBremen/respond-collector/data"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/FreifunkBremen/yanic/data"
 )
 
 func TestGlobalStats(t *testing.T) {
