@@ -2,10 +2,10 @@ language: go
 go:
   - tip
 install:
-  - go get -t github.com/FreifunkBremen/respond-collector/...
+  - go get -t github.com/FreifunkBremen/yanic/...
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
 script:
   - ./.test-coverage
-  - go install github.com/FreifunkBremen/respond-collector/cmd/respond-collector
-  - go install github.com/FreifunkBremen/respond-collector/cmd/respond-query
+  - go install github.com/FreifunkBremen/yanic/cmd/yanic
+  - go install github.com/FreifunkBremen/yanic/cmd/yanic-query
