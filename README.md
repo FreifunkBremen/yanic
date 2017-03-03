@@ -1,16 +1,25 @@
-# Respond Collector
+# Yanic
+```
+__   __          _
+\ \ / /_ _ _ __ (_) ___
+ \ V / _` | '_ \| |/ __|
+  | | (_| | | | | | (__
+  |_|\__,_|_| |_|_|\___|
+Yet another node info collector
+```
+(previously [respond-collector](https://github.com/FreifunkBremen/respond-collector))
 
 [![Build Status](https://travis-ci.org/FreifunkBremen/respond-collector.svg?branch=master)](https://travis-ci.org/FreifunkBremen/respond-collector)
 [![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/respond-collector/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/respond-collector?branch=master)
 
-`respond-collector` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
+`yanic` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
 * Generating JSON for [Meshviewer](https://github.com/ffrgb/meshviewer)
 * Storing statistics in [InfluxDB](https://influxdata.com/) to be analyzed by [Grafana](http://grafana.org/)
 * Provide a little webserver for a standalone installation with a meshviewer
 
 ## Usage
 ```
-Usage of ./respond-collector:
+Usage of ./yanic:
   -config path/to/config.toml
 ```
 ## Configuration
