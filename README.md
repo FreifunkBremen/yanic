@@ -9,7 +9,7 @@ Yet another node info collector
 ```
 (previously [respond-collector](https://github.com/FreifunkBremen/respond-collector))
 
-[![Build Status](https://travis-ci.org/FreifunkBremen/respond-collector.svg?branch=master)](https://travis-ci.org/FreifunkBremen/respond-collector)
+[![Build Status](https://travis-ci.org/FreifunkBremen/yanic.svg?branch=master)](https://travis-ci.org/FreifunkBremen/yanic)
 [![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/respond-collector/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/respond-collector?branch=master)
 
 `yanic` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
