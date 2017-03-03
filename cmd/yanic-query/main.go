@@ -4,11 +4,10 @@ import (
 	"log"
 	"net"
 	"os"
-
 	"time"
 
-	"github.com/FreifunkBremen/respond-collector/models"
-	"github.com/FreifunkBremen/respond-collector/respond"
+	"github.com/FreifunkBremen/yanic/models"
+	"github.com/FreifunkBremen/yanic/respond"
 )
 
 // Usage: respond-query wlp4s0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"

@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/FreifunkBremen/respond-collector/data"
-	"github.com/FreifunkBremen/respond-collector/jsontime"
-	"github.com/FreifunkBremen/respond-collector/meshviewer"
+	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/meshviewer"
 )
 
 // Nodes struct: cache DB of Node's structs

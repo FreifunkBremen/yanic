@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/FreifunkBremen/respond-collector/database"
-	"github.com/FreifunkBremen/respond-collector/models"
-	"github.com/FreifunkBremen/respond-collector/respond"
-	"github.com/FreifunkBremen/respond-collector/rrd"
-	"github.com/FreifunkBremen/respond-collector/webserver"
+	"github.com/FreifunkBremen/yanic/database"
+	"github.com/FreifunkBremen/yanic/models"
+	"github.com/FreifunkBremen/yanic/respond"
+	"github.com/FreifunkBremen/yanic/rrd"
+	"github.com/FreifunkBremen/yanic/webserver"
 )
 
 var (

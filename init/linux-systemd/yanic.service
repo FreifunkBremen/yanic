@@ -1,0 +1,12 @@
+[Unit]
+Description=yanic
+
+[Service]
+Type=simple
+User=yanic
+ExecStart=/opt/go/bin/yanic -config /etc/yanic.conf
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target

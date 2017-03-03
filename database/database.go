@@ -6,9 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/FreifunkBremen/respond-collector/models"
 	"github.com/influxdata/influxdb/client/v2"
 	imodels "github.com/influxdata/influxdb/models"
+
+	"github.com/FreifunkBremen/yanic/models"
 )
 
 const (
