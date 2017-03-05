@@ -42,7 +42,7 @@ mkdir -p /var/www/html/meshviewer/data
 
 #### Standalone
 If you like to run a meshviewer standalone, just set `enable` under section `[webserver]` to `true`.
-Configurate the meshviewer to `/data/` and put the `build` directory of this [meshviewer](https://github.com/ffrgb/meshviewer) under `/var/www/html/meshviewer`.
+Configurate the [meshviewer](https://github.com/ffrgb/meshviewer) set `dataPath` in `config.json` to `/data/` and put the `build` directory under `/var/www/html/meshviewer`.
 
 #### With webserver (Apache, nginx)
 Change following path under section `[nodes]` to what you need.
