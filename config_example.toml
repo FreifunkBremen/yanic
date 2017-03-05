@@ -11,7 +11,7 @@ interface        = "eth0"
 [webserver]
 enable  = false
 bind    = "127.0.0.1:8080"
-webroot = "webroot"
+webroot = "/var/www/html/meshviewer"
 
 
 [nodes]
