@@ -14,7 +14,8 @@ type Statistics struct {
 	Memory      Memory  `json:"memory,omitempty"`
 	Uptime      float64 `json:"uptime,omitempty"`
 	Idletime    float64 `json:"idletime,omitempty"`
-	Gateway     string  `json:"gateway,omitempty"`
+	GatewayIPv4 string  `json:"gateway,omitempty"`
+	GatewayIPv6 string  `json:"gateway6,omitempty"`
 	Processes   struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
