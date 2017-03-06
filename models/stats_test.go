@@ -17,12 +17,12 @@ func TestGlobalStats(t *testing.T) {
 	assert.EqualValues(25, stats.Clients)
 
 	// check models
-	assert.EqualValues(2, len(stats.Models))
+	assert.Len(stats.Models, 2)
 	assert.EqualValues(2, stats.Models["TP-Link 841"])
 	assert.EqualValues(1, stats.Models["Xeon Multi-Core"])
 
 	// check firmwares
-	assert.EqualValues(1, len(stats.Firmwares))
+	assert.Len(stats.Firmwares, 1)
 	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
 
 	fields := stats.Fields()
@@ -35,13 +35,13 @@ func TestNodesV1(t *testing.T) {
 	nodes := createTestNodes().GetNodesV1()
 
 	assert := assert.New(t)
-	assert.Equal(2, len(nodes.List))
+	assert.Len(nodes.List, 2)
 }
 func TestNodesV2(t *testing.T) {
 	nodes := createTestNodes().GetNodesV2()
 
 	assert := assert.New(t)
-	assert.Equal(2, len(nodes.List))
+	assert.Len(nodes.List, 2)
 }
 
 func createTestNodes() *Nodes {
