@@ -68,7 +68,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
 			}
 
 			if len(nodeinfo.Network.Mac) > 0 {
-				builder.macToID[sourceID] = nodeinfo.Network.Mac
+				builder.idToMac[sourceID] = nodeinfo.Network.Mac
 			}
 
 			// Batman neighbours
