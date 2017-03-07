@@ -1,4 +1,4 @@
-package models
+package runtime
 
 import (
 	"io/ioutil"
@@ -38,11 +38,11 @@ func TestExpire(t *testing.T) {
 
 	// one offline?
 	assert.NotNil(nodes.List["offline"])
-	assert.False(nodes.List["offline"].Flags.Online)
+	assert.False(nodes.List["offline"].Online)
 
 	// one online?
 	assert.NotNil(nodes.List["online"])
-	assert.True(nodes.List["online"].Flags.Online)
+	assert.True(nodes.List["online"].Online)
 }
 
 func TestLoadAndSave(t *testing.T) {
@@ -55,7 +55,7 @@ func TestLoadAndSave(t *testing.T) {
 	nodes.load()
 
 	tmpfile, _ := ioutil.TempFile("/tmp", "nodes")
-	save(nodes, tmpfile.Name())
+	SaveJSON(nodes, tmpfile.Name())
 	os.Remove(tmpfile.Name())
 
 	assert.Len(nodes.List, 1)

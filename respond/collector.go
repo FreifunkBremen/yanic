@@ -4,15 +4,15 @@ import (
 	"bytes"
 	"compress/flate"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"time"
-	"fmt"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/jsontime"
-	"github.com/FreifunkBremen/yanic/models"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 // Collector for a specificle respond messages
@@ -20,14 +20,14 @@ type Collector struct {
 	connection *net.UDPConn   // UDP socket
 	queue      chan *Response // received responses
 	iface      string
-	db         *database.DB
-	nodes      *models.Nodes
+	db         database.Connection
+	nodes      *runtime.Nodes
 	interval   time.Duration // Interval for multicast packets
 	stop       chan interface{}
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db *database.DB, nodes *models.Nodes, iface string, port int) *Collector {
+func NewCollector(db database.Connection, nodes *runtime.Nodes, iface string, port int) *Collector {
 	linkLocalAddr, err := getLinkLocalAddr(iface)
 	if err != nil {
 		log.Panic(err)
@@ -125,7 +125,7 @@ func (coll *Collector) sendUnicasts(seenBefore jsontime.Time) {
 	seenAfter := seenBefore.Add(-time.Minute * 10)
 
 	// Select online nodes that has not been seen recently
-	nodes := coll.nodes.Select(func(n *models.Node) bool {
+	nodes := coll.nodes.Select(func(n *runtime.Node) bool {
 		return n.Lastseen.After(seenAfter) && n.Lastseen.Before(seenBefore) && n.Address != nil
 	})
 
@@ -210,7 +210,7 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 
 	// Store statistics in InfluxDB
 	if coll.db != nil && node.Statistics != nil {
-		coll.db.Add(nodeID, node)
+		coll.db.AddNode(nodeID, node)
 	}
 }
 
@@ -249,9 +249,7 @@ func (coll *Collector) globalStatsWorker() {
 
 // saves global statistics
 func (coll *Collector) saveGlobalStats() {
-	stats := models.NewGlobalStats(coll.nodes)
+	stats := runtime.NewGlobalStats(coll.nodes)
 
-	coll.db.AddPoint(database.MeasurementGlobal, nil, stats.Fields(), time.Now())
-	coll.db.AddCounterMap(database.MeasurementFirmware, stats.Firmwares)
-	coll.db.AddCounterMap(database.MeasurementModel, stats.Models)
+	coll.db.AddStatistics(stats, time.Now())
 }

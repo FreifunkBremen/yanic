@@ -1,4 +1,4 @@
-package models
+package influxdb
 
 import (
 	"testing"
@@ -6,12 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 func TestToInflux(t *testing.T) {
 	assert := assert.New(t)
 
-	node := Node{
+	node := &runtime.Node{
 		Statistics: &data.Statistics{
 			NodeID:      "foobar",
 			LoadAverage: 0.5,
@@ -65,7 +66,7 @@ func TestToInflux(t *testing.T) {
 		},
 	}
 
-	tags, fields := node.ToInflux()
+	tags, fields := nodeToInflux(node)
 
 	assert.Equal("foobar", tags.GetString("nodeid"))
 	assert.Equal("nobody", tags.GetString("owner"))

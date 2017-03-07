@@ -29,6 +29,10 @@ export PATH=$PATH:$GOPATH/bin
 go get -v -u github.com/FreifunkBremen/yanic/cmd/...
 ```
 
+#### Work with other databases
+If you did like a other database solution like influxdb,
+you are welcome to create another subpackage from database in your fork like the logging.
+
 ### Configurate
 ```sh
 cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.conf
