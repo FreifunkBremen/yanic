@@ -50,7 +50,9 @@ func BuildGraph(nodes *runtime.Nodes) *Graph {
 		vpn:     make(map[string]interface{}),
 	}
 
+	nodes.RLock()
 	builder.readNodes(nodes.List)
+	nodes.RUnlock()
 
 	graph := &Graph{Version: 1}
 	graph.Batadv.Directed = false
