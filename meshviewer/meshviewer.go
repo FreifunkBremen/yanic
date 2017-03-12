@@ -69,9 +69,11 @@ func NewStatistics(stats *data.Statistics) *Statistics {
 		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
 	}
 	/* The Meshviewer could not handle absolute memory output
-	 * calc the used memory as a float witch 100% equal 1.0
+	 * calc the used memory as a float which 100% equal 1.0
+	 * calc is coppied from node statuspage (look discussion:
+	 * https://github.com/FreifunkBremen/yanic/issues/35)
 	 */
-	memoryUsage := (float64(stats.Memory.Total) - float64(stats.Memory.Free)) / float64(stats.Memory.Total)
+	memoryUsage := 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
 
 	return &Statistics{
 		NodeID:      stats.NodeID,
