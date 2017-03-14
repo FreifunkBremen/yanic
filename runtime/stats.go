@@ -27,7 +27,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 	for _, node := range nodes.List {
 		if node.Online {
 			result.Nodes++
-			if stats := node.Statistics; stats != nil {
+			if stats := node.Statistics; stats != nil && stats.Clients != nil {
 				result.Clients += stats.Clients.Total
 				result.ClientsWifi24 += stats.Clients.Wifi24
 				result.ClientsWifi5 += stats.Clients.Wifi5

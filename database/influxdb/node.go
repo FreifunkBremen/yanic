@@ -29,18 +29,27 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 	tags.SetString("nodeid", stats.NodeID)
 
 	fields = map[string]interface{}{
-		"load":           stats.LoadAverage,
-		"time.up":        int64(stats.Uptime),
-		"time.idle":      int64(stats.Idletime),
-		"proc.running":   stats.Processes.Running,
-		"clients.wifi":   stats.Clients.Wifi,
-		"clients.wifi24": stats.Clients.Wifi24,
-		"clients.wifi5":  stats.Clients.Wifi5,
-		"clients.total":  stats.Clients.Total,
-		"memory.buffers": stats.Memory.Buffers,
-		"memory.cached":  stats.Memory.Cached,
-		"memory.free":    stats.Memory.Free,
-		"memory.total":   stats.Memory.Total,
+		"load":      stats.LoadAverage,
+		"time.up":   int64(stats.Uptime),
+		"time.idle": int64(stats.Idletime),
+	}
+
+	if clients := stats.Clients; clients != nil {
+		fields["clients.wifi"] = clients.Wifi
+		fields["clients.wifi24"] = clients.Wifi24
+		fields["clients.wifi5"] = clients.Wifi5
+		fields["clients.total"] = clients.Total
+	}
+
+	if proc := stats.Processes; proc != nil {
+		fields["proc.running"] = stats.Processes.Running
+	}
+
+	if mem := stats.Memory; mem != nil {
+		fields["memory.buffers"] = mem.Buffers
+		fields["memory.cached"] = mem.Cached
+		fields["memory.free"] = mem.Free
+		fields["memory.total"] = mem.Total
 	}
 
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {

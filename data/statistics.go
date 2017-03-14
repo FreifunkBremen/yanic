@@ -7,17 +7,17 @@ package data
 
 //Statistics struct
 type Statistics struct {
-	NodeID         string  `json:"node_id"`
-	Clients        Clients `json:"clients"`
-	RootFsUsage    float64 `json:"rootfs_usage,omitempty"`
-	LoadAverage    float64 `json:"loadavg,omitempty"`
-	Memory         Memory  `json:"memory,omitempty"`
-	Uptime         float64 `json:"uptime,omitempty"`
-	Idletime       float64 `json:"idletime,omitempty"`
-	GatewayIPv4    string  `json:"gateway,omitempty"`
-	GatewayIPv6    string  `json:"gateway6,omitempty"`
-	GatewayNexthop string  `json:"gateway_nexthop,omitempty"`
-	Processes      struct {
+	NodeID         string   `json:"node_id"`
+	Clients        *Clients `json:"clients"`
+	RootFsUsage    float64  `json:"rootfs_usage,omitempty"`
+	LoadAverage    float64  `json:"loadavg,omitempty"`
+	Memory         *Memory  `json:"memory,omitempty"`
+	Uptime         float64  `json:"uptime,omitempty"`
+	Idletime       float64  `json:"idletime,omitempty"`
+	GatewayIPv4    string   `json:"gateway,omitempty"`
+	GatewayIPv6    string   `json:"gateway6,omitempty"`
+	GatewayNexthop string   `json:"gateway_nexthop,omitempty"`
+	Processes      *struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
 	} `json:"processes,omitempty"`
