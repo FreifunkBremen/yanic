@@ -44,6 +44,7 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 	}
 
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		tags.SetString("hostname", nodeinfo.Hostname)
 		if owner := nodeinfo.Owner; owner != nil {
 			tags.SetString("owner", owner.Contact)
 		}
@@ -51,8 +52,11 @@ func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
 			fields["wireless.txpower24"] = wireless.TxPower24
 			fields["wireless.txpower5"] = wireless.TxPower5
 		}
-		// morpheus needs
-		tags.SetString("hostname", nodeinfo.Hostname)
+		// Hardware
+		tags.SetString("model", nodeinfo.Hardware.Model)
+		tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
+		tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
+
 	}
 
 	if neighbours := node.Neighbours; neighbours != nil {
