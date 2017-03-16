@@ -63,11 +63,12 @@ delete_interval = "1h"
 #  model: store count of nodes tagged with hardware model
 [[database.connection.influxdb]]
 enable   = false
-job      = "ffhb01"
 address  = "http://localhost:8086"
 database = "ffhb"
 username = ""
 password = ""
+# tag the data with an optional job tag
+job      = "ffhb01"
 
 [[database.connection.logging]]
 enable   = false
