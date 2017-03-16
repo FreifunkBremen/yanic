@@ -1,6 +1,7 @@
 package influxdb
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -45,6 +46,9 @@ func (c Config) Username() string {
 func (c Config) Password() string {
 	return c["password"].(string)
 }
+func (c Config) Job() string {
+	return c["job"].(string)
+}
 
 func init() {
 	database.RegisterAdapter("influxdb", Connect)
@@ -78,8 +82,14 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	return db, nil
 }
 
-func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, t ...time.Time) {
-	point, err := client.NewPoint(name, tags.Map(), fields, t...)
+func (conn *Connection) DeleteNode(deleteAfter time.Duration) {
+	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, deleteAfter/time.Second)
+	conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
+}
+
+func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, time time.Time) {
+	tags.SetString("job", db.config.Job())
+	point, err := client.NewPoint(name, tags.Map(), fields, time)
 	if err != nil {
 		panic(err)
 	}
