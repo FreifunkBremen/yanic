@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import json
+import argparse
+import os
+import sys
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-n', '--nodesjson', action='store',
+                  help='old nodes.json file you want to read firstseen from',required=True)
+
+parser.add_argument('-s', '--state', action='store',
+                  help='state.json you want to store',required=True)
+
+args = parser.parse_args()
+options = vars(args)
+
+oldnodes_fn = os.path.realpath(options['nodesjson'])
+newnodes_fn = os.path.realpath(options['state'])
+
+with open(oldnodes_fn, 'r', encoding=('UTF-8')) as oldnodedb_handle:
+    oldnodedb = json.load(oldnodedb_handle)
+with open(newnodes_fn, 'r', encoding=('UTF-8')) as newnodedb_handle:
+    newnodedb = json.load(newnodedb_handle)
+
+count = 0
+if oldnodedb['version'] == 1:
+    for nodeid, node in newnodedb['nodes'].items():
+        for oldnodeid, oldnode in oldnodedb['nodes'].items():
+            if oldnodeid == nodeid:
+                node['firstseen'] = "{}+0100".format(oldnode['firstseen'])
+                count+=1
+
+if oldnodedb['version'] == 2:
+    for nodeid, node in newnodedb['nodes'].items():
+        for oldnode in oldnodedb['nodes']:
+            if oldnode['nodeinfo']['node_id'] == nodeid:
+                node['firstseen'] = "{}+0100".format(oldnode['firstseen'])
+                count+=1
+
+with open(newnodes_fn, 'w') as f:
+    json.dump(newnodedb, f)
+
+print('firstseen updated on %d nodes' % count)
