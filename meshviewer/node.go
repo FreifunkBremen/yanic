@@ -23,15 +23,15 @@ type Flags struct {
 
 // Statistics a meshviewer spezifisch struct, diffrent from respondd
 type Statistics struct {
-	NodeID      string   `json:"node_id"`
-	Clients     uint32   `json:"clients"`
-	RootFsUsage float64  `json:"rootfs_usage,omitempty"`
-	LoadAverage float64  `json:"loadavg,omitempty"`
-	MemoryUsage *float64 `json:"memory_usage,omitempty"`
-	Uptime      float64  `json:"uptime,omitempty"`
-	Idletime    float64  `json:"idletime,omitempty"`
-	GatewayIPv4 string   `json:"gateway,omitempty"`
-	GatewayIPv6 string   `json:"gateway6,omitempty"`
+	NodeID      string  `json:"node_id"`
+	Clients     uint32  `json:"clients"`
+	RootFsUsage float64 `json:"rootfs_usage,omitempty"`
+	LoadAverage float64 `json:"loadavg,omitempty"`
+	MemoryUsage float64 `json:"memory_usage,omitempty"`
+	Uptime      float64 `json:"uptime,omitempty"`
+	Idletime    float64 `json:"idletime,omitempty"`
+	GatewayIPv4 string  `json:"gateway,omitempty"`
+	GatewayIPv6 string  `json:"gateway6,omitempty"`
 	Processes   *struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
@@ -61,7 +61,7 @@ func NewStatistics(stats *data.Statistics) *Statistics {
 	 * https://github.com/FreifunkBremen/yanic/issues/35)
 	 */
 
-	meshviewerStats := &Statistics{
+	result := &Statistics{
 		NodeID:      stats.NodeID,
 		GatewayIPv4: stats.GatewayIPv4,
 		GatewayIPv6: stats.GatewayIPv6,
@@ -73,9 +73,10 @@ func NewStatistics(stats *data.Statistics) *Statistics {
 		MeshVPN:     stats.MeshVPN,
 		Traffic:     stats.Traffic,
 		Clients:     total,
+		MemoryUsage: 1,
 	}
 	if memory := stats.Memory; memory != nil && memory.Total > 0 {
-		*meshviewerStats.MemoryUsage = 1 - (float64(memory.Free)+float64(memory.Buffers)+float64(memory.Cached))/float64(memory.Total)
+		result.MemoryUsage = 1 - (float64(memory.Free)+float64(memory.Buffers)+float64(memory.Cached))/float64(memory.Total)
 	}
-	return meshviewerStats
+	return result
 }
