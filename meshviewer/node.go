@@ -37,7 +37,7 @@ type Statistics struct {
 		Running uint32 `json:"running"`
 	} `json:"processes,omitempty"`
 	MeshVPN *data.MeshVPN `json:"mesh_vpn,omitempty"`
-	Traffic struct {
+	Traffic *struct {
 		Tx      *data.Traffic `json:"tx"`
 		Rx      *data.Traffic `json:"rx"`
 		Forward *data.Traffic `json:"forward"`

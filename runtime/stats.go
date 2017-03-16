@@ -38,7 +38,9 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 			}
 			if info := node.Nodeinfo; info != nil {
 				result.Models.Increment(info.Hardware.Model)
-				result.Firmwares.Increment(info.Software.Firmware.Release)
+				if firmware := info.Software.Firmware; firmware != nil {
+					result.Firmwares.Increment(info.Software.Firmware.Release)
+				}
 			}
 		}
 	}

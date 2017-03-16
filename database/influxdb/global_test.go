@@ -24,13 +24,19 @@ func createTestNodes() *runtime.Nodes {
 
 	nodeData := &data.ResponseData{
 		Statistics: &data.Statistics{
-			Clients: data.Clients{
+			Clients: &data.Clients{
 				Total: 23,
 			},
 		},
 		NodeInfo: &data.NodeInfo{
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
+			},
+			Software: data.Software{
+				Firmware: &struct {
+					Base    string `json:"base,omitempty"`
+					Release string `json:"release,omitempty"`
+				}{},
 			},
 		},
 	}
@@ -39,7 +45,7 @@ func createTestNodes() *runtime.Nodes {
 
 	nodes.Update("112233445566", &data.ResponseData{
 		Statistics: &data.Statistics{
-			Clients: data.Clients{
+			Clients: &data.Clients{
 				Total: 2,
 			},
 		},

@@ -19,7 +19,7 @@ func TestToInflux(t *testing.T) {
 			Wireless: data.WirelessStatistics{
 				&data.WirelessAirtime{Frequency: 5500},
 			},
-			Traffic: struct {
+			Traffic: &struct {
 				Tx      *data.Traffic `json:"tx"`
 				Rx      *data.Traffic `json:"rx"`
 				Forward *data.Traffic `json:"forward"`

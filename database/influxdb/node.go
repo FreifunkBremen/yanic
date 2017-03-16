@@ -63,8 +63,10 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		}
 		// Hardware
 		tags.SetString("model", nodeinfo.Hardware.Model)
-		tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
-		tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
+		if firmware := nodeinfo.Software.Firmware; firmware != nil {
+			tags.SetString("firmware_base", firmware.Base)
+			tags.SetString("firmware_release", firmware.Release)
+		}
 
 	}
 
@@ -99,27 +101,28 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		// total is the sum of all protocols
 		fields["neighbours.total"] = batadv + lldp
 	}
-
-	if t := stats.Traffic.Rx; t != nil {
-		fields["traffic.rx.bytes"] = int64(t.Bytes)
-		fields["traffic.rx.packets"] = t.Packets
-	}
-	if t := stats.Traffic.Tx; t != nil {
-		fields["traffic.tx.bytes"] = int64(t.Bytes)
-		fields["traffic.tx.packets"] = t.Packets
-		fields["traffic.tx.dropped"] = t.Dropped
-	}
-	if t := stats.Traffic.Forward; t != nil {
-		fields["traffic.forward.bytes"] = int64(t.Bytes)
-		fields["traffic.forward.packets"] = t.Packets
-	}
-	if t := stats.Traffic.MgmtRx; t != nil {
-		fields["traffic.mgmt_rx.bytes"] = int64(t.Bytes)
-		fields["traffic.mgmt_rx.packets"] = t.Packets
-	}
-	if t := stats.Traffic.MgmtTx; t != nil {
-		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
-		fields["traffic.mgmt_tx.packets"] = t.Packets
+	if tr := stats.Traffic; tr != nil {
+		if t := tr.Rx; t != nil {
+			fields["traffic.rx.bytes"] = int64(t.Bytes)
+			fields["traffic.rx.packets"] = t.Packets
+		}
+		if t := tr.Tx; t != nil {
+			fields["traffic.tx.bytes"] = int64(t.Bytes)
+			fields["traffic.tx.packets"] = t.Packets
+			fields["traffic.tx.dropped"] = t.Dropped
+		}
+		if t := tr.Forward; t != nil {
+			fields["traffic.forward.bytes"] = int64(t.Bytes)
+			fields["traffic.forward.packets"] = t.Packets
+		}
+		if t := tr.MgmtRx; t != nil {
+			fields["traffic.mgmt_rx.bytes"] = int64(t.Bytes)
+			fields["traffic.mgmt_rx.packets"] = t.Packets
+		}
+		if t := tr.MgmtTx; t != nil {
+			fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
+			fields["traffic.mgmt_tx.packets"] = t.Packets
+		}
 	}
 
 	for _, airtime := range stats.Wireless {
