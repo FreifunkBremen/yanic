@@ -50,7 +50,7 @@ func main() {
 	nodes.Start()
 
 	if config.Respondd.Enable {
-		collector = respond.NewCollector(db, nodes, config.Respondd.Interface)
+		collector = respond.NewCollector(db, nodes, config.Respondd.Interface, config.Respondd.Port)
 		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}

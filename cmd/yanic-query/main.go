@@ -19,7 +19,7 @@ func main() {
 
 	nodes := models.NewNodes(&models.Config{})
 
-	collector := respond.NewCollector(nil, nodes, iface)
+	collector := respond.NewCollector(nil, nodes, iface, 0)
 	collector.SendPacket(net.ParseIP(dstAddress))
 
 	time.Sleep(time.Second)
