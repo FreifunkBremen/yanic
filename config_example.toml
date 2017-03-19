@@ -7,7 +7,8 @@ collect_interval = "1m"
 interface        = "eth0"
 
 
-# A little build-in webserver
+# A little build-in webserver, which statically serves a directory.
+# This is useful for testing purposes or for a little standalone installation.
 [webserver]
 enable  = false
 bind    = "127.0.0.1:8080"
