@@ -27,7 +27,7 @@ type Collector struct {
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector {
+func NewCollector(db *database.DB, nodes *models.Nodes, iface string, port int) *Collector {
 	linkLocalAddr, err := getLinkLocalAddr(iface)
 	if err != nil {
 		log.Panic(err)
@@ -36,6 +36,7 @@ func NewCollector(db *database.DB, nodes *models.Nodes, iface string) *Collector
 	// Open socket
 	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   linkLocalAddr,
+		Port: port,
 		Zone: iface,
 	})
 	if err != nil {

@@ -5,6 +5,9 @@ enable           = true
 collect_interval = "1m"
 # on which interface
 interface        = "eth0"
+# define a port to listen
+# (no or 0 would choose at port at his own)
+#port = 10001
 
 
 # A little build-in webserver, which statically serves a directory.

@@ -11,6 +11,7 @@ type Config struct {
 	Respondd struct {
 		Enable          bool
 		Interface       string
+		Port            int
 		CollectInterval Duration
 	}
 	Webserver struct {
