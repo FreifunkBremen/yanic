@@ -50,7 +50,7 @@ For `nodes_path` and `graph_path` should be under the same folder for a meshview
 
 ### Service
 ```bash
-cp /opt/go/src/github.com/FreifunkBremen/yanic/init/linux-systemd/yanic.service /lib/systemd/system
+cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.service /lib/systemd/system
 systemctl daemon-reload
 systemctl start yanic
 systemctl enable yanic
