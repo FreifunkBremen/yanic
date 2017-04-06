@@ -1,0 +1,37 @@
+# $Id$
+# Maintainer Geno <geno+ffhb@fireorbit.de>
+
+pkgname=yanic
+pkgver=0.1
+pkgrel=1
+pkgdesc='Yet an nother node info collector'
+url='https://github.com/FreifunkBremen/yanic'
+arch=('x86_64' 'i686')
+makedepends=('git' 'go')
+backup=("etc/yanic.conf")
+source=("yanic.conf"
+        "yanic.service")
+md5sums=('SKIP'
+         'SKIP')
+
+install='yanic.install'
+
+prepare () {
+  msg2 "patch config to default http"
+  sed -e 's/\/var\/www\/html\//\/srv\/http\//g' yanic.conf > yanic-tmp.conf
+  sed -e 's/\/opt\/go\/bin/\/usr\/bin/g' yanic.service > yanic-tmp.service
+}
+
+build() {
+  msg2 "GOPATH setup"
+  export GOPATH="$srcdir/gopath"
+  export PATH+=":$GOPATH/bin"
+  go get -v -u github.com/FreifunkBremen/yanic/cmd/...
+}
+
+package() {
+  install -Dm644 yanic-tmp.conf "$pkgdir/etc/yanic.conf"
+  install -Dm644 yanic-tmp.service "$pkgdir/usr/lib/systemd/system/yanic.service"
+  install -Dsm755 "$GOPATH/bin/yanic" "$pkgdir/usr/bin/yanic"
+  install -Dsm755 "$GOPATH/bin/yanic-query" "$pkgdir/usr/bin/yanic-query"
+}

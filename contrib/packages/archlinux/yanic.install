@@ -1,0 +1,13 @@
+post_install() {
+    getent group yanic >/dev/null || groupadd yanic
+    getent passwd yanic >/dev/null || useradd -d /var/lib/yanic -g yanic -r -M -s /bin/false yanic
+
+    mkdir -p /srv/http/meshviewer/data /var/lib/yanic
+    chown yanic:yanic /var/lib/yanic /etc/yanic.conf
+    chown yanic:http /srv/http/meshviewer/data
+    chown http:http /srv/http/meshviewer
+}
+
+post_upgrade() {
+    systemctl daemon-reload
+}

@@ -23,7 +23,7 @@ webroot = "/var/www/html/meshviewer"
 enable         = true
 # state-version of nodes.json to store cached data,
 #  these is the directly collected respondd data
-state_path     = "/var/lib/collector/state.json"
+state_path     = "/var/lib/yanic/state.json"
 
 # Export nodes and graph periodically
 save_interval = "5s"
