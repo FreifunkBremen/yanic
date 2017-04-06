@@ -1,0 +1,61 @@
+Source: yanic
+Section: devel
+Priority: extra
+Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org>
+Uploaders: root <TODO>
+Build-Depends: debhelper (>= 10),
+               dh-golang
+Standards-Version: 3.9.8
+Homepage: https://github.com/FreifunkBremen/yanic
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-go/packages/yanic.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-go/packages/yanic.git
+XS-Go-Import-Path: github.com/FreifunkBremen/yanic
+
+Package: yanic
+Architecture: any
+Built-Using: ${misc:Built-Using}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Yet another node info collector  - for respondd to be used with MeshViewer, InfluxDB and Grafana
+ Yanic ```
+ --------------------------------------------------------------------------------
+ .
+ \ \ / /_ _ _ __ (_) ___
+  \ V / _| '_ \| |/ __|
+   | | (_| | | | | | (__ |_|\__,_|_| |_|_|\___|
+ Yet another node info collector `` (previously respond-collector
+ (https://github.com/FreifunkBremen/respond-collector))
+ .
+ Build Status (https://travis-ci.org/FreifunkBremen/yanic) Coverage Status
+ (https://coveralls.io/github/FreifunkBremen/respond-collector?branch=master)
+ .
+ yanic is a respondd client that fetches, stores and publishes information
+ about a Freifunk network. The goals: * Generating JSON for Meshviewer
+ (https://github.com/ffrgb/meshviewer) * Storing statistics in InfluxDB
+ (https://influxdata.com/) to be analyzed by Grafana (http://grafana.org/)
+ * Provide a little webserver for a standalone installation with a
+ meshviewer Usage
+ .
+ Usage of ./yanic:
+   -config path/to/config.toml
+ .
+ Configuration Read comments in config_example.toml
+ (config_example.toml) for more information.  Live•
+ meshviewer (https://map.bremen.freifunk.net) Freifunk Bremen
+ with a patch to show state-version of nodes.json• grafana
+ (https://grafana.bremen.freifunk.net)  Freifunk Bremen show data of
+ InfluxDBHow it works It sends the gluon-neighbour-info request and
+ collects the answers.
+ .
+ It will send UDP packets with multicast group ff02:0:0:0:0:0:2:1001 and
+ port 1001.
+ .
+ If a node does not answer, it will request with the last know address
+ under the port 1001.  Related projects Collecting data from respondd: *
+ Node informant (https://github.com/ffdo/node-informant) written in Go *
+ HopGlass Server (https://github.com/plumpudding/hopglass-server) written
+ in Node.js
+ .
+ Respondd for servers: * ffnord-alfred-announce
+ (https://github.com/ffnord/ffnord-alfred-announce) from FreiFunkNord *
+ respondd (https://github.com/Sunz3r/ext-respondd) from Sunz3r

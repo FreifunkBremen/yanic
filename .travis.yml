@@ -10,3 +10,12 @@ script:
   - ./.test-coverage
   - go install github.com/FreifunkBremen/yanic/cmd/yanic
   - go install github.com/FreifunkBremen/yanic/cmd/yanic-query
+before_deploy:
+  - ./.build-packages
+deploy:
+  provider: packagecloud
+  repository: yanic
+  username: FreifunkBremen
+#  on:
+#    branch: master
+  
