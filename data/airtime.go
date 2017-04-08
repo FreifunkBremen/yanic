@@ -1,8 +1,6 @@
 package data
 
-import (
-	"math"
-)
+import "math"
 
 // Wireless struct
 type Wireless struct {
@@ -29,7 +27,7 @@ type WirelessAirtime struct {
 	Frequency  uint32 `json:"frequency"`
 }
 
-// FrequencyName to 11g or 11a
+// FrequencyName returns 11g or 11a
 func (airtime WirelessAirtime) FrequencyName() string {
 	if airtime.Frequency < 5000 {
 		return "11g"
@@ -37,32 +35,28 @@ func (airtime WirelessAirtime) FrequencyName() string {
 	return "11a"
 }
 
-// SetUtilization Calculates the utilization values in regard to the previous values
+// SetUtilization calculates the utilization values in regard to the previous values
 func (current WirelessStatistics) SetUtilization(previous WirelessStatistics) {
 	for _, c := range current {
 		for _, p := range previous {
-			if c.Frequency == p.Frequency {
-				c.SetUtilization(p)
+			// Same frequency and time passed?
+			if c.Frequency == p.Frequency && p.ActiveTime < c.ActiveTime {
+				c.setUtilization(p)
 			}
 		}
 	}
 }
 
-// SetUtilization Calculates the utilization values in regard to the previous values
-func (airtime *WirelessAirtime) SetUtilization(prev *WirelessAirtime) {
-	if airtime.ActiveTime <= prev.ActiveTime {
-		return
-	}
-
+// setUtilization updates the utilization values in regard to the previous values
+func (airtime *WirelessAirtime) setUtilization(prev *WirelessAirtime) {
+	// Calculate deltas
 	active := float64(airtime.ActiveTime) - float64(prev.ActiveTime)
 	busy := float64(airtime.BusyTime) - float64(prev.BusyTime)
-	rx := float64(airtime.TxTime) - float64(prev.TxTime)
-	tx := float64(airtime.RxTime) - float64(prev.RxTime)
+	rx := float64(airtime.RxTime) - float64(prev.RxTime)
+	tx := float64(airtime.TxTime) - float64(prev.TxTime)
 
-	// Calculate utilizations
-	if active > 0 {
-		airtime.ChanUtil = float32(math.Min(100, 100*(busy+rx+tx)/active))
-		airtime.RxUtil = float32(math.Min(100, 100*rx/active))
-		airtime.TxUtil = float32(math.Min(100, 100*tx/active))
-	}
+	// Update utilizations
+	airtime.ChanUtil = float32(math.Min(100, 100*busy/active))
+	airtime.RxUtil = float32(math.Min(100, 100*rx/active))
+	airtime.TxUtil = float32(math.Min(100, 100*tx/active))
 }
