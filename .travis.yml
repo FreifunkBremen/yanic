@@ -13,12 +13,8 @@ before_deploy:
 - go get github.com/laher/goxc
 - goxc -pv=$(date +%Y%m%d)
 deploy:
-  provider: packagecloud
-  repository: yanic
-  username: FreifunkBremen
-  token:
-    secure: U3p3AjBvN1kpLd0sL9CBseYhtKCLeZeFZzNzr+3y+/IgBGHANXxUxcNsgj7Ip2zQIy/7TlwVFdlGSPu95O8oL4WVmlkaGnLH1FdFJF/aej+7gGE069Q3E1AkiDzByKCNr9idKxmL9wARS8owJU2e90Ohe5Fqte3gGIHx0xx6z0aDGArDx77j+yxPUyTXxsZMOEaJhnDcbI+FSKAy2J43T17ix63RbZk/X0zHGmnRTQtkiKsIibjVnZFs89ScHcBjOR2zvzlNBN4bS9o1f/C6BHaFFi2hpqOkXTJxtMmsdpFq0GSg/CqGVtyIrb/okZe7/22ovc0cAiaG2I25kB5nSCx5qwwnaUpZaJ0rKcvjxLiLP7mRccugoycKoCXv/uhIwJtmux1lVn26umW5ktgxrqUdNbftpqOH/XiE0PI7npjkX7xaJUv5J3KFp3pJ8YpRUUYSnWfcyzSKE19g/JHCzOLfmjo2H5Rj9WYI7Gb80xnZjplD0zrZsAR4rnCyI+S4Qjx2pD3waRLrOKkfRiZ6QObSXVe6zizJ65GudoLjsSkI3JD/kwVXUN6bOEXEXuaM+gXMWjZIIXiz1BArrK4GYvjQREdGOGsCTo4q8RBikr//ler8CZQ/2m5BcVACPkUv/LPcU2uYUkBxIzgddTs6eoiomblwLn/BHnt125YuTgY=
-  dist: debian/jessie
-  local-dir: contrib
+  provider: script
+  script: "./.deploy"
+  skip_cleanup: true
   on:
     branch: package
