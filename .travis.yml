@@ -10,7 +10,8 @@ script:
 - go install github.com/FreifunkBremen/yanic/cmd/yanic
 - go install github.com/FreifunkBremen/yanic/cmd/yanic-query
 before_deploy:
-- "./.build-packages"
+- go get github.com/laher/goxc
+- goxc -pv=$(date +%Y%m%d)
 deploy:
   provider: packagecloud
   repository: yanic

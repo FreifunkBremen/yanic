@@ -1,5 +1,6 @@
 {
 	"AppName": "yanic",
+	"ArtifactsDest": "./build",
 	"TasksExclude": [
 		"validate"
 	],
@@ -8,7 +9,7 @@
 		"deb": {
 			"metadata": {
 				"description": "Yet another node info collector",
-				"maintainer": "FreifunkBremen"
+				"maintainer": "FreifunkBremen \u003cgeno+ffhb@fireorbit.de\u003e"
 			},
 			"other-mapped-files": {
 				"/": "contrib/packages/debian"
