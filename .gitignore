@@ -22,5 +22,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
+/profile.cov
 webroot
 /config.toml
