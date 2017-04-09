@@ -1,0 +1,19 @@
+{
+	"AppName": "yanic",
+	"TasksExclude": [
+		"validate"
+	],
+	"BuildConstraints": "linux",
+	"TaskSettings": {
+		"deb": {
+			"metadata": {
+				"description": "Yet another node info collector",
+				"maintainer": "FreifunkBremen"
+			},
+			"other-mapped-files": {
+				"/": "contrib/packages/debian"
+			}
+		}
+	},
+	"ConfigVersion": "0.9"
+}
