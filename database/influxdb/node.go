@@ -1,29 +1,15 @@
-package models
+package influxdb
 
 import (
-	"net"
 	"strconv"
 
-	imodels "github.com/influxdata/influxdb/models"
+	models "github.com/influxdata/influxdb/models"
 
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/jsontime"
-	"github.com/FreifunkBremen/yanic/meshviewer"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-// Node struct
-type Node struct {
-	Address    net.IP           `json:"address"` // the last known IP address
-	Firstseen  jsontime.Time    `json:"firstseen"`
-	Lastseen   jsontime.Time    `json:"lastseen"`
-	Flags      meshviewer.Flags `json:"flags"`
-	Statistics *data.Statistics `json:"statistics"`
-	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
-	Neighbours *data.Neighbours `json:"-"`
-}
-
-// ToInflux Returns tags and fields for InfluxDB
-func (node *Node) ToInflux() (tags imodels.Tags, fields imodels.Fields) {
+// NodeToInflux Returns tags and fields for InfluxDB
+func nodeToInflux(node *runtime.Node) (tags models.Tags, fields models.Fields) {
 	stats := node.Statistics
 
 	tags.SetString("nodeid", stats.NodeID)

@@ -1,4 +1,4 @@
-package models
+package influxdb
 
 import (
 	"testing"
@@ -6,46 +6,21 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 func TestGlobalStats(t *testing.T) {
-	stats := NewGlobalStats(createTestNodes())
+	stats := runtime.NewGlobalStats(createTestNodes())
 
 	assert := assert.New(t)
-	assert.EqualValues(1, stats.Gateways)
-	assert.EqualValues(3, stats.Nodes)
-	assert.EqualValues(25, stats.Clients)
-
-	// check models
-	assert.Len(stats.Models, 2)
-	assert.EqualValues(2, stats.Models["TP-Link 841"])
-	assert.EqualValues(1, stats.Models["Xeon Multi-Core"])
-
-	// check firmwares
-	assert.Len(stats.Firmwares, 1)
-	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
-
-	fields := stats.Fields()
+	fields := GlobalStatsFields(stats)
 
 	// check fields
 	assert.EqualValues(3, fields["nodes"])
 }
 
-func TestNodesV1(t *testing.T) {
-	nodes := createTestNodes().GetNodesV1()
-
-	assert := assert.New(t)
-	assert.Len(nodes.List, 2)
-}
-func TestNodesV2(t *testing.T) {
-	nodes := createTestNodes().GetNodesV2()
-
-	assert := assert.New(t)
-	assert.Len(nodes.List, 2)
-}
-
-func createTestNodes() *Nodes {
-	nodes := NewNodes(&Config{})
+func createTestNodes() *runtime.Nodes {
+	nodes := runtime.NewNodes(&runtime.Config{})
 
 	nodeData := &data.ResponseData{
 		Statistics: &data.Statistics{

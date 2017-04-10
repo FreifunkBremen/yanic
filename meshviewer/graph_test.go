@@ -1,4 +1,4 @@
-package models
+package meshviewer
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 type TestNode struct {
@@ -19,7 +20,7 @@ func TestGenerateGraph(t *testing.T) {
 	assert := assert.New(t)
 	nodes := testGetNodesByFile("node1.json", "node2.json", "node3.json", "node4.json")
 
-	graph := nodes.BuildGraph()
+	graph := BuildGraph(nodes)
 	assert.NotNil(graph)
 	assert.Equal(1, graph.Version, "Wrong Version")
 	assert.NotNil(graph.Batadv, "no Batadv")
@@ -30,10 +31,10 @@ func TestGenerateGraph(t *testing.T) {
 	// TODO more tests required
 }
 
-func testGetNodesByFile(files ...string) *Nodes {
+func testGetNodesByFile(files ...string) *runtime.Nodes {
 
-	nodes := &Nodes{
-		List: make(map[string]*Node),
+	nodes := &runtime.Nodes{
+		List: make(map[string]*runtime.Node),
 	}
 
 	for _, file := range files {
@@ -47,17 +48,17 @@ func testGetNodesByFile(files ...string) *Nodes {
 	return nodes
 }
 
-func testGetNodeByFile(filename string) *Node {
+func testGetNodeByFile(filename string) *runtime.Node {
 	testnode := &TestNode{}
 	testfile(filename, testnode)
-	return &Node{
+	return &runtime.Node{
 		Nodeinfo:   testnode.Nodeinfo,
 		Neighbours: testnode.Neighbours,
 	}
 }
 
 func testfile(name string, obj interface{}) {
-	file, err := ioutil.ReadFile("testdata/" + name)
+	file, err := ioutil.ReadFile("../runtime/testdata/" + name)
 	if err != nil {
 		panic(err)
 	}

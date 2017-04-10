@@ -8,18 +8,20 @@ import (
 	"syscall"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/models"
+	"github.com/FreifunkBremen/yanic/database/all"
+	"github.com/FreifunkBremen/yanic/meshviewer"
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/rrd"
+	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/FreifunkBremen/yanic/webserver"
 )
 
 var (
-	configFile string
-	config     *models.Config
-	collector  *respond.Collector
-	db         *database.DB
-	nodes      *models.Nodes
+	configFile  string
+	config      *runtime.Config
+	collector   *respond.Collector
+	connections database.Connection
+	nodes       *runtime.Nodes
 )
 
 func main() {
@@ -33,24 +35,31 @@ func main() {
 	if !timestamps {
 		log.SetFlags(0)
 	}
+	log.Println("Yanic say hello")
 
-	config = models.ReadConfigFile(configFile)
-
-	if config.Influxdb.Enable {
-		db = database.New(config)
-		defer db.Close()
-
-		if importPath != "" {
-			importRRD(importPath)
-			return
-		}
+	config, err := runtime.ReadConfigFile(configFile)
+	if err != nil {
+		panic(err)
 	}
 
-	nodes = models.NewNodes(config)
+	connections, err = all.Connect(config.Database.Connection)
+	if err != nil {
+		panic(err)
+	}
+	database.Start(connections, config)
+	defer database.Close(connections)
+
+	if connections != nil && importPath != "" {
+		importRRD(importPath)
+		return
+	}
+
+	nodes = runtime.NewNodes(config)
 	nodes.Start()
+	meshviewer.Start(config, nodes)
 
 	if config.Respondd.Enable {
-		collector = respond.NewCollector(db, nodes, config.Respondd.Interface, config.Respondd.Port)
+		collector = respond.NewCollector(connections, nodes, config.Respondd.Interface, config.Respondd.Port)
 		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}
@@ -71,12 +80,10 @@ func main() {
 func importRRD(path string) {
 	log.Println("importing RRD from", path)
 	for ds := range rrd.Read(path) {
-		db.AddPoint(
-			database.MeasurementGlobal,
-			nil,
-			map[string]interface{}{
-				"nodes":         uint32(ds.Nodes),
-				"clients.total": uint32(ds.Clients),
+		connections.AddStatistics(
+			&runtime.GlobalStats{
+				Nodes:   uint32(ds.Nodes),
+				Clients: uint32(ds.Clients),
 			},
 			ds.Time,
 		)

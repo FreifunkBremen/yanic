@@ -1,4 +1,4 @@
-package models
+package runtime
 
 import (
 	"testing"
@@ -34,7 +34,7 @@ func TestDuration(t *testing.T) {
 	for _, test := range tests {
 
 		d := Duration{}
-		err := d.UnmarshalTOML([]byte("\"" + test.input + "\""))
+		err := d.UnmarshalTOML(test.input)
 		duration := d.Duration
 
 		if test.err == "" {

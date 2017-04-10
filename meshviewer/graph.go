@@ -1,8 +1,10 @@
-package models
+package meshviewer
 
 import (
 	"fmt"
 	"strings"
+
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 // Graph a struct for all links between the nodes
@@ -40,7 +42,7 @@ type graphBuilder struct {
 }
 
 // BuildGraph transform from nodes (Neighbours) to Graph
-func (nodes *Nodes) BuildGraph() *Graph {
+func BuildGraph(nodes *runtime.Nodes) *Graph {
 	builder := &graphBuilder{
 		macToID: make(map[string]string),
 		idToMac: make(map[string]string),
@@ -56,7 +58,7 @@ func (nodes *Nodes) BuildGraph() *Graph {
 	return graph
 }
 
-func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
+func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 	// Fill mac->id map
 	for sourceID, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
@@ -90,7 +92,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*Node) {
 
 	// Add links
 	for sourceID, node := range nodes {
-		if node.Flags.Online {
+		if node.Online {
 			if neighbours := node.Neighbours; neighbours != nil {
 				// Batman neighbours
 				for _, batadvNeighbours := range neighbours.Batadv {

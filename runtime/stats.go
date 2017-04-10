@@ -1,4 +1,4 @@
-package models
+package runtime
 
 // CounterMap to manage multiple values
 type CounterMap map[string]uint32
@@ -25,7 +25,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 
 	nodes.Lock()
 	for _, node := range nodes.List {
-		if node.Flags.Online {
+		if node.Online {
 			result.Nodes++
 			if stats := node.Statistics; stats != nil {
 				result.Clients += stats.Clients.Total
@@ -33,7 +33,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 				result.ClientsWifi5 += stats.Clients.Wifi5
 				result.ClientsWifi += stats.Clients.Wifi
 			}
-			if node.Flags.Gateway {
+			if node.Gateway {
 				result.Gateways++
 			}
 			if info := node.Nodeinfo; info != nil {
@@ -52,17 +52,5 @@ func (m CounterMap) Increment(key string) {
 	if key != "" {
 		val := m[key]
 		m[key] = val + 1
-	}
-}
-
-// Fields returns fields for InfluxDB
-func (stats *GlobalStats) Fields() map[string]interface{} {
-	return map[string]interface{}{
-		"nodes":          stats.Nodes,
-		"gateways":       stats.Gateways,
-		"clients.total":  stats.Clients,
-		"clients.wifi":   stats.ClientsWifi,
-		"clients.wifi24": stats.ClientsWifi24,
-		"clients.wifi5":  stats.ClientsWifi5,
 	}
 }

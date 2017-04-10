@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/FreifunkBremen/yanic/models"
 	"github.com/FreifunkBremen/yanic/respond"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 // Usage: respond-query wlp4s0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"
@@ -17,7 +17,7 @@ func main() {
 
 	log.Printf("Sending request address=%s iface=%s", dstAddress, iface)
 
-	nodes := models.NewNodes(&models.Config{})
+	nodes := runtime.NewNodes(&runtime.Config{})
 
 	collector := respond.NewCollector(nil, nodes, iface, 0)
 	collector.SendPacket(net.ParseIP(dstAddress))

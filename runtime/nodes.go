@@ -1,4 +1,4 @@
-package models
+package runtime
 
 import (
 	"encoding/json"
@@ -9,7 +9,6 @@ import (
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/jsontime"
-	"github.com/FreifunkBremen/yanic/meshviewer"
 )
 
 // Nodes struct: cache DB of Node's structs
@@ -54,7 +53,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	nodes.Unlock()
 
 	node.Lastseen = now
-	node.Flags.Online = true
+	node.Online = true
 
 	// Update neighbours
 	if val := res.Neighbours; val != nil {
@@ -64,7 +63,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	// Update nodeinfo
 	if val := res.NodeInfo; val != nil {
 		node.Nodeinfo = val
-		node.Flags.Gateway = val.VPN
+		node.Gateway = val.VPN
 	}
 
 	// Update statistics
@@ -79,57 +78,6 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	}
 
 	return node
-}
-
-// GetNodesV1 transform data to legacy meshviewer
-func (nodes *Nodes) GetNodesV1() *meshviewer.NodesV1 {
-	meshviewerNodes := &meshviewer.NodesV1{
-		Version:   1,
-		List:      make(map[string]*meshviewer.Node),
-		Timestamp: jsontime.Now(),
-	}
-
-	for nodeID := range nodes.List {
-		nodeOrigin := nodes.List[nodeID]
-
-		if nodeOrigin.Statistics == nil {
-			continue
-		}
-
-		node := &meshviewer.Node{
-			Firstseen: nodeOrigin.Firstseen,
-			Lastseen:  nodeOrigin.Lastseen,
-			Flags:     nodeOrigin.Flags,
-			Nodeinfo:  nodeOrigin.Nodeinfo,
-		}
-		node.Statistics = meshviewer.NewStatistics(nodeOrigin.Statistics)
-		meshviewerNodes.List[nodeID] = node
-	}
-	return meshviewerNodes
-}
-
-// GetNodesV2 transform data to modern meshviewers
-func (nodes *Nodes) GetNodesV2() *meshviewer.NodesV2 {
-	meshviewerNodes := &meshviewer.NodesV2{
-		Version:   2,
-		Timestamp: jsontime.Now(),
-	}
-
-	for nodeID := range nodes.List {
-		nodeOrigin := nodes.List[nodeID]
-		if nodeOrigin.Statistics == nil {
-			continue
-		}
-		node := &meshviewer.Node{
-			Firstseen: nodeOrigin.Firstseen,
-			Lastseen:  nodeOrigin.Lastseen,
-			Flags:     nodeOrigin.Flags,
-			Nodeinfo:  nodeOrigin.Nodeinfo,
-		}
-		node.Statistics = meshviewer.NewStatistics(nodeOrigin.Statistics)
-		meshviewerNodes.List = append(meshviewerNodes.List, node)
-	}
-	return meshviewerNodes
 }
 
 // Select selects a list of nodes to be returned
@@ -180,7 +128,7 @@ func (nodes *Nodes) expire() {
 			delete(nodes.List, id)
 		} else if node.Lastseen.Before(offlineAfter) {
 			// set to offline
-			node.Flags.Online = false
+			node.Online = false
 		}
 	}
 }
@@ -205,26 +153,11 @@ func (nodes *Nodes) save() {
 	defer nodes.RUnlock()
 
 	// serialize nodes
-	save(nodes, nodes.config.Nodes.StatePath)
-
-	if path := nodes.config.Nodes.NodesPath; path != "" {
-		version := nodes.config.Nodes.NodesVersion
-		switch version {
-		case 1:
-			save(nodes.GetNodesV1(), path)
-		case 2:
-			save(nodes.GetNodesV2(), path)
-		default:
-			log.Panicf("invalid nodes version: %d", version)
-		}
-	}
-
-	if path := nodes.config.Nodes.GraphPath; path != "" {
-		save(nodes.BuildGraph(), path)
-	}
+	SaveJSON(nodes, nodes.config.Nodes.StatePath)
 }
 
-func save(input interface{}, outputFile string) {
+// SaveJSON to path
+func SaveJSON(input interface{}, outputFile string) {
 	tmpFile := outputFile + ".tmp"
 
 	f, err := os.OpenFile(tmpFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
