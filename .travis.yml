@@ -1,6 +1,7 @@
 language: go
 go:
-  - tip
+  - 1.8.x
+  - master
 install:
   - go get -t github.com/FreifunkBremen/yanic/...
   - go get github.com/mattn/goveralls
