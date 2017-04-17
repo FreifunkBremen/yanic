@@ -50,7 +50,6 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 // if the value is not empty
 func (m CounterMap) Increment(key string) {
 	if key != "" {
-		val := m[key]
-		m[key] = val + 1
+		m[key]++
 	}
 }
