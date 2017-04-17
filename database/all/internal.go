@@ -30,15 +30,16 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	}
 	return &Connection{list: list}, nil
 }
-func (conn *Connection) AddNode(nodeID string, node *runtime.Node) {
+
+func (conn *Connection) InsertNode(node *runtime.Node) {
 	for _, item := range conn.list {
-		item.AddNode(nodeID, node)
+		item.InsertNode(node)
 	}
 }
 
-func (conn *Connection) AddStatistics(stats *runtime.GlobalStats, time time.Time) {
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	for _, item := range conn.list {
-		item.AddStatistics(stats, time)
+		item.InsertGlobals(stats, time)
 	}
 }
 

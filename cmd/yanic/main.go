@@ -80,7 +80,7 @@ func main() {
 func importRRD(path string) {
 	log.Println("importing RRD from", path)
 	for ds := range rrd.Read(path) {
-		connections.AddStatistics(
+		connections.InsertGlobals(
 			&runtime.GlobalStats{
 				Nodes:   uint32(ds.Nodes),
 				Clients: uint32(ds.Clients),

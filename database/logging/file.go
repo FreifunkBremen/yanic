@@ -48,12 +48,12 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	return &Connection{config: config, file: file}, nil
 }
 
-func (conn *Connection) AddNode(nodeID string, node *runtime.Node) {
-	conn.log("AddNode: [", nodeID, "] clients: ", node.Statistics.Clients.Total)
+func (conn *Connection) InsertNode(node *runtime.Node) {
+	conn.log("InsertNode: [", node.Statistics.NodeID, "] clients: ", node.Statistics.Clients.Total)
 }
 
-func (conn *Connection) AddStatistics(stats *runtime.GlobalStats, time time.Time) {
-	conn.log("AddStatistics: [", time.String(), "] nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
+	conn.log("InsertGlobals: [", time.String(), "] nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {

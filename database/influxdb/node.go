@@ -1,15 +1,29 @@
 package influxdb
 
 import (
+	"fmt"
 	"strconv"
+	"time"
 
+	client "github.com/influxdata/influxdb/client/v2"
 	models "github.com/influxdata/influxdb/models"
 
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-// NodeToInflux Returns tags and fields for InfluxDB
-func nodeToInflux(node *runtime.Node) (tags models.Tags, fields models.Fields) {
+// InsertNode implementation of database
+func (conn *Connection) InsertNode(node *runtime.Node) {
+	tags, fields := buildNodeStats(node)
+	conn.addPoint(MeasurementNode, tags, fields, time.Now())
+}
+
+func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
+	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, deleteAfter/time.Second)
+	conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
+}
+
+// returns tags and fields for InfluxDB
+func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields) {
 	stats := node.Statistics
 
 	tags.SetString("nodeid", stats.NodeID)

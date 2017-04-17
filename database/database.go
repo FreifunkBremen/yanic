@@ -8,11 +8,11 @@ import (
 
 // Connection interface to use for implementation in e.g. influxdb
 type Connection interface {
-	// AddNode stores data of a single node
-	AddNode(nodeID string, node *runtime.Node)
+	// InsertNode stores statistics per node
+	InsertNode(node *runtime.Node)
 
-	// AddStatistics stores global statistics
-	AddStatistics(stats *runtime.GlobalStats, time time.Time)
+	// InsertGlobals stores global statistics
+	InsertGlobals(stats *runtime.GlobalStats, time time.Time)
 
 	// PruneNodes prunes historical per-node data
 	PruneNodes(deleteAfter time.Duration)

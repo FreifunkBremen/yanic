@@ -66,7 +66,7 @@ func TestToInflux(t *testing.T) {
 		},
 	}
 
-	tags, fields := nodeToInflux(node)
+	tags, fields := buildNodeStats(node)
 
 	assert.Equal("foobar", tags.GetString("nodeid"))
 	assert.Equal("nobody", tags.GetString("owner"))

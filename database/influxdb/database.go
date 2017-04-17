@@ -1,7 +1,6 @@
 package influxdb
 
 import (
-	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -10,7 +9,6 @@ import (
 	"github.com/influxdata/influxdb/models"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 const (
@@ -80,47 +78,12 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	return db, nil
 }
 
-func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
-	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, deleteAfter/time.Second)
-	conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
-}
-
 func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, time time.Time) {
 	point, err := client.NewPoint(name, tags.Map(), fields, time)
 	if err != nil {
 		panic(err)
 	}
 	conn.points <- point
-}
-
-// Saves the values of a CounterMap in the database.
-// The key are used as 'value' tag.
-// The value is used as 'counter' field.
-func (conn *Connection) addCounterMap(name string, m runtime.CounterMap) {
-	now := time.Now()
-	for key, count := range m {
-		conn.addPoint(
-			name,
-			models.Tags{
-				models.Tag{Key: []byte("value"), Value: []byte(key)},
-			},
-			models.Fields{"count": count},
-			now,
-		)
-	}
-}
-
-// AddStatistics implementation of database
-func (conn *Connection) AddStatistics(stats *runtime.GlobalStats, time time.Time) {
-	conn.addPoint(MeasurementGlobal, nil, GlobalStatsFields(stats), time)
-	conn.addCounterMap(CounterMeasurementModel, stats.Models)
-	conn.addCounterMap(CounterMeasurementFirmware, stats.Firmwares)
-}
-
-// AddNode implementation of database
-func (conn *Connection) AddNode(nodeID string, node *runtime.Node) {
-	tags, fields := nodeToInflux(node)
-	conn.addPoint(MeasurementNode, tags, fields, time.Now())
 }
 
 // Close all connection and clean up

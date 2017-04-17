@@ -208,9 +208,10 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 	node := coll.nodes.Update(nodeID, res)
 	node.Address = addr.IP
 
-	// Store statistics in InfluxDB
+	// Store statistics in database
 	if coll.db != nil && node.Statistics != nil {
-		coll.db.AddNode(nodeID, node)
+		node.Statistics.NodeID = nodeID
+		coll.db.InsertNode(node)
 	}
 }
 
@@ -251,5 +252,5 @@ func (coll *Collector) globalStatsWorker() {
 func (coll *Collector) saveGlobalStats() {
 	stats := runtime.NewGlobalStats(coll.nodes)
 
-	coll.db.AddStatistics(stats, time.Now())
+	coll.db.InsertGlobals(stats, time.Now())
 }
