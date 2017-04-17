@@ -36,7 +36,6 @@ Recently seen nodes that does not reply are requested via a unicast message.
 ## Related projects
 
 Collecting data from respondd:
-* [Node informant](https://github.com/ffdo/node-informant) written in Go
 * [HopGlass Server](https://github.com/plumpudding/hopglass-server) written in Node.js
 
 Respondd for servers:
