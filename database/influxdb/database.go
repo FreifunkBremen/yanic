@@ -49,7 +49,7 @@ func (c Config) Password() string {
 }
 
 func init() {
-	database.AddDatabaseType("influxdb", Connect)
+	database.RegisterAdapter("influxdb", Connect)
 }
 func Connect(configuration interface{}) (database.Connection, error) {
 	var config Config
@@ -80,7 +80,7 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	return db, nil
 }
 
-func (conn *Connection) DeleteNode(deleteAfter time.Duration) {
+func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, deleteAfter/time.Second)
 	conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
 }

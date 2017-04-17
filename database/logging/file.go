@@ -31,7 +31,7 @@ func (c Config) Path() string {
 }
 
 func init() {
-	database.AddDatabaseType("logging", Connect)
+	database.RegisterAdapter("logging", Connect)
 }
 
 func Connect(configuration interface{}) (database.Connection, error) {
@@ -56,8 +56,8 @@ func (conn *Connection) AddStatistics(stats *runtime.GlobalStats, time time.Time
 	conn.log("AddStatistics: [", time.String(), "] nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
 }
 
-func (conn *Connection) DeleteNode(deleteAfter time.Duration) {
-	conn.log("DeleteNode")
+func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
+	conn.log("PruneNodes")
 }
 
 func (conn *Connection) Close() {

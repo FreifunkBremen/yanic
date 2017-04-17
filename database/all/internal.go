@@ -42,9 +42,9 @@ func (conn *Connection) AddStatistics(stats *runtime.GlobalStats, time time.Time
 	}
 }
 
-func (conn *Connection) DeleteNode(deleteAfter time.Duration) {
+func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 	for _, item := range conn.list {
-		item.DeleteNode(deleteAfter)
+		item.PruneNodes(deleteAfter)
 	}
 }
 

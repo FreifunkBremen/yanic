@@ -31,7 +31,7 @@ func deleteWorker(conn Connection, deleteInterval time.Duration, deleteAfter tim
 	for {
 		select {
 		case <-ticker.C:
-			conn.DeleteNode(deleteAfter)
+			conn.PruneNodes(deleteAfter)
 		case <-quit:
 			ticker.Stop()
 			return
