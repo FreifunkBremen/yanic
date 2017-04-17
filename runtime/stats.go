@@ -17,32 +17,33 @@ type GlobalStats struct {
 }
 
 //NewGlobalStats returns global statistics for InfluxDB
-func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
+func NewGlobalStats(nodes *Nodes, site string) (result *GlobalStats) {
 	result = &GlobalStats{
 		Firmwares: make(CounterMap),
 		Models:    make(CounterMap),
 	}
 
-	nodes.Lock()
 	for _, node := range nodes.List {
 		if node.Online {
-			result.Nodes++
-			if stats := node.Statistics; stats != nil {
-				result.Clients += stats.Clients.Total
-				result.ClientsWifi24 += stats.Clients.Wifi24
-				result.ClientsWifi5 += stats.Clients.Wifi5
-				result.ClientsWifi += stats.Clients.Wifi
-			}
-			if node.Gateway {
-				result.Gateways++
-			}
 			if info := node.Nodeinfo; info != nil {
-				result.Models.Increment(info.Hardware.Model)
-				result.Firmwares.Increment(info.Software.Firmware.Release)
+				if len(site) == 0 || info.System.SiteCode == site {
+					result.Nodes++
+					if stats := node.Statistics; stats != nil {
+						result.Clients += stats.Clients.Total
+						result.ClientsWifi24 += stats.Clients.Wifi24
+						result.ClientsWifi5 += stats.Clients.Wifi5
+						result.ClientsWifi += stats.Clients.Wifi
+					}
+					if node.Gateway {
+						result.Gateways++
+					}
+
+					result.Models.Increment(info.Hardware.Model)
+					result.Firmwares.Increment(info.Software.Firmware.Release)
+				}
 			}
 		}
 	}
-	nodes.Unlock()
 	return
 }
 

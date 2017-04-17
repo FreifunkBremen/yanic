@@ -22,6 +22,7 @@ type Collector struct {
 	iface      string
 	db         database.Connection
 	nodes      *runtime.Nodes
+	sites      []string
 	interval   time.Duration // Interval for multicast packets
 	stop       chan interface{}
 }
@@ -207,6 +208,11 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 	// Process the data and update IP address
 	node := coll.nodes.Update(nodeID, res)
 	node.Address = addr.IP
+	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		if len(nodeinfo.System.SiteCode) > 0 {
+			coll.sites = append(coll.sites, nodeinfo.System.SiteCode)
+		}
+	}
 
 	// Store statistics in InfluxDB
 	if coll.db != nil && node.Statistics != nil {
@@ -249,7 +255,8 @@ func (coll *Collector) globalStatsWorker() {
 
 // saves global statistics
 func (coll *Collector) saveGlobalStats() {
-	stats := runtime.NewGlobalStats(coll.nodes)
-
-	coll.db.AddStatistics(stats, time.Now())
+	for _, site := range coll.sites {
+		stats := runtime.NewGlobalStats(coll.nodes, site)
+		coll.db.AddStatistics(stats, time.Now())
+	}
 }

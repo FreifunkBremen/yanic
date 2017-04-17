@@ -9,7 +9,7 @@ import (
 )
 
 func TestGlobalStats(t *testing.T) {
-	stats := NewGlobalStats(createTestNodes())
+	stats := NewGlobalStats(createTestNodes(), "ffhb")
 
 	assert := assert.New(t)
 	assert.EqualValues(1, stats.Gateways)
@@ -39,6 +39,9 @@ func createTestNodes() *Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
+			System: data.System{
+				SiteCode: "ffhb",
+			},
 		},
 	}
 	nodeData.NodeInfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
@@ -54,6 +57,9 @@ func createTestNodes() *Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
+			System: data.System{
+				SiteCode: "ffhb",
+			},
 		},
 	})
 
@@ -62,6 +68,9 @@ func createTestNodes() *Nodes {
 			VPN: true,
 			Hardware: data.Hardware{
 				Model: "Xeon Multi-Core",
+			},
+			System: data.System{
+				SiteCode: "ffhb",
 			},
 		},
 	})

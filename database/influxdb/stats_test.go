@@ -10,13 +10,13 @@ import (
 )
 
 func TestGlobalStats(t *testing.T) {
-	stats := runtime.NewGlobalStats(createTestNodes())
+	stats := runtime.NewGlobalStats(createTestNodes(), "ffhb01")
 
 	assert := assert.New(t)
 	fields := GlobalStatsFields(stats)
 
 	// check fields
-	assert.EqualValues(3, fields["nodes"])
+	assert.EqualValues(2, fields["nodes"])
 }
 
 func createTestNodes() *runtime.Nodes {
@@ -32,6 +32,9 @@ func createTestNodes() *runtime.Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
+			System: data.System{
+				SiteCode: "ffhb01",
+			},
 		},
 	}
 	nodeData.NodeInfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
@@ -46,6 +49,9 @@ func createTestNodes() *runtime.Nodes {
 		NodeInfo: &data.NodeInfo{
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
+			},
+			System: data.System{
+				SiteCode: "ffhb01",
 			},
 		},
 	})
