@@ -7,10 +7,9 @@ __   __          _
   |_|\__,_|_| |_|_|\___|
 Yet another node info collector
 ```
-(previously [respond-collector](https://github.com/FreifunkBremen/respond-collector))
 
 [![Build Status](https://travis-ci.org/FreifunkBremen/yanic.svg?branch=master)](https://travis-ci.org/FreifunkBremen/yanic)
-[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/respond-collector/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/respond-collector?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/yanic?branch=master)
 
 `yanic` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
 * Generating JSON for [Meshviewer](https://github.com/ffrgb/meshviewer)
@@ -31,12 +30,8 @@ Read comments in [config_example.toml](config_example.toml) for more information
 
 ## How it works
 
-It sends the `gluon-neighbour-info` request and collects the answers.
-
-It will send UDP packets with multicast group `ff02:0:0:0:0:0:2:1001` and port `1001`.
-
-If a node does not answer, it will request with the last know address under the port `1001`.
-
+In the first step Yanic sends a multicast message to the group `ff02:0:0:0:0:0:2:1001` and port `1001`.
+Recently seen nodes that does not reply are requested via a unicast message.
 
 ## Related projects
 
