@@ -3,6 +3,7 @@ package influxdb
 import (
 	"testing"
 
+	"github.com/influxdata/influxdb/client/v2"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
@@ -14,7 +15,7 @@ func TestToInflux(t *testing.T) {
 
 	node := &runtime.Node{
 		Statistics: &data.Statistics{
-			NodeID:      "foobar",
+			NodeID:      "deadbeef",
 			LoadAverage: 0.5,
 			Wireless: data.WirelessStatistics{
 				&data.WirelessAirtime{Frequency: 5500},
@@ -58,7 +59,9 @@ func TestToInflux(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"a-interface": data.BatadvNeighbours{
 					Neighbours: map[string]data.BatmanLink{
-						"b-neigbourinterface": data.BatmanLink{},
+						"BAFF1E5": data.BatmanLink{
+							Tq: 75,
+						},
 					},
 				},
 			},
@@ -66,23 +69,70 @@ func TestToInflux(t *testing.T) {
 		},
 	}
 
-	tags, fields := buildNodeStats(node)
+	points := testPoints(node)
+	var fields map[string]interface{}
+	var tags map[string]string
 
-	assert.Equal("foobar", tags.GetString("nodeid"))
-	assert.Equal("nobody", tags.GetString("owner"))
-	assert.Equal(0.5, fields["load"])
-	assert.Equal(0, fields["neighbours.lldp"])
-	assert.Equal(1, fields["neighbours.batadv"])
-	assert.Equal(1, fields["neighbours.vpn"])
-	assert.Equal(1, fields["neighbours.total"])
+	assert.Len(points, 2)
 
-	assert.Equal(uint32(3), fields["wireless.txpower24"])
-	assert.Equal(uint32(5500), fields["airtime11a.frequency"])
-	assert.Equal("", tags.GetString("frequency5500"))
+	// first point contains the neighbour
+	nPoint := points[0]
+	tags = nPoint.Tags()
+	fields, _ = nPoint.Fields()
+	assert.EqualValues("link", nPoint.Name())
+	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "BAFF1E5"}, tags)
+	assert.EqualValues(75, fields["tq"])
 
-	assert.Equal(int64(1213), fields["traffic.rx.bytes"])
-	assert.Equal(float64(1321), fields["traffic.tx.dropped"])
-	assert.Equal(int64(1322), fields["traffic.forward.bytes"])
-	assert.Equal(int64(2331), fields["traffic.mgmt_rx.bytes"])
-	assert.Equal(float64(2327), fields["traffic.mgmt_tx.packets"])
+	// second point contains the statistics
+	sPoint := points[1]
+	tags = sPoint.Tags()
+	fields, _ = sPoint.Fields()
+
+	assert.EqualValues("deadbeef", tags["nodeid"])
+	assert.EqualValues("nobody", tags["owner"])
+	assert.EqualValues(0.5, fields["load"])
+	assert.EqualValues(0, fields["neighbours.lldp"])
+	assert.EqualValues(1, fields["neighbours.batadv"])
+	assert.EqualValues(1, fields["neighbours.vpn"])
+	assert.EqualValues(1, fields["neighbours.total"])
+
+	assert.EqualValues(uint32(3), fields["wireless.txpower24"])
+	assert.EqualValues(uint32(5500), fields["airtime11a.frequency"])
+	assert.EqualValues("", tags["frequency5500"])
+
+	assert.EqualValues(int64(1213), fields["traffic.rx.bytes"])
+	assert.EqualValues(float64(1321), fields["traffic.tx.dropped"])
+	assert.EqualValues(int64(1322), fields["traffic.forward.bytes"])
+	assert.EqualValues(int64(2331), fields["traffic.mgmt_rx.bytes"])
+	assert.EqualValues(float64(2327), fields["traffic.mgmt_tx.packets"])
+}
+
+// Processes data and returns the InfluxDB points
+func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
+	// Create dummy client
+	influxClient, err := client.NewHTTPClient(client.HTTPConfig{Addr: "http://127.0.0.1"})
+	if err != nil {
+		panic(err)
+	}
+
+	// Create dummy connection
+	conn := &Connection{
+		points: make(chan *client.Point),
+		client: influxClient,
+	}
+
+	// Process data
+	go func() {
+		for _, node := range nodes {
+			conn.InsertNode(node)
+		}
+		conn.Close()
+	}()
+
+	// Read points
+	for point := range conn.points {
+		points = append(points, point)
+	}
+
+	return
 }

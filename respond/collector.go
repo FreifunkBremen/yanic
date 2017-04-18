@@ -204,13 +204,23 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 		return
 	}
 
+	// Set fields to nil if nodeID is inconsistent
+	if res.Statistics != nil && res.Statistics.NodeID != nodeID {
+		res.Statistics = nil
+	}
+	if res.Neighbours != nil && res.Neighbours.NodeID != nodeID {
+		res.Neighbours = nil
+	}
+	if res.NodeInfo != nil && res.NodeInfo.NodeID != nodeID {
+		res.NodeInfo = nil
+	}
+
 	// Process the data and update IP address
 	node := coll.nodes.Update(nodeID, res)
 	node.Address = addr.IP
 
 	// Store statistics in database
-	if coll.db != nil && node.Statistics != nil {
-		node.Statistics.NodeID = nodeID
+	if coll.db != nil {
 		coll.db.InsertNode(node)
 	}
 }

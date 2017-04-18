@@ -52,29 +52,20 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	}
 	nodes.Unlock()
 
+	// Update wireless statistics
+	if statistics := res.Statistics; statistics != nil {
+		// Update channel utilization if previous statistics are present
+		if node.Statistics != nil && node.Statistics.Wireless != nil && statistics.Wireless != nil {
+			statistics.Wireless.SetUtilization(node.Statistics.Wireless)
+		}
+	}
+
+	// Update fields
 	node.Lastseen = now
 	node.Online = true
-
-	// Update neighbours
-	if val := res.Neighbours; val != nil {
-		node.Neighbours = val
-	}
-
-	// Update nodeinfo
-	if val := res.NodeInfo; val != nil {
-		node.Nodeinfo = val
-	}
-
-	// Update statistics
-	if val := res.Statistics; val != nil {
-
-		// Update channel utilization if previous statistics are present
-		if node.Statistics != nil && node.Statistics.Wireless != nil && val.Wireless != nil {
-			val.Wireless.SetUtilization(node.Statistics.Wireless)
-		}
-
-		node.Statistics = val
-	}
+	node.Neighbours = res.Neighbours
+	node.Nodeinfo = res.NodeInfo
+	node.Statistics = res.Statistics
 
 	return node
 }
