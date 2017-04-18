@@ -10,8 +10,8 @@ import (
 // InsertGlobals implementation of database
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	conn.addPoint(MeasurementGlobal, nil, GlobalStatsFields(stats), time)
-	conn.addCounterMap(CounterMeasurementModel, stats.Models)
-	conn.addCounterMap(CounterMeasurementFirmware, stats.Firmwares)
+	conn.addCounterMap(CounterMeasurementModel, stats.Models, time)
+	conn.addCounterMap(CounterMeasurementFirmware, stats.Firmwares, time)
 }
 
 // GlobalStatsFields returns fields for InfluxDB
@@ -29,8 +29,7 @@ func GlobalStatsFields(stats *runtime.GlobalStats) map[string]interface{} {
 // Saves the values of a CounterMap in the database.
 // The key are used as 'value' tag.
 // The value is used as 'counter' field.
-func (conn *Connection) addCounterMap(name string, m runtime.CounterMap) {
-	now := time.Now()
+func (conn *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time) {
 	for key, count := range m {
 		conn.addPoint(
 			name,
@@ -38,7 +37,7 @@ func (conn *Connection) addCounterMap(name string, m runtime.CounterMap) {
 				models.Tag{Key: []byte("value"), Value: []byte(key)},
 			},
 			models.Fields{"count": count},
-			now,
+			t,
 		)
 	}
 }

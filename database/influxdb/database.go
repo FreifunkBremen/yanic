@@ -78,8 +78,8 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	return db, nil
 }
 
-func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, time time.Time) {
-	point, err := client.NewPoint(name, tags.Map(), fields, time)
+func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, t ...time.Time) {
+	point, err := client.NewPoint(name, tags.Map(), fields, t...)
 	if err != nil {
 		panic(err)
 	}
