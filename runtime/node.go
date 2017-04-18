@@ -13,8 +13,15 @@ type Node struct {
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
 	Online     bool             `json:"online"`
-	Gateway    bool             `json:"gateway"`
 	Statistics *data.Statistics `json:"statistics"`
 	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"-"`
+}
+
+// IsGateway returns whether the node is a gateway
+func (node *Node) IsGateway() bool {
+	if info := node.Nodeinfo; info != nil {
+		return info.VPN
+	}
+	return false
 }

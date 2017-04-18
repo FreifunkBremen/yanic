@@ -63,7 +63,6 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	// Update nodeinfo
 	if val := res.NodeInfo; val != nil {
 		node.Nodeinfo = val
-		node.Gateway = val.VPN
 	}
 
 	// Update statistics

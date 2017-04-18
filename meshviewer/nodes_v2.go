@@ -30,7 +30,7 @@ func BuildNodesV2(nodes *runtime.Nodes) interface{} {
 			Lastseen:  nodeOrigin.Lastseen,
 			Flags: Flags{
 				Online:  nodeOrigin.Online,
-				Gateway: nodeOrigin.Gateway,
+				Gateway: nodeOrigin.IsGateway(),
 			},
 			Nodeinfo: nodeOrigin.Nodeinfo,
 		}

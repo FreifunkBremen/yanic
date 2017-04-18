@@ -33,7 +33,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 				result.ClientsWifi5 += stats.Clients.Wifi5
 				result.ClientsWifi += stats.Clients.Wifi
 			}
-			if node.Gateway {
+			if node.IsGateway() {
 				result.Gateways++
 			}
 			if info := node.Nodeinfo; info != nil {
