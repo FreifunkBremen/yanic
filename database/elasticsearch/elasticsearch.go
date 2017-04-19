@@ -9,13 +9,12 @@ import (
 
 	"log"
 	"time"
+	"context"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"gopkg.in/olivere/elastic.v5"
 
-
-	"context"
 
 )
 
@@ -63,9 +62,9 @@ func Connect(configuration interface{}) (database.Connection, error) {
 }
 
 func (conn *Connection) InsertNode(node *runtime.Node) {
-	log("InsertNode: [", node.Statistics.NodeID, "] clients: ", node.Statistics.Clients.Total)
+	log.Print("InsertNode: [", node.Statistics.NodeID, "] clients: ", node.Statistics.Clients.Total)
 
-	_, err = conn.client.Index()
+	_, err := conn.client.Index().
 		Index("ffhb").
 		Type("node").
 		BodyJson(node).
@@ -80,13 +79,12 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	}
 
 
-
 }
 
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	log.Print("InsertGlobals: [", time.String(), "] nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
 
-	_, err = conn.client.Index()
+	_, err := conn.client.Index().
 		Index("ffhb").
 		Type("globals").
 		BodyJson(stats).
