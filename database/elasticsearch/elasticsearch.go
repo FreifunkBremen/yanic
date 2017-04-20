@@ -6,16 +6,14 @@ package logging
  * - example for other developers for new databases
  */
 import (
-
+	"context"
 	"log"
 	"time"
-	"context"
+
+	elastic "gopkg.in/olivere/elastic.v5"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/runtime"
-	"gopkg.in/olivere/elastic.v5"
-
-
 )
 
 type Connection struct {
@@ -29,8 +27,20 @@ type Config map[string]interface{}
 func (c Config) Enable() bool {
 	return c["enable"].(bool)
 }
-func (c Config) Path() string {
-	return c["path"].(string)
+func (c Config) Host() string {
+	return c["host"].(string)
+}
+func (c Config) Username() string {
+	return c["username"].(string)
+}
+func (c Config) Password() string {
+	return c["password"].(string)
+}
+func (c Config) IndexPrefix() string {
+	return c["index_prefix"].(string)
+}
+func (c Config) UpdateTemplates() bool {
+	return c["update_templates"].(bool)
 }
 
 func init() {
@@ -44,19 +54,15 @@ func Connect(configuration interface{}) (database.Connection, error) {
 		return nil, nil
 	}
 
-
 	// Create a client
 	client, err := elastic.NewClient(
-	     elastic.SetURL("http://127.0.0.1:9200", "http://127.0.0.1:9201"),
-	     elastic.SetBasicAuth("user", "secret"))
-
-
+		elastic.SetURL(config.Host()),
+		elastic.SetBasicAuth(config.Username(), config.Password()))
 
 	if err != nil {
 		// Handle error
 		panic(err)
 	}
-
 
 	return &Connection{config: config, client: client}, nil
 }
@@ -71,13 +77,10 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		Refresh("true").
 		Do(context.Background())
 
-
-
 	if err != nil {
 		// Handle error
 		panic(err)
 	}
-
 
 }
 
@@ -91,12 +94,10 @@ func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time
 		Refresh("true").
 		Do(context.Background())
 
-
 	if err != nil {
 		// Handle error
 		panic(err)
 	}
-
 
 }
 
