@@ -79,7 +79,18 @@ system = "testing"
 enable   = false
 path     = "/var/log/yanic.log"
 
+
 [[database.connection.graphite]]
 enable   = false
 address  = "localhost:2003"
 prefix   = "freifunk"
+
+[[database.connection.elasticsearch]]
+enable          = false
+host            = "https://your_elasticsearch_cluster:9200"
+username        = ""
+password        = ""
+index_prefix    = "ffhb"
+
+# Weather to update the index templates on start
+update_templates = false
