@@ -2,6 +2,7 @@ package socket
 
 import (
 	"encoding/json"
+	"log"
 	"net"
 )
 
@@ -14,6 +15,7 @@ func (config *Connection) handleSocketConnection(ln net.Listener) {
 	for {
 		c, err := ln.Accept()
 		if err != nil {
+			log.Println("[socket-database] error during connection of a client", err)
 			continue
 		}
 		config.clients[c.RemoteAddr()] = c
@@ -21,13 +23,14 @@ func (config *Connection) handleSocketConnection(ln net.Listener) {
 }
 
 func (conn *Connection) sendJSON(msg EventMessage) {
-	for i, c := range conn.clients {
+	for addr, c := range conn.clients {
 		d := json.NewEncoder(c)
 
 		err := d.Encode(&msg)
 		if err != nil {
+			log.Println("[socket-database] client has not recieve event:", err)
 			c.Close()
-			delete(conn.clients, i)
+			delete(conn.clients, addr)
 		}
 	}
 }

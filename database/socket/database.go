@@ -16,21 +16,8 @@ import (
 
 type Connection struct {
 	database.Connection
-	config   Config
 	listener net.Listener
 	clients  map[net.Addr]net.Conn
-}
-
-type Config map[string]interface{}
-
-func (c Config) Enable() bool {
-	return c["enable"].(bool)
-}
-func (c Config) Type() string {
-	return c["type"].(string)
-}
-func (c Config) Address() string {
-	return c["address"].(string)
 }
 
 func init() {
@@ -38,17 +25,17 @@ func init() {
 }
 
 func Connect(configuration interface{}) (database.Connection, error) {
-	var config Config
-	config = configuration.(map[string]interface{})
-	if !config.Enable() {
+	config := configuration.(map[string]interface{})
+
+	if !config["enable"].(bool) {
 		return nil, nil
 	}
 
-	ln, err := net.Listen(config.Type(), config.Address())
+	ln, err := net.Listen(config["type"].(string), config["address"].(string))
 	if err != nil {
 		return nil, err
 	}
-	conn := &Connection{config: config, listener: ln, clients: make(map[net.Addr]net.Conn)}
+	conn := &Connection{listener: ln, clients: make(map[net.Addr]net.Conn)}
 	go conn.handleSocketConnection(ln)
 
 	log.Println("[socket-database] listen on: ", ln.Addr())
