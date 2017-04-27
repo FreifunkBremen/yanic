@@ -11,18 +11,21 @@ type EventMessage struct {
 	Body  interface{} `json:"body,omitempty"`
 }
 
-func (config *Connection) handleSocketConnection(ln net.Listener) {
+func (conn *Connection) handleSocketConnection(ln net.Listener) {
 	for {
 		c, err := ln.Accept()
 		if err != nil {
 			log.Println("[socket-database] error during connection of a client", err)
 			continue
 		}
-		config.clients[c.RemoteAddr()] = c
+		conn.clientMux.Lock()
+		conn.clients[c.RemoteAddr()] = c
+		conn.clientMux.Unlock()
 	}
 }
 
 func (conn *Connection) sendJSON(msg EventMessage) {
+	conn.clientMux.Lock()
 	for addr, c := range conn.clients {
 		d := json.NewEncoder(c)
 
@@ -33,4 +36,5 @@ func (conn *Connection) sendJSON(msg EventMessage) {
 			delete(conn.clients, addr)
 		}
 	}
+	conn.clientMux.Unlock()
 }

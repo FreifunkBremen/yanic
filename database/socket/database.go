@@ -8,6 +8,7 @@ package socket
 import (
 	"log"
 	"net"
+	"sync"
 	"time"
 
 	"github.com/FreifunkBremen/yanic/database"
@@ -16,8 +17,9 @@ import (
 
 type Connection struct {
 	database.Connection
-	listener net.Listener
-	clients  map[net.Addr]net.Conn
+	listener  net.Listener
+	clients   map[net.Addr]net.Conn
+	clientMux sync.Mutex
 }
 
 func init() {
@@ -56,8 +58,10 @@ func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 }
 
 func (conn *Connection) Close() {
+	conn.clientMux.Lock()
 	for _, c := range conn.clients {
 		c.Close()
 	}
+	conn.clientMux.Unlock()
 	conn.listener.Close()
 }
