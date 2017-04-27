@@ -70,13 +70,7 @@ func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 
 func (conn *Connection) Close() {
 	for _, c := range conn.clients {
-		err := c.Close()
-		if err != nil {
-			log.Println("[socket-database] client was not able to close:", err)
-		}
+		c.Close()
 	}
-	err := conn.listener.Close()
-	if err != nil {
-		log.Println("[socket-database] server was not able to close:", err)
-	}
+	conn.listener.Close()
 }
