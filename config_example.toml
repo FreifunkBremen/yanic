@@ -79,7 +79,18 @@ system = "testing"
 enable   = false
 path     = "/var/log/yanic.log"
 
+
 [[database.connection.graphite]]
 enable   = false
 address  = "localhost:2003"
 prefix   = "freifunk"
+
+[[database.connection.socket]]
+enable   = false
+type     = "tcp"
+address  = ":8081"
+
+[[database.connection.socket]]
+enable   = false
+type     = "unix"
+address  = "/var/lib/collector/database.socket"
