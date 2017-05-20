@@ -10,13 +10,13 @@ import (
 )
 
 func TestNodesV1(t *testing.T) {
-	nodes := BuildNodesV1(createTestNodes()).(*NodesV1)
+	nodes := BuildNodesV1(func(n *runtime.Node) *runtime.Node { return n }, createTestNodes()).(*NodesV1)
 
 	assert := assert.New(t)
 	assert.Len(nodes.List, 2)
 }
 func TestNodesV2(t *testing.T) {
-	nodes := BuildNodesV2(createTestNodes()).(*NodesV2)
+	nodes := BuildNodesV2(func(n *runtime.Node) *runtime.Node { return n }, createTestNodes()).(*NodesV2)
 
 	assert := assert.New(t)
 	assert.Len(nodes.List, 2)

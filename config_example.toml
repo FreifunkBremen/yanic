@@ -37,7 +37,8 @@ offline_after = "10m"
 prune_after = "7d"
 
 
-[meshviewer]
+[[nodes.output.meshviewer]]
+enable   = true
 # structur of nodes.json, which to support
 # version 1 is to support legacy meshviewer (which are in master branch)
 #    i.e. https://github.com/ffnord/meshviewer/tree/master
@@ -49,6 +50,23 @@ version  = 2
 nodes_path     = "/var/www/html/meshviewer/data/nodes.json"
 # path where to store graph.json
 graph_path     = "/var/www/html/meshviewer/data/graph.json"
+
+[nodes.output.meshviewer.filter]
+# no_owner = true
+has_location = true
+blacklist = ["vpnid"]
+
+[nodes.output.meshviewer.filter.in_area]
+latitude_min = 34.30
+latitude_max = 71.85
+longitude_min = -24.96
+longitude_max = 39.72
+
+[[nodes.output.template]]
+enable = false
+template_path = "/var/lib/collector/html-template.tmp"
+output_path = "/var/www/html/index.html"
+
 
 [database]
 # cleaning data of measurement node,

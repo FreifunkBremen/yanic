@@ -1,0 +1,16 @@
+function ffhbCurrentStats(data) {
+	$("#freifunk").html("
+	<h1><a href="https://bremen.freifunk.net/" style="color: #444;">bremen.freifunk.net</a></h1>
+	<p>
+ 		Nutzer: <span id="freifunk_clients">0</span><br>
+		<i style="font-style: italic;">(auf  <span id="freifunk_nodes">0</span> GerÃ¤te verteilt)</i>
+	</p>
+	<p style="text-align: right;">
+		<a href="https://events.ffhb.de/meshviewer">mehr</a>
+	</p>");
+
+	$("#freifunk_clients").html(data.Clients);
+	$("#freifunk_nodes").html(data.Nodes);
+};
+
+ffhbCurrentStats({{json .GlobalStatistic}});

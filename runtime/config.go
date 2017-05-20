@@ -26,6 +26,7 @@ type Config struct {
 		SaveInterval Duration `toml:"save_interval"` // Save nodes periodically
 		OfflineAfter Duration `toml:"offline_after"` // Set node to offline if not seen within this period
 		PruneAfter   Duration `toml:"prune_after"`   // Remove nodes after n days of inactivity
+		Output       map[string][]interface{}
 	}
 	Meshviewer struct {
 		Version   int    `toml:"version"`
