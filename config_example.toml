@@ -34,7 +34,7 @@ save_interval = "5s"
 offline_after = "10m"
 
 
-[meshviewer]
+[[nodes.output.meshviewer]]
 # The structure version of the output which should be generated (i.e. nodes.json)
 # version 1 is accepted by the legacy meshviewer (which is the master branch)
 #   i.e. https://github.com/ffnord/meshviewer/tree/master
@@ -46,6 +46,26 @@ version    = 2
 nodes_path = "/var/www/html/meshviewer/data/nodes.json"
 # path where to store graph.json
 graph_path = "/var/www/html/meshviewer/data/graph.json"
+
+
+[nodes.output.meshviewer.filter]
+# no_owner = true
+has_location = true
+blacklist = ["vpnid"]
+
+[nodes.output.meshviewer.filter.in_area]
+latitude_min = 34.30
+latitude_max = 71.85
+longitude_min = -24.96
+longitude_max = 39.72
+
+[[nodes.output.nodelist]]
+enable   = true
+path = "/var/www/html/meshviewer/data/nodelist.json"
+
+[[nodes.output.meshviewer-ffrgb]]
+enable   = true
+path = "/var/www/html/meshviewer/data/meshviewer.json"
 
 
 [database]

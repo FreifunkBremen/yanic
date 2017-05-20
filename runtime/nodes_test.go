@@ -137,6 +137,20 @@ func TestSelectNodes(t *testing.T) {
 	assert.Equal(time, selectedNodes[0].Firstseen)
 }
 
+func TestAddNode(t *testing.T) {
+	assert := assert.New(t)
+	nodes := NewNodes(&Config{})
+
+	nodes.AddNode(&Node{})
+	assert.Len(nodes.List, 0)
+
+	nodes.AddNode(&Node{Nodeinfo: &data.NodeInfo{}})
+	assert.Len(nodes.List, 0)
+
+	nodes.AddNode(&Node{Nodeinfo: &data.NodeInfo{NodeID: "blub"}})
+	assert.Len(nodes.List, 1)
+}
+
 func TestLinksNodes(t *testing.T) {
 	assert := assert.New(t)
 
@@ -188,4 +202,7 @@ func TestLinksNodes(t *testing.T) {
 	assert.Equal(link.TargetID, "f4f26dd7a30a")
 	assert.Equal(link.TargetMAC, "f4:f2:6d:d7:a3:0a")
 	assert.Equal(link.TQ, 200)
+
+	nodeid := nodes.GetNodeIDbyMAC("f4:f2:6d:d7:a3:0a")
+	assert.Equal("f4f26dd7a30a", nodeid)
 }

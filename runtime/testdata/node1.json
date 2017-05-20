@@ -2,10 +2,12 @@
 	"nodeinfo":{
 		"node_id":"node1.json",
 		"network":{
+			"mac": "a",
 			"mesh":{
 				"bat0":{
 					"interfaces":{
-						"wireless":["a"]
+						"wireless":["a"],
+						"other":["a2"]
 					}
 				}
 			}
@@ -15,10 +17,13 @@
 		"batadv":{
 			"a":{
 					"neighbours":{
-						"b":{"tq":250,"lastseen":0.42},
+						"b":{"tq":150,"lastseen":0.42},
 						"c":{"tq":250,"lastseen":0.42}
 					}
 				}
+		},
+		"lldp":{
+			"a2": {"c2": {}}
 		}
 	}
 

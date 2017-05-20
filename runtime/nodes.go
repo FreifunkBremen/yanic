@@ -39,6 +39,17 @@ func (nodes *Nodes) Start() {
 	go nodes.worker()
 }
 
+func (nodes *Nodes) AddNode(node *Node) {
+	nodeinfo := node.Nodeinfo
+	if nodeinfo == nil || nodeinfo.NodeID == "" {
+		return
+	}
+	nodes.Lock()
+	defer nodes.Unlock()
+	nodes.List[nodeinfo.NodeID] = node
+	nodes.readIfaces(nodeinfo)
+}
+
 // Update a Node
 func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	now := jsontime.Now()
@@ -51,6 +62,9 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 			Firstseen: now,
 		}
 		nodes.List[nodeID] = node
+	}
+	if res.NodeInfo != nil {
+		nodes.readIfaces(res.NodeInfo)
 	}
 	nodes.Unlock()
 
@@ -69,10 +83,6 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Nodeinfo = res.NodeInfo
 	node.Statistics = res.Statistics
 
-	if node.Nodeinfo != nil {
-		nodes.readIfaces(node.Nodeinfo)
-	}
-
 	return node
 }
 
@@ -90,6 +100,10 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 	return result
 }
 
+func (nodes *Nodes) GetNodeIDbyMAC(mac string) string {
+	return nodes.ifaceToNodeID[mac]
+}
+
 // NodeLinks returns a list of links to known neighbours
 func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	// Store link data
@@ -97,9 +111,6 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	if neighbours == nil || neighbours.NodeID == "" {
 		return
 	}
-
-	nodes.RLock()
-	defer nodes.RUnlock()
 
 	for sourceMAC, batadv := range neighbours.Batadv {
 		for neighbourMAC, link := range batadv.Neighbours {
@@ -165,8 +176,6 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 		log.Println("nodeID missing in nodeinfo")
 		return
 	}
-	nodes.Lock()
-	defer nodes.Unlock()
 
 	addresses := []string{network.Mac}
 
@@ -191,11 +200,13 @@ func (nodes *Nodes) load() {
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 
+			nodes.Lock()
 			for _, node := range nodes.List {
 				if node.Nodeinfo != nil {
 					nodes.readIfaces(node.Nodeinfo)
 				}
 			}
+			nodes.Unlock()
 
 		} else {
 			log.Println("failed to unmarshal nodes:", err)

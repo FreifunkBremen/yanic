@@ -59,7 +59,7 @@ accessible under `/var/www/html/meshviewer`.
 #### With webserver (Apache, nginx)
 The meshviewer needs the output files like `nodes_path` and `graph_path` inside
 the same directory as the `dataPath`. Change the path in the section
-`[meshviewer]` accordingly.
+`[[nodes.output.meshviewer]]` accordingly.
 
 ### Service
 ```bash

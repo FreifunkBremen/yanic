@@ -56,7 +56,7 @@ func testGetNodeByFile(filename string) *runtime.Node {
 }
 
 func testfile(name string, obj interface{}) {
-	file, err := ioutil.ReadFile("../runtime/testdata/" + name)
+	file, err := ioutil.ReadFile("../../runtime/testdata/" + name)
 	if err != nil {
 		panic(err)
 	}
