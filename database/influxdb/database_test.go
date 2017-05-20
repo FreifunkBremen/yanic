@@ -13,13 +13,9 @@ import (
 func TestAddPoint(t *testing.T) {
 	assert := assert.New(t)
 
-	// Test add Point with tags
+	// Test add Point without tags
 	connection := &Connection{
-		config: map[string]interface{}{
-			"tags": map[string]interface{}{
-				"testtag": "value",
-			},
-		},
+		config: map[string]interface{}{},
 		points: make(chan *client.Point, 1),
 	}
 
@@ -27,6 +23,18 @@ func TestAddPoint(t *testing.T) {
 	point := <-connection.points
 	assert.NotNil(point)
 	tags := point.Tags()
+	assert.NotNil(tags)
+	assert.NotEqual(tags["testtag2"], "value")
+
+	// Test add Point with tags
+	connection.config["tags"] = map[string]interface{}{
+		"testtag": "value",
+	}
+
+	connection.addPoint("name", models.Tags{}, models.Fields{"clients.total": 10}, time.Now())
+	point = <-connection.points
+	assert.NotNil(point)
+	tags = point.Tags()
 	assert.NotNil(tags)
 	assert.Equal(tags["testtag"], "value")
 	assert.NotEqual(tags["testtag2"], "value")

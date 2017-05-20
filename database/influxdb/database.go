@@ -46,7 +46,10 @@ func (c Config) Password() string {
 	return c["password"].(string)
 }
 func (c Config) Tags() map[string]interface{} {
-	return c["tags"].(map[string]interface{})
+	if c["tags"] != nil {
+		return c["tags"].(map[string]interface{})
+	}
+	return nil
 }
 
 func init() {
