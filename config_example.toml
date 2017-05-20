@@ -67,8 +67,11 @@ address  = "http://localhost:8086"
 database = "ffhb"
 username = ""
 password = ""
-# tag the data with an optional job tag
-job      = "ffhb01"
+# tagging of the data are optional
+# be carefull tags by system would overright config
+[database.connection.influxdb.tags]
+site = "ffhb01"
+system = "testing"
 
 [[database.connection.logging]]
 enable   = false
