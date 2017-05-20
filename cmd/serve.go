@@ -8,8 +8,9 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/database/all"
-	"github.com/FreifunkBremen/yanic/meshviewer"
+	allDatabase "github.com/FreifunkBremen/yanic/database/all"
+	"github.com/FreifunkBremen/yanic/output"
+	allOutput "github.com/FreifunkBremen/yanic/output/all"
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/FreifunkBremen/yanic/webserver"
@@ -24,7 +25,7 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
 
-		connections, err := all.Connect(config.Database.Connection)
+		connections, err := allDatabase.Connect(config.Database.Connection)
 		if err != nil {
 			panic(err)
 		}
@@ -33,7 +34,13 @@ var serveCmd = &cobra.Command{
 
 		nodes = runtime.NewNodes(config)
 		nodes.Start()
-		meshviewer.Start(config, nodes)
+
+		outputs, err := allOutput.Register(config.Nodes.Output)
+		if err != nil {
+			panic(err)
+		}
+		output.Start(outputs, nodes, config)
+		defer output.Close()
 
 		if config.Webserver.Enable {
 			log.Println("starting webserver on", config.Webserver.Bind)

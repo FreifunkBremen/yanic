@@ -1,4 +1,4 @@
-package runtime
+package nodelist
 
 import (
 	"testing"
@@ -6,31 +6,20 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-func TestGlobalStats(t *testing.T) {
-	stats := NewGlobalStats(createTestNodes())
+func TestTransform(t *testing.T) {
+	nodes := transform(createTestNodes())
 
 	assert := assert.New(t)
-	assert.EqualValues(1, stats.Gateways)
-	assert.EqualValues(3, stats.Nodes)
-	assert.EqualValues(25, stats.Clients)
-
-	// check models
-	assert.Len(stats.Models, 2)
-	assert.EqualValues(2, stats.Models["TP-Link 841"])
-	assert.EqualValues(1, stats.Models["Xeon Multi-Core"])
-
-	// check firmwares
-	assert.Len(stats.Firmwares, 1)
-	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
+	assert.Len(nodes.List, 3)
 }
 
-func createTestNodes() *Nodes {
-	nodes := NewNodes(&Config{})
+func createTestNodes() *runtime.Nodes {
+	nodes := runtime.NewNodes(&runtime.Config{})
 
-	nodeData := &Node{
-		Online: true,
+	nodeData := &runtime.Node{
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
 				Total: 23,
@@ -46,8 +35,7 @@ func createTestNodes() *Nodes {
 	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
 	nodes.AddNode(nodeData)
 
-	nodes.AddNode(&Node{
-		Online: true,
+	nodes.AddNode(&runtime.Node{
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
 				Total: 2,
@@ -58,11 +46,14 @@ func createTestNodes() *Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
+			Location: &data.Location{
+				Latitude:   23,
+				Longtitude: 2,
+			},
 		},
 	})
 
-	nodes.AddNode(&Node{
-		Online: true,
+	nodes.AddNode(&runtime.Node{
 		Nodeinfo: &data.NodeInfo{
 			NodeID: "0xdeadbeef0x",
 			VPN:    true,

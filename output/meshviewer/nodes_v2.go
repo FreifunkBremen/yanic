@@ -20,8 +20,7 @@ func BuildNodesV2(nodes *runtime.Nodes) interface{} {
 		Timestamp: jsontime.Now(),
 	}
 
-	for nodeID := range nodes.List {
-		nodeOrigin := nodes.List[nodeID]
+	for _, nodeOrigin := range nodes.List {
 		if nodeOrigin.Statistics == nil {
 			continue
 		}

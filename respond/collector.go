@@ -256,9 +256,11 @@ func (coll *Collector) saveResponse(addr *net.UDPAddr, res *data.ResponseData) {
 
 		// Store link data
 		if neighbours := node.Neighbours; neighbours != nil {
+			coll.nodes.RLock()
 			for _, link := range coll.nodes.NodeLinks(node) {
 				db.InsertLink(&link, node.Lastseen.GetTime())
 			}
+			coll.nodes.RUnlock()
 		}
 	}
 }

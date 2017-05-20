@@ -18,12 +18,17 @@ func TestReadConfig(t *testing.T) {
 	assert.Equal([]string{"eth0"}, config.Respondd.Interfaces)
 	assert.Equal(time.Minute, config.Respondd.CollectInterval.Duration)
 
-	assert.Equal(2, config.Meshviewer.Version)
-	assert.Equal("/var/www/html/meshviewer/data/nodes.json", config.Meshviewer.NodesPath)
-
 	assert.Equal(time.Hour*24*7, config.Nodes.PruneAfter.Duration)
 
 	assert.Equal(time.Hour*24*7, config.Database.DeleteAfter.Duration)
+
+	var meshviewer map[string]interface{}
+	var outputs []map[string]interface{}
+	outputs = config.Nodes.Output["meshviewer"].([]map[string]interface{})
+	assert.Len(outputs, 1, "more outputs are given")
+	meshviewer = outputs[0]
+	assert.Equal(int64(2), meshviewer["version"])
+	assert.Equal("/var/www/html/meshviewer/data/nodes.json", meshviewer["nodes_path"])
 
 	var influxdb map[string]interface{}
 	dbs := config.Database.Connection["influxdb"]

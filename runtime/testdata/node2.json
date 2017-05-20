@@ -15,7 +15,7 @@
 		"batadv":{
 			"b":{
 					"neighbours":{
-						"a":{"tq":150,"lastseen":0.42}
+						"a":{"tq":250,"lastseen":0.42}
 					}
 				}
 		}

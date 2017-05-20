@@ -22,37 +22,43 @@ func TestGlobalStats(t *testing.T) {
 func createTestNodes() *runtime.Nodes {
 	nodes := runtime.NewNodes(&runtime.Config{})
 
-	nodeData := &data.ResponseData{
+	nodeData := &runtime.Node{
+		Online: true,
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
 				Total: 23,
 			},
 		},
-		NodeInfo: &data.NodeInfo{
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "abcdef012345",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
 		},
 	}
-	nodeData.NodeInfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
-	nodes.Update("abcdef012345", nodeData)
+	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
+	nodes.AddNode(nodeData)
 
-	nodes.Update("112233445566", &data.ResponseData{
+	nodes.AddNode(&runtime.Node{
+		Online: true,
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
 				Total: 2,
 			},
 		},
-		NodeInfo: &data.NodeInfo{
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "112233445566",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
 		},
 	})
 
-	nodes.Update("0xdeadbeef0x", &data.ResponseData{
-		NodeInfo: &data.NodeInfo{
-			VPN: true,
+	nodes.AddNode(&runtime.Node{
+		Online: true,
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "0xdeadbeef0x",
+			VPN:    true,
 			Hardware: data.Hardware{
 				Model: "Xeon Multi-Core",
 			},

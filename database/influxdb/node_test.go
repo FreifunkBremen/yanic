@@ -144,7 +144,7 @@ func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
 	}
 
 	for _, node := range nodes {
-		nodesList.Update(node.Nodeinfo.NodeID, &data.ResponseData{NodeInfo: node.Nodeinfo})
+		nodesList.AddNode(node)
 	}
 
 	// Process data

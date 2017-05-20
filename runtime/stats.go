@@ -23,7 +23,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 		Models:    make(CounterMap),
 	}
 
-	nodes.Lock()
+	nodes.RLock()
 	for _, node := range nodes.List {
 		if node.Online {
 			result.Nodes++
@@ -42,7 +42,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 			}
 		}
 	}
-	nodes.Unlock()
+	nodes.RUnlock()
 	return
 }
 
