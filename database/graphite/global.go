@@ -7,7 +7,7 @@ import (
 	"github.com/fgrosse/graphigo"
 )
 
-func (c *Connection) InserGlobals(stats *runtime.GlobalStats, time time.Time) {
+func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	c.addPoint(GlobalStatsFields(stats))
 	c.addCounterMap(CounterMeasurementModel, stats.Models, time)
 	c.addCounterMap(CounterMeasurementFirmware, stats.Firmwares, time)
