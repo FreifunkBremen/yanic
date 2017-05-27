@@ -62,6 +62,7 @@ func Connect(configuration interface{}) (database.Connection, error) {
 }
 
 func (c *Connection) Close() {
+	close(c.points)
 	if c.client.Connection != nil {
 		c.client.Close()
 	}
@@ -69,24 +70,12 @@ func (c *Connection) Close() {
 
 func (c *Connection) addWorker() {
 	defer c.wg.Done()
-	for c.Connection != nil {
-
-		select {
-		case point, ok := <-c.points:
-			{
-				if ok {
-					err := c.client.SendAll(point)
-					if err != nil {
-						log.Fatal(err)
-						defer c.Close()
-						return
-					}
-				} else {
-					defer c.Close()
-					return
-				}
-			}
-
+	defer c.Close()
+	for point := range c.points {
+		err := c.client.SendAll(point)
+		if err != nil {
+			log.Fatal(err)
+			return
 		}
 	}
 }
