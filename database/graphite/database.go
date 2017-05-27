@@ -49,6 +49,7 @@ func Connect(configuration interface{}) (database.Connection, error) {
 			Address: config.Address(),
 			Prefix:  config.Prefix(),
 		},
+		points: make(chan []graphigo.Metric, 1000),
 	}
 
 	if err := con.client.Connect(); err != nil {
