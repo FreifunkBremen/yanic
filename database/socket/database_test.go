@@ -26,8 +26,8 @@ func TestStartup(t *testing.T) {
 	assert.Error(err, "connection should not work")
 	assert.Nil(conn)
 
-	config["type"] = "unix"
-	config["address"] = "/tmp/yanic-database.socket"
+	config["type"] = "tcp6"
+	config["address"] = "[::]:1337"
 
 	conn, err = Connect(config)
 	assert.NoError(err, "connection should work")
@@ -42,14 +42,14 @@ func TestClient(t *testing.T) {
 	config := make(map[string]interface{})
 
 	config["enable"] = true
-	config["type"] = "unix"
-	config["address"] = "/tmp/yanic-database2.socket"
+	config["type"] = "tcp6"
+	config["address"] = "[::]:1337"
 
 	conn, err := Connect(config)
 	assert.NoError(err, "connection should work")
 	assert.NotNil(conn)
 
-	client, err := net.Dial("unix", "/tmp/yanic-database2.socket")
+	client, err := net.Dial("tcp6", "[::]:1337")
 	assert.NoError(err, "connection should work")
 	assert.NotNil(client)
 	time.Sleep(time.Duration(3) * time.Microsecond)
