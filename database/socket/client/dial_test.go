@@ -12,7 +12,7 @@ import (
 func TestConnectError(t *testing.T) {
 	assert := assert.New(t)
 	assert.Panics(func() {
-		Dial("unix", "/tmp/yanic-database-error.socket")
+		Dial("tcp6", "[::]:30303")
 	}, "could connect")
 }
 
@@ -20,12 +20,12 @@ func TestRecieveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
 		"enable":  true,
-		"type":    "unix",
-		"address": "/tmp/yanic-database.socket",
+		"type":    "tcp6",
+		"address": "[::]:1337",
 	})
 	assert.NoError(err)
 
-	d := Dial("unix", "/tmp/yanic-database.socket")
+	d := Dial("tcp6", "[::]:1337")
 	assert.NotNil(d)
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)
