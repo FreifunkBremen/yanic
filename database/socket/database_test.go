@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"encoding/json"
 	"net"
 	"testing"
 	"time"
@@ -53,20 +54,27 @@ func TestClient(t *testing.T) {
 	assert.NotNil(client)
 	time.Sleep(time.Duration(3) * time.Microsecond)
 
+	decoder := json.NewDecoder(client)
+	var msg Message
+
 	conn.InsertNode(&runtime.Node{})
+	decoder.Decode(&msg)
+	assert.Equal("insert_node", msg.Event)
+
 	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now())
+	decoder.Decode(&msg)
+	assert.Equal("insert_globals", msg.Event)
+
+	conn.PruneNodes(time.Hour * 24 * 7)
+	decoder.Decode(&msg)
+	assert.Equal("prune_nodes", msg.Event)
 	time.Sleep(time.Duration(3) * time.Microsecond)
 
 	// to reach in sendJSON removing of disconnection
-	err = client.Close()
-	assert.NoError(err, "disconnect should work")
-	time.Sleep(time.Duration(3) * time.Microsecond)
-	conn.InsertNode(&runtime.Node{})
-	time.Sleep(time.Duration(3) * time.Microsecond)
-
-	// to reach all parts of conn.Close()
-	client, err = net.Dial("unix", "/tmp/yanic-database2.socket")
-	time.Sleep(time.Duration(3) * time.Microsecond)
-
 	conn.Close()
+
+	conn.InsertNode(&runtime.Node{})
+	err = decoder.Decode(&msg)
+	assert.Error(err)
+
 }

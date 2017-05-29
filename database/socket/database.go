@@ -1,10 +1,11 @@
 package socket
 
-/**
- * This database type is just for,
- * - debugging without a influxconn
- * - example for other developers for new databases
+/*
+ * This socket database is to run another service
+ * (without flooding the network with respondd packages)
+ * e.g. https://github.com/FreifunkBremen/freifunkmanager
  */
+
 import (
 	"log"
 	"net"
@@ -46,15 +47,15 @@ func Connect(configuration interface{}) (database.Connection, error) {
 }
 
 func (conn *Connection) InsertNode(node *runtime.Node) {
-	conn.sendJSON(EventMessage{Event: "insert_node", Body: node})
+	conn.sendJSON(Message{Event: MessageEventInsertNode, Body: node})
 }
 
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
-	conn.sendJSON(EventMessage{Event: "insert_globals", Body: stats})
+	conn.sendJSON(Message{Event: MessageEventInsertGlobals, Body: stats})
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
-	conn.sendJSON(EventMessage{Event: "prune_nodes"})
+	conn.sendJSON(Message{Event: MessageEventPruneNodes})
 }
 
 func (conn *Connection) Close() {
