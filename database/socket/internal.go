@@ -6,11 +6,6 @@ import (
 	"net"
 )
 
-type EventMessage struct {
-	Event string      `json:"event"`
-	Body  interface{} `json:"body,omitempty"`
-}
-
 func (conn *Connection) handleSocketConnection(ln net.Listener) {
 	for {
 		c, err := ln.Accept()
@@ -24,7 +19,7 @@ func (conn *Connection) handleSocketConnection(ln net.Listener) {
 	}
 }
 
-func (conn *Connection) sendJSON(msg EventMessage) {
+func (conn *Connection) sendJSON(msg Message) {
 	conn.clientMux.Lock()
 	for addr, c := range conn.clients {
 		d := json.NewEncoder(c)
