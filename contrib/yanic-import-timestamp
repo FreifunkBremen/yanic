@@ -1,44 +1,82 @@
 #!/usr/bin/env python3
-import json
 import argparse
+import json
 import os
 import sys
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-n', '--nodesjson', action='store',
-                  help='old nodes.json file you want to read firstseen from',required=True)
+parser.add_argument('-n', '--nodesjson', action='store', required=True,
+                    help='old nodes.json file you want to read firstseen from')
 
-parser.add_argument('-s', '--state', action='store',
-                  help='state.json you want to store',required=True)
+parser.add_argument('-s', '--state', action='store', required=True,
+                    help='state.json you want to store')
 
 args = parser.parse_args()
-options = vars(args)
 
-oldnodes_fn = os.path.realpath(options['nodesjson'])
-newnodes_fn = os.path.realpath(options['state'])
+with open(os.path.realpath(args.nodesjson), encoding='UTF-8') as handle:
+    legacy_db = json.load(handle)
 
-with open(oldnodes_fn, 'r', encoding=('UTF-8')) as oldnodedb_handle:
-    oldnodedb = json.load(oldnodedb_handle)
-with open(newnodes_fn, 'r', encoding=('UTF-8')) as newnodedb_handle:
-    newnodedb = json.load(newnodedb_handle)
+# w/o a version tag we cannot decide how to walk and interpret the nodes.json
+assert ('version' in legacy_db)
 
-count = 0
-if oldnodedb['version'] == 1:
-    for nodeid, node in newnodedb['nodes'].items():
-        for oldnodeid, oldnode in oldnodedb['nodes'].items():
-            if oldnodeid == nodeid:
-                node['firstseen'] = "{}+0100".format(oldnode['firstseen'])
-                count+=1
+yanic_db_path = os.path.realpath(args.state)
+with open(yanic_db_path, encoding='UTF-8') as handle:
+    yanic_db = json.load(handle)
 
-if oldnodedb['version'] == 2:
-    for nodeid, node in newnodedb['nodes'].items():
-        for oldnode in oldnodedb['nodes']:
-            if oldnode['nodeinfo']['node_id'] == nodeid:
-                node['firstseen'] = "{}+0100".format(oldnode['firstseen'])
-                count+=1
+total = 0
+updated = 0
+yanic_date_format = '%Y-%m-%dT%H:%M:%S+0000'
+v1_date_format = '%Y-%m-%dT%H:%M:%S.%f'  # 2017-05-31T18:30:19.759610
+v2_date_format = '%Y-%m-%dT%H:%M:%S.%fZ'  # 2015-08-22T16:05:02.000Z
+version = legacy_db['version']
 
-with open(newnodes_fn, 'w') as f:
-    json.dump(newnodedb, f)
+print('nodes.json is in v{} format'.format(version))
 
-print('firstseen updated on %d nodes' % count)
+fallback_date_format = None
+if version == 1:
+    legacy_date_format = v1_date_format    # ffmap-backend
+elif version == 2:
+    legacy_date_format = v2_date_format    # hopglass
+    fallback_date_format = v1_date_format  # ffmap-backend
+else:
+    print('unhandled nodes.json version number!', file=sys.stderr)
+    sys.exit(1)
+
+for nodeid, node in yanic_db.get('nodes', {}).items():
+    legacy_node = None
+
+    if version == 1:
+        # v1 nodes.json is a dict, so lookups are cheap
+        legacy_node = legacy_db.get('nodes', {}).get(nodeid, None)
+    elif version == 2:
+        # v2 nodes.json however carries nodes as a list of dicts …
+        legacy_node = next((
+            candidate for candidate in legacy_db.get('nodes', [])
+            if candidate['nodeinfo']['node_id'] == nodeid), None)
+
+    if legacy_node is not None:
+        try:
+            dt = datetime.strptime(legacy_node['firstseen'], legacy_date_format)
+        except ValueError as ex:
+            # time format mismatch, try fallback format
+            if fallback_date_format is not None:
+                dt = datetime.strptime(legacy_node['firstseen'],
+                                       fallback_date_format)
+            else:
+                # or if none is set, re-raise the original exception
+                raise ex
+
+        dts = dt.strftime(yanic_date_format)
+
+        if node['firstseen'] != dts:
+            node['firstseen'] = dts
+            updated += 1
+
+        total += 1
+
+with open(yanic_db_path, 'w') as f:
+    json.dump(yanic_db, f)
+
+print('found {} nodes, {} changed.'.format(total, updated))
