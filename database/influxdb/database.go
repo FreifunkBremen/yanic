@@ -45,6 +45,12 @@ func (c Config) Username() string {
 func (c Config) Password() string {
 	return c["password"].(string)
 }
+func (c Config) Tags() map[string]interface{} {
+	if c["tags"] != nil {
+		return c["tags"].(map[string]interface{})
+	}
+	return nil
+}
 
 func init() {
 	database.RegisterAdapter("influxdb", Connect)
@@ -79,6 +85,15 @@ func Connect(configuration interface{}) (database.Connection, error) {
 }
 
 func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, t ...time.Time) {
+	if configTags := conn.config.Tags(); configTags != nil {
+		for tag, valueInterface := range configTags {
+			if value, ok := valueInterface.(string); ok && tags.Get([]byte(tag)) == nil {
+				tags.SetString(tag, value)
+			} else {
+				log.Println(name, "could not saved configured value of tag", tag)
+			}
+		}
+	}
 	point, err := client.NewPoint(name, tags.Map(), fields, t...)
 	if err != nil {
 		panic(err)
