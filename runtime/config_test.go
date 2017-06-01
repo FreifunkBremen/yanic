@@ -30,4 +30,10 @@ func TestReadConfig(t *testing.T) {
 	assert.Len(dbs, 1, "more influxdb are given")
 	influxdb = dbs[0].(map[string]interface{})
 	assert.Equal(influxdb["database"], "ffhb")
+
+	var graphitedb map[string]interface{}
+	dbs = config.Database.Connection["graphite"]
+	assert.Len(dbs, 1, "more graphitedb are given")
+	graphitedb = dbs[0].(map[string]interface{})
+	assert.Equal(graphitedb["address"], "localhost:2003")
 }

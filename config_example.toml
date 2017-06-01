@@ -76,3 +76,8 @@ system = "testing"
 [[database.connection.logging]]
 enable   = false
 path     = "/var/log/yanic.log"
+
+[[database.connection.graphite]]
+enable   = false
+address  = "localhost:2003"
+prefix   = "freifunk"
