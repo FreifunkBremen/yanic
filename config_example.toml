@@ -1,6 +1,8 @@
 # Send respondd request to update information
 [respondd]
 enable           = true
+# Delay startup until a multiple of the period since zero time
+synchronize      = "1m"
 # how oftern request per multicast
 collect_interval = "1m"
 # on which interface
