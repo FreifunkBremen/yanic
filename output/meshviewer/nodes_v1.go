@@ -21,8 +21,7 @@ func BuildNodesV1(toFilter filter, nodes *runtime.Nodes) interface{} {
 		Timestamp: jsontime.Now(),
 	}
 
-	for nodeID := range nodes.List {
-		nodeOrigin := nodes.List[nodeID]
+	for nodeID, nodeOrigin := range nodes.List {
 		nodeFiltere := toFilter(nodeOrigin)
 		if nodeOrigin.Statistics == nil || nodeFiltere == nil {
 			continue

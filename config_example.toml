@@ -67,6 +67,10 @@ enable = false
 template_path = "/var/lib/collector/html-template.tmp"
 output_path = "/var/www/html/index.html"
 
+[[nodes.output.nodelist]]
+enable   = true
+path = "/var/www/html/meshviewer/data/nodelist.json"
+
 
 [database]
 # cleaning data of measurement node,
