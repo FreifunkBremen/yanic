@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/database/all"
@@ -58,16 +59,24 @@ func main() {
 	nodes.Start()
 	meshviewer.Start(config, nodes)
 
-	if config.Respondd.Enable {
-		collector = respond.NewCollector(connections, nodes, config.Respondd.Interface, config.Respondd.Port)
-		collector.Start(config.Respondd.CollectInterval.Duration)
-		defer collector.Close()
-	}
-
 	if config.Webserver.Enable {
 		log.Println("starting webserver on", config.Webserver.Bind)
 		srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
 		go srv.Close()
+	}
+
+	if config.Respondd.Enable {
+		// Delaying startup to start at a multiple of `duration` since the zero time.
+		if duration := config.Respondd.Synchronize.Duration; duration > 0 {
+			now := time.Now()
+			delay := duration - now.Sub(now.Truncate(duration))
+			log.Printf("delaying %0.1f seconds", delay.Seconds())
+			time.Sleep(delay)
+		}
+
+		collector = respond.NewCollector(connections, nodes, config.Respondd.Interface, config.Respondd.Port)
+		collector.Start(config.Respondd.CollectInterval.Duration)
+		defer collector.Close()
 	}
 
 	// Wait for INT/TERM
