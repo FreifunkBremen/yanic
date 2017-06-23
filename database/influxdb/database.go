@@ -149,7 +149,7 @@ func (conn *Connection) addWorker() {
 			log.Println("saving", len(bp.Points()), "points")
 
 			if err = conn.client.Write(bp); err != nil {
-				log.Fatal(err)
+				log.Print(err)
 			}
 			writeNow = false
 			bp = nil
