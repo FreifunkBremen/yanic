@@ -31,7 +31,7 @@ func createTestNodes() *Nodes {
 
 	nodeData := &data.ResponseData{
 		Statistics: &data.Statistics{
-			Clients: data.Clients{
+			Clients: &data.Clients{
 				Total: 23,
 			},
 		},
@@ -39,14 +39,22 @@ func createTestNodes() *Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
+			Software: data.Software{
+				Firmware: &struct {
+					Base    string `json:"base,omitempty"`
+					Release string `json:"release,omitempty"`
+				}{
+					Base:    "2016.1.6",
+					Release: "2016.1.6+entenhausen1",
+				},
+			},
 		},
 	}
-	nodeData.NodeInfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
 	nodes.Update("abcdef012345", nodeData)
 
 	nodes.Update("112233445566", &data.ResponseData{
 		Statistics: &data.Statistics{
-			Clients: data.Clients{
+			Clients: &data.Clients{
 				Total: 2,
 			},
 		},

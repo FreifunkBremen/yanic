@@ -27,7 +27,7 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 	for _, node := range nodes.List {
 		if node.Online {
 			result.Nodes++
-			if stats := node.Statistics; stats != nil {
+			if stats := node.Statistics; stats != nil && stats.Clients != nil {
 				result.Clients += stats.Clients.Total
 				result.ClientsWifi24 += stats.Clients.Wifi24
 				result.ClientsWifi5 += stats.Clients.Wifi5
@@ -38,7 +38,9 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 			}
 			if info := node.Nodeinfo; info != nil {
 				result.Models.Increment(info.Hardware.Model)
-				result.Firmwares.Increment(info.Software.Firmware.Release)
+				if firmware := info.Software.Firmware; firmware != nil {
+					result.Firmwares.Increment(info.Software.Firmware.Release)
+				}
 			}
 		}
 	}

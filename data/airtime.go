@@ -15,16 +15,15 @@ type WirelessStatistics []*WirelessAirtime
 
 // WirelessAirtime struct
 type WirelessAirtime struct {
-	ChanUtil float32 // Channel utilization
-	RxUtil   float32 // Receive utilization
-	TxUtil   float32 // Transmit utilization
-
-	ActiveTime uint64 `json:"active"`
-	BusyTime   uint64 `json:"busy"`
-	RxTime     uint64 `json:"rx"`
-	TxTime     uint64 `json:"tx"`
-	Noise      uint32 `json:"noise"`
-	Frequency  uint32 `json:"frequency"`
+	ChanUtil   float32 `json:"chan_util"` // Channel utilization
+	RxUtil     float32 `json:"rx_util"`   // Receive utilization
+	TxUtil     float32 `json:"tx_util"`   // Transmit utilization
+	ActiveTime uint64  `json:"active"`
+	BusyTime   uint64  `json:"busy"`
+	RxTime     uint64  `json:"rx"`
+	TxTime     uint64  `json:"tx"`
+	Noise      uint32  `json:"noise"`
+	Frequency  uint32  `json:"frequency"`
 }
 
 // FrequencyName returns 11g or 11a

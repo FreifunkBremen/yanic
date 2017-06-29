@@ -32,12 +32,12 @@ type Statistics struct {
 	Idletime    float64 `json:"idletime,omitempty"`
 	GatewayIPv4 string  `json:"gateway,omitempty"`
 	GatewayIPv6 string  `json:"gateway6,omitempty"`
-	Processes   struct {
+	Processes   *struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
 	} `json:"processes,omitempty"`
 	MeshVPN *data.MeshVPN `json:"mesh_vpn,omitempty"`
-	Traffic struct {
+	Traffic *struct {
 		Tx      *data.Traffic `json:"tx"`
 		Rx      *data.Traffic `json:"rx"`
 		Forward *data.Traffic `json:"forward"`
@@ -48,29 +48,35 @@ type Statistics struct {
 
 // NewStatistics transform respond Statistics to meshviewer Statistics
 func NewStatistics(stats *data.Statistics) *Statistics {
-	total := stats.Clients.Total
-	if total == 0 {
-		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
+	var total uint32
+	if clients := stats.Clients; clients != nil {
+		total = clients.Total
+		if total <= 0 {
+			total = clients.Wifi24 + clients.Wifi5
+		}
 	}
 	/* The Meshviewer could not handle absolute memory output
 	 * calc the used memory as a float which 100% equal 1.0
 	 * calc is coppied from node statuspage (look discussion:
 	 * https://github.com/FreifunkBremen/yanic/issues/35)
 	 */
-	memoryUsage := 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
 
-	return &Statistics{
+	result := &Statistics{
 		NodeID:      stats.NodeID,
 		GatewayIPv4: stats.GatewayIPv4,
 		GatewayIPv6: stats.GatewayIPv6,
 		RootFsUsage: stats.RootFsUsage,
 		LoadAverage: stats.LoadAverage,
-		MemoryUsage: memoryUsage,
 		Uptime:      stats.Uptime,
 		Idletime:    stats.Idletime,
 		Processes:   stats.Processes,
 		MeshVPN:     stats.MeshVPN,
 		Traffic:     stats.Traffic,
 		Clients:     total,
+		MemoryUsage: 1,
 	}
+	if memory := stats.Memory; memory != nil && memory.Total > 0 {
+		result.MemoryUsage = 1 - (float64(memory.Free)+float64(memory.Buffers)+float64(memory.Cached))/float64(memory.Total)
+	}
+	return result
 }

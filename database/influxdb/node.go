@@ -29,18 +29,27 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 	tags.SetString("nodeid", stats.NodeID)
 
 	fields = map[string]interface{}{
-		"load":           stats.LoadAverage,
-		"time.up":        int64(stats.Uptime),
-		"time.idle":      int64(stats.Idletime),
-		"proc.running":   stats.Processes.Running,
-		"clients.wifi":   stats.Clients.Wifi,
-		"clients.wifi24": stats.Clients.Wifi24,
-		"clients.wifi5":  stats.Clients.Wifi5,
-		"clients.total":  stats.Clients.Total,
-		"memory.buffers": stats.Memory.Buffers,
-		"memory.cached":  stats.Memory.Cached,
-		"memory.free":    stats.Memory.Free,
-		"memory.total":   stats.Memory.Total,
+		"load":      stats.LoadAverage,
+		"time.up":   int64(stats.Uptime),
+		"time.idle": int64(stats.Idletime),
+	}
+
+	if clients := stats.Clients; clients != nil {
+		fields["clients.wifi"] = clients.Wifi
+		fields["clients.wifi24"] = clients.Wifi24
+		fields["clients.wifi5"] = clients.Wifi5
+		fields["clients.total"] = clients.Total
+	}
+
+	if proc := stats.Processes; proc != nil {
+		fields["proc.running"] = stats.Processes.Running
+	}
+
+	if mem := stats.Memory; mem != nil {
+		fields["memory.buffers"] = mem.Buffers
+		fields["memory.cached"] = mem.Cached
+		fields["memory.free"] = mem.Free
+		fields["memory.total"] = mem.Total
 	}
 
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
@@ -54,8 +63,10 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		}
 		// Hardware
 		tags.SetString("model", nodeinfo.Hardware.Model)
-		tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
-		tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
+		if firmware := nodeinfo.Software.Firmware; firmware != nil {
+			tags.SetString("firmware_base", firmware.Base)
+			tags.SetString("firmware_release", firmware.Release)
+		}
 
 	}
 
@@ -90,27 +101,28 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		// total is the sum of all protocols
 		fields["neighbours.total"] = batadv + lldp
 	}
-
-	if t := stats.Traffic.Rx; t != nil {
-		fields["traffic.rx.bytes"] = int64(t.Bytes)
-		fields["traffic.rx.packets"] = t.Packets
-	}
-	if t := stats.Traffic.Tx; t != nil {
-		fields["traffic.tx.bytes"] = int64(t.Bytes)
-		fields["traffic.tx.packets"] = t.Packets
-		fields["traffic.tx.dropped"] = t.Dropped
-	}
-	if t := stats.Traffic.Forward; t != nil {
-		fields["traffic.forward.bytes"] = int64(t.Bytes)
-		fields["traffic.forward.packets"] = t.Packets
-	}
-	if t := stats.Traffic.MgmtRx; t != nil {
-		fields["traffic.mgmt_rx.bytes"] = int64(t.Bytes)
-		fields["traffic.mgmt_rx.packets"] = t.Packets
-	}
-	if t := stats.Traffic.MgmtTx; t != nil {
-		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
-		fields["traffic.mgmt_tx.packets"] = t.Packets
+	if tr := stats.Traffic; tr != nil {
+		if t := tr.Rx; t != nil {
+			fields["traffic.rx.bytes"] = int64(t.Bytes)
+			fields["traffic.rx.packets"] = t.Packets
+		}
+		if t := tr.Tx; t != nil {
+			fields["traffic.tx.bytes"] = int64(t.Bytes)
+			fields["traffic.tx.packets"] = t.Packets
+			fields["traffic.tx.dropped"] = t.Dropped
+		}
+		if t := tr.Forward; t != nil {
+			fields["traffic.forward.bytes"] = int64(t.Bytes)
+			fields["traffic.forward.packets"] = t.Packets
+		}
+		if t := tr.MgmtRx; t != nil {
+			fields["traffic.mgmt_rx.bytes"] = int64(t.Bytes)
+			fields["traffic.mgmt_rx.packets"] = t.Packets
+		}
+		if t := tr.MgmtTx; t != nil {
+			fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
+			fields["traffic.mgmt_tx.packets"] = t.Packets
+		}
 	}
 
 	for _, airtime := range stats.Wireless {
