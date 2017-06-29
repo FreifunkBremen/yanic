@@ -19,8 +19,11 @@ func main() {
 
 	nodes := runtime.NewNodes(&runtime.Config{})
 
-	collector := respond.NewCollector(nil, nodes, iface, 0)
-	collector.SendPacket(net.ParseIP(dstAddress))
+	collector := respond.NewCollector(nil, nodes, iface, iface, iface, 0)
+	collector.SendPacket(net.UDPAddr{
+		IP:   net.ParseIP(dstAddress),
+		Zone: iface,
+	})
 
 	time.Sleep(time.Second)
 
