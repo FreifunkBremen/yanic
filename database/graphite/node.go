@@ -50,6 +50,13 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 		}
 		addField("neighbours.batadv", batadv)
 
+		// protocol: Babel
+		babel := 0
+		for _, babelNeighbours := range neighbours.Babel {
+			babel += len(babelNeighbours)
+		}
+		addField("neighbours.babel", babel)
+
 		// protocol: LLDP
 		lldp := 0
 		for _, lldpNeighbours := range neighbours.LLDP {
