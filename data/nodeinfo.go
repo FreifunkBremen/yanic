@@ -4,7 +4,7 @@ package data
 type NodeInfo struct {
 	NodeID   string    `json:"node_id"`
 	Network  Network   `json:"network"`
-	Owner    *Owner    `json:"-"` // Removed for privacy reasons
+	Owner    *Owner    `json:"owner"`
 	System   System    `json:"system"`
 	Hostname string    `json:"hostname"`
 	Location *Location `json:"location,omitempty"`
