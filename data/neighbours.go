@@ -2,10 +2,11 @@ package data
 
 // Neighbours struct
 type Neighbours struct {
-	Batadv map[string]BatadvNeighbours `json:"batadv"`
-	LLDP   map[string]LLDPNeighbours   `json:"lldp"`
-	//WifiNeighbours map[string]WifiNeighbours   `json:"wifi"`
-	NodeID string `json:"node_id"`
+	Batadv         map[string]BatadvNeighbours `json:"batadv"`
+	LLDP           map[string]LLDPNeighbours   `json:"lldp"`
+	Babel          map[string]BabelNeighbours  `json:"babel"`
+	WifiNeighbours map[string]WifiNeighbours   `json:"wifi"`
+	NodeID         string                      `json:"node_id"`
 }
 
 // WifiLink struct
@@ -21,6 +22,11 @@ type BatmanLink struct {
 	Tq       int     `json:"tq"`
 }
 
+// BabelLink struct
+type BabelLink struct {
+	Address string `json:"address"`
+}
+
 // LLDPLink struct
 type LLDPLink struct {
 	Name        string `json:"name"`
@@ -31,6 +37,9 @@ type LLDPLink struct {
 type BatadvNeighbours struct {
 	Neighbours map[string]BatmanLink `json:"neighbours"`
 }
+
+// BabelNeighbours struct
+type BabelNeighbours []BabelLink
 
 // WifiNeighbours struct
 type WifiNeighbours struct {

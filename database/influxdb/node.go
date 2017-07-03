@@ -80,6 +80,13 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		}
 		fields["neighbours.batadv"] = batadv
 
+		// protocol: Babel
+		babel := 0
+		for _, babelNeighbours := range neighbours.Babel {
+			babel += len(babelNeighbours)
+		}
+		fields["neighbours.babel"] = babel
+
 		// protocol: LLDP
 		lldp := 0
 		for _, lldpNeighbours := range neighbours.LLDP {

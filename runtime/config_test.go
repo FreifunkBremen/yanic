@@ -15,7 +15,7 @@ func TestReadConfig(t *testing.T) {
 	assert.NotNil(config)
 
 	assert.True(config.Respondd.Enable)
-	assert.Equal("eth0", config.Respondd.Interface)
+	assert.Equal("eth0", config.Respondd.InterfaceListen)
 	assert.Equal(time.Minute, config.Respondd.CollectInterval.Duration)
 
 	assert.Equal(time.Hour*24*7, config.Nodes.PruneAfter.Duration)

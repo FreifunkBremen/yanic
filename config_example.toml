@@ -5,8 +5,13 @@ enable           = true
 synchronize      = "1m"
 # how oftern request per multicast
 collect_interval = "1m"
-# on which interface
+# on which interface to listen
 interface        = "eth0"
+# send unicast request (default: see interface)
+## interface_send_unicast = "eth0"
+# send multicast request (default: see interface)
+# interface_send_multicast = "eth1"
+
 # define a port to listen
 # (no or 0 would choose at port at his own)
 #port = 10001
