@@ -14,7 +14,8 @@ type Config struct {
 		InterfaceListen        string   `toml:"interface"`
 		InterfaceSendMulticast string   `toml:"interface_send_multicast"`
 		InterfaceSendUnicast   string   `toml:"interface_send_unicast"`
-		Port                   int      `toml:"port"`
+		ListenPort             int      `toml:"port"`
+		MulticastDestination   string   `toml:"destination"`
 		CollectInterval        Duration `toml:"collect_interval"`
 	}
 	Webserver struct {

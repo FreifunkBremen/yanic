@@ -4,9 +4,10 @@ import (
 	"net"
 )
 
+// default multicast group used by announced
+var MulticastGroup string = "ff02:0:0:0:0:0:2:1001"
+
 const (
-	// default multicast group used by announced
-	multiCastGroup = "ff02:0:0:0:0:0:2:1001"
 
 	// default udp port used by announced
 	port = 1001

@@ -49,6 +49,9 @@ func main() {
 	if config.Respondd.InterfaceSendMulticast == "" {
 		config.Respondd.InterfaceSendMulticast = config.Respondd.InterfaceListen
 	}
+	if config.Respondd.MulticastDestination != "" {
+		respond.MulticastGroup = config.Respondd.MulticastDestination
+	}
 
 	connections, err = allDB.Connect(config.Database.Connection)
 	if err != nil {
@@ -88,7 +91,7 @@ func main() {
 			time.Sleep(delay)
 		}
 
-		collector = respond.NewCollector(connections, nodes, config.Respondd.InterfaceListen, config.Respondd.InterfaceSendMulticast, config.Respondd.InterfaceSendUnicast, config.Respondd.Port)
+		collector = respond.NewCollector(connections, nodes, config.Respondd.InterfaceListen, config.Respondd.InterfaceSendMulticast, config.Respondd.InterfaceSendUnicast, config.Respondd.ListenPort)
 		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}

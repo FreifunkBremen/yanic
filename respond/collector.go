@@ -120,7 +120,7 @@ func (coll *Collector) sendOnce() {
 func (coll *Collector) sendMulticast() {
 	log.Println("sending multicast")
 	coll.SendPacket(net.UDPAddr{
-		IP:   net.ParseIP(multiCastGroup),
+		IP:   net.ParseIP(MulticastGroup),
 		Zone: coll.ifaceSendMulticast,
 	})
 }
