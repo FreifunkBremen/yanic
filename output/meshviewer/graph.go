@@ -107,7 +107,10 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 				for _, wifiNeighbours := range neighbours.WifiNeighbours {
 					for targetAddress, link := range wifiNeighbours.Neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
-							builder.addLink(targetID, sourceID, link.Noise/link.Signal)
+							linkActive := link.Noise + link.Inactive + link.Signal
+							if linkActive > 0 {
+								builder.addLink(targetID, sourceID, link.Signal/linkActive)
+							}
 						}
 					}
 				}
