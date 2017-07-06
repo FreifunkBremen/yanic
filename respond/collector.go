@@ -34,7 +34,7 @@ func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaceListen stri
 		log.Panic(err)
 	}
 
-	// Open socket
+	// Open link local socket
 	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   linkLocalAddr,
 		Port: port,
@@ -55,8 +55,9 @@ func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaceListen stri
 		stop:               make(chan interface{}),
 	}
 
-	go collector.receiver()
+	go collector.receiver(conn)
 	go collector.parser()
+	collector.listenPublic()
 
 	if collector.db != nil {
 		go collector.globalStatsWorker()
@@ -83,6 +84,18 @@ func getLinkLocalAddr(ifname string) (net.IP, error) {
 		}
 	}
 	return nil, fmt.Errorf("unable to find link local unicast address for %s", ifname)
+}
+
+func (coll *Collector) listenPublic() {
+	conn, err := net.ListenUDP("udp", &net.UDPAddr{
+		IP:   net.ParseIP("::"),
+		Port: 12345,
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+	conn.SetReadBuffer(maxDataGramSize)
+	go coll.receiver(conn)
 }
 
 // Start Collector
@@ -170,6 +183,7 @@ func (coll *Collector) sender() {
 
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
+
 		if data, err := obj.parse(); err != nil {
 			log.Println("unable to decode response from", obj.Address.String(), err, "\n", string(obj.Raw))
 		} else {
@@ -218,10 +232,10 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 	}
 }
 
-func (coll *Collector) receiver() {
+func (coll *Collector) receiver(conn *net.UDPConn) {
 	buf := make([]byte, maxDataGramSize)
 	for {
-		n, src, err := coll.connection.ReadFromUDP(buf)
+		n, src, err := conn.ReadFromUDP(buf)
 
 		if err != nil {
 			log.Println("ReadFromUDP failed:", err)
