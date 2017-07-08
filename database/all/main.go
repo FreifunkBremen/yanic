@@ -5,4 +5,5 @@ import (
 	_ "github.com/FreifunkBremen/yanic/database/influxdb"
 	_ "github.com/FreifunkBremen/yanic/database/logging"
 	_ "github.com/FreifunkBremen/yanic/database/socket"
+	_ "github.com/FreifunkBremen/yanic/database/yanic"
 )
