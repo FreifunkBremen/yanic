@@ -59,7 +59,6 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	err = json.NewEncoder(deflater).Encode(&data.ResponseData{
 		Statistics: node.Statistics,
 		NodeInfo:   node.Nodeinfo,
-		Neighbours: node.Neighbours,
 	})
 	if err != nil {
 		panic(err)
