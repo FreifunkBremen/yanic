@@ -18,7 +18,7 @@ func TestParse(t *testing.T) {
 		Raw: compressed,
 	}
 
-	data, err := res.parse()
+	data, err := res.Parse()
 
 	assert.NoError(err)
 	assert.NotNil(data)

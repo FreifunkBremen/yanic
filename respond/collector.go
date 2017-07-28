@@ -184,7 +184,7 @@ func (coll *Collector) sender() {
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
 
-		if data, err := obj.parse(); err != nil {
+		if data, err := obj.Parse(); err != nil {
 			log.Println("unable to decode response from", obj.Address.String(), err, "\n", string(obj.Raw))
 		} else {
 			coll.saveResponse(obj.Address, data)
@@ -192,7 +192,7 @@ func (coll *Collector) parser() {
 	}
 }
 
-func (res *Response) parse() (*data.ResponseData, error) {
+func (res *Response) Parse() (*data.ResponseData, error) {
 	// Deflate
 	deflater := flate.NewReader(bytes.NewReader(res.Raw))
 	defer deflater.Close()
