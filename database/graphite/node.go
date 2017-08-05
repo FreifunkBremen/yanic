@@ -1,7 +1,6 @@
 package graphite
 
 import (
-	"regexp"
 	"time"
 
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -25,8 +24,7 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 		return
 	}
 
-	re := regexp.MustCompile("(?i)[^a-z0-9\\-]")
-	node_prefix := MeasurementNode + `.` + stats.NodeID + `.` + re.ReplaceAllString(nodeinfo.Hostname, "_")
+	node_prefix := MeasurementNode + `.` + stats.NodeID + `.` + replaceInvalidChars(nodeinfo.Hostname)
 
 	addField := func(name string, value interface{}) {
 		fields = append(fields, graphigo.Metric{Name: node_prefix + "." + name, Value: value})
