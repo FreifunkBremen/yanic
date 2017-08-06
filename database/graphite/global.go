@@ -27,7 +27,7 @@ func GlobalStatsFields(stats *runtime.GlobalStats) []graphigo.Metric {
 func (c *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time) {
 	var fields []graphigo.Metric
 	for key, count := range m {
-		fields = append(fields, graphigo.Metric{Name: name + `.` + key + `.count`, Value: count, Timestamp: t})
+		fields = append(fields, graphigo.Metric{Name: name + `.` + replaceInvalidChars(key) + `.count`, Value: count, Timestamp: t})
 	}
 	c.addPoint(fields)
 }
