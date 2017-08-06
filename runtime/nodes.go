@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"os"
-	"sync"
 	"time"
+
+	"github.com/sasha-s/go-deadlock"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/jsontime"
@@ -15,7 +16,7 @@ import (
 type Nodes struct {
 	List   map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
 	config *Config
-	sync.RWMutex
+	deadlock.RWMutex
 }
 
 // NewNodes create Nodes structs
