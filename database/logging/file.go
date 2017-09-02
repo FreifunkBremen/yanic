@@ -34,7 +34,7 @@ func init() {
 	database.RegisterAdapter("logging", Connect)
 }
 
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
 	var config Config
 	config = configuration.(map[string]interface{})
 	if !config.Enable() {

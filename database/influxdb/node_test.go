@@ -54,6 +54,9 @@ func TestToInflux(t *testing.T) {
 				TxPower24: 3,
 				Channel24: 4,
 			},
+			Network: data.Network{
+				Mac: "DEADMAC",
+			},
 		},
 		Neighbours: &data.Neighbours{
 			Batadv: map[string]data.BatadvNeighbours{
@@ -69,7 +72,16 @@ func TestToInflux(t *testing.T) {
 		},
 	}
 
-	points := testPoints(node)
+	neigbour := &runtime.Node{
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "foobar",
+			Network: data.Network{
+				Mac: "BAFF1E5",
+			},
+		},
+	}
+
+	points := testPoints(node, neigbour)
 	var fields map[string]interface{}
 	var tags map[string]string
 
@@ -80,7 +92,7 @@ func TestToInflux(t *testing.T) {
 	tags = nPoint.Tags()
 	fields, _ = nPoint.Fields()
 	assert.EqualValues("link", nPoint.Name())
-	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "BAFF1E5"}, tags)
+	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "foobar"}, tags)
 	assert.EqualValues(75, fields["tq"])
 
 	// second point contains the statistics
@@ -115,10 +127,17 @@ func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
 		panic(err)
 	}
 
+	nodesList := runtime.NewNodes(&runtime.Config{})
+
 	// Create dummy connection
 	conn := &Connection{
 		points: make(chan *client.Point),
+		nodes:  nodesList,
 		client: influxClient,
+	}
+
+	for _, node := range nodes {
+		nodesList.Update(node.Nodeinfo.NodeID, &data.ResponseData{NodeInfo: node.Nodeinfo})
 	}
 
 	// Process data

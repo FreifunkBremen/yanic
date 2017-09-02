@@ -12,13 +12,13 @@ type Connection struct {
 	list []database.Connection
 }
 
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
 	var list []database.Connection
 	allConnection := configuration.(map[string][]interface{})
 	for dbType, conn := range database.Adapters {
 		dbConfigs := allConnection[dbType]
 		for _, config := range dbConfigs {
-			connected, err := conn(config)
+			connected, err := conn(config, nodes)
 			if err != nil {
 				return nil, err
 			}

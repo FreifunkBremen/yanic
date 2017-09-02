@@ -81,7 +81,8 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		batadv := 0
 		for _, batadvNeighbours := range neighbours.Batadv {
 			batadv += len(batadvNeighbours.Neighbours)
-			for neighbourID, link := range batadvNeighbours.Neighbours {
+			for neighbourMAC, link := range batadvNeighbours.Neighbours {
+				neighbourID := conn.nodes.GetNodeIDByIface(neighbourMAC)
 				conn.insertLinkStatistics(stats.NodeID, neighbourID, link.Tq, time)
 			}
 		}

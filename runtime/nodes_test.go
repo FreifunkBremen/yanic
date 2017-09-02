@@ -17,8 +17,9 @@ func TestExpire(t *testing.T) {
 	config.Nodes.OfflineAfter.Duration = time.Minute * 10
 	config.Nodes.PruneAfter.Duration = time.Hour * 24 * 6
 	nodes := &Nodes{
-		config: config,
-		List:   make(map[string]*Node),
+		config:        config,
+		List:          make(map[string]*Node),
+		iFaceToNodeID: make(map[string]string),
 	}
 
 	nodes.Update("expire", &data.ResponseData{})  // should expire
@@ -63,7 +64,10 @@ func TestLoadAndSave(t *testing.T) {
 
 func TestUpdateNodes(t *testing.T) {
 	assert := assert.New(t)
-	nodes := &Nodes{List: make(map[string]*Node)}
+	nodes := &Nodes{
+		List:          make(map[string]*Node),
+		iFaceToNodeID: make(map[string]string),
+	}
 	assert.Len(nodes.List, 0)
 
 	res := &data.ResponseData{

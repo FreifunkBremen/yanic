@@ -22,7 +22,7 @@ type Connection interface {
 }
 
 // Connect function with config to get DB connection interface
-type Connect func(config interface{}) (Connection, error)
+type Connect func(config interface{}, nodes *runtime.Nodes) (Connection, error)
 
 // Adapters is the list of registered database adapters
 var Adapters = map[string]Connect{}

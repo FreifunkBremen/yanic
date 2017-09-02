@@ -13,16 +13,18 @@ import (
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
-	List   map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	config *Config
+	List          map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
+	iFaceToNodeID map[string]string
+	config        *Config
 	sync.RWMutex
 }
 
 // NewNodes create Nodes structs
 func NewNodes(config *Config) *Nodes {
 	nodes := &Nodes{
-		List:   make(map[string]*Node),
-		config: config,
+		List:          make(map[string]*Node),
+		iFaceToNodeID: make(map[string]string),
+		config:        config,
 	}
 
 	if config.Nodes.StatePath != "" {
@@ -67,6 +69,8 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Nodeinfo = res.NodeInfo
 	node.Statistics = res.Statistics
 
+	nodes.readIfaces(nodeID, node)
+
 	return node
 }
 
@@ -82,6 +86,10 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 		}
 	}
 	return result
+}
+
+func (nodes *Nodes) GetNodeIDByIface(mac string) string {
+	return nodes.iFaceToNodeID[mac]
 }
 
 // Periodically saves the cached DB to json file
@@ -123,12 +131,42 @@ func (nodes *Nodes) expire() {
 	}
 }
 
+func (nodes *Nodes) readIfaces(nodeID string, node *Node) {
+	if node != nil && node.Nodeinfo != nil {
+		network := node.Nodeinfo.Network
+		nodes.Lock()
+
+		if cNodeID, ok := nodes.iFaceToNodeID[network.Mac]; ok && cNodeID != nodeID {
+			log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, network.Mac)
+		}
+		nodes.iFaceToNodeID[network.Mac] = nodeID
+
+		for _, batinterface := range network.Mesh {
+			interfaces := batinterface.Interfaces
+			addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
+
+			for _, mac := range addresses {
+				if cNodeID, ok := nodes.iFaceToNodeID[mac]; ok && cNodeID != nodeID {
+					log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, mac)
+				}
+				nodes.iFaceToNodeID[mac] = nodeID
+			}
+		}
+		nodes.Unlock()
+	}
+}
+
 func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.StatePath
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
+
+			for nodeID, node := range nodes.List {
+				nodes.readIfaces(nodeID, node)
+			}
+
 		} else {
 			log.Println("failed to unmarshal nodes:", err)
 		}
