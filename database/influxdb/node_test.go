@@ -80,13 +80,14 @@ func TestToInflux(t *testing.T) {
 				Mac: "BAFF1E5",
 			},
 		},
+		Statistics: &data.Statistics{},
 	}
 
 	points := testPoints(node, neigbour)
 	var fields map[string]interface{}
 	var tags map[string]string
 
-	assert.Len(points, 2)
+	assert.Len(points, 3)
 
 	// first point contains the neighbour
 	nPoint := points[0]

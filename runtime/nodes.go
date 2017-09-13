@@ -139,22 +139,24 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 	network := nodeinfo.Network
 
 	if nodeID == "" {
-		log.Printf("nodeID missing in nodeinfo")
+		log.Println("nodeID missing in nodeinfo")
 		return
 	}
-
 	nodes.Lock()
 	defer nodes.Unlock()
 
-	for _, batinterface := range network.Mesh {
-		for _, mac := range append(batinterface.Addresses(), network.Mac) {
-			if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
-				if oldNodeID != "" {
-					log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
-				}
-				nodes.ifaceToNodeID[mac] = nodeID
-			}
+	addresses := []string{network.Mac}
 
+	for _, batinterface := range network.Mesh {
+		addresses = append(addresses, batinterface.Addresses()...)
+	}
+
+	for _, mac := range addresses {
+		if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
+			if oldNodeID != "" {
+				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
+			}
+			nodes.ifaceToNodeID[mac] = nodeID
 		}
 	}
 }
