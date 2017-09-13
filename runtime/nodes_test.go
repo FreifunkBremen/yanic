@@ -19,7 +19,7 @@ func TestExpire(t *testing.T) {
 	nodes := &Nodes{
 		config:        config,
 		List:          make(map[string]*Node),
-		iFaceToNodeID: make(map[string]string),
+		ifaceToNodeID: make(map[string]string),
 	}
 
 	nodes.Update("expire", &data.ResponseData{})  // should expire
@@ -66,7 +66,7 @@ func TestUpdateNodes(t *testing.T) {
 	assert := assert.New(t)
 	nodes := &Nodes{
 		List:          make(map[string]*Node),
-		iFaceToNodeID: make(map[string]string),
+		ifaceToNodeID: make(map[string]string),
 	}
 	assert.Len(nodes.List, 0)
 

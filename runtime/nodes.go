@@ -13,8 +13,8 @@ import (
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
-	List          map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	iFaceToNodeID map[string]string
+	List          map[string]*Node  `json:"nodes"` // the current nodemap, indexed by node ID
+	ifaceToNodeID map[string]string // mapping from MAC address to NodeID
 	config        *Config
 	sync.RWMutex
 }
@@ -23,7 +23,7 @@ type Nodes struct {
 func NewNodes(config *Config) *Nodes {
 	nodes := &Nodes{
 		List:          make(map[string]*Node),
-		iFaceToNodeID: make(map[string]string),
+		ifaceToNodeID: make(map[string]string),
 		config:        config,
 	}
 
@@ -69,7 +69,9 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Nodeinfo = res.NodeInfo
 	node.Statistics = res.Statistics
 
-	nodes.readIfaces(nodeID, node)
+	if node.Nodeinfo != nil {
+		nodes.readIfaces(node.Nodeinfo)
+	}
 
 	return node
 }
@@ -89,7 +91,7 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 }
 
 func (nodes *Nodes) GetNodeIDByIface(mac string) string {
-	return nodes.iFaceToNodeID[mac]
+	return nodes.ifaceToNodeID[mac]
 }
 
 // Periodically saves the cached DB to json file
@@ -131,28 +133,21 @@ func (nodes *Nodes) expire() {
 	}
 }
 
-func (nodes *Nodes) readIfaces(nodeID string, node *Node) {
-	if node != nil && node.Nodeinfo != nil {
-		network := node.Nodeinfo.Network
-		nodes.Lock()
+// adds the nodes interface addresses to the internal map
+func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
+	nodeID := nodeinfo.NodeID
+	network := nodeinfo.Network
 
-		if cNodeID, ok := nodes.iFaceToNodeID[network.Mac]; ok && cNodeID != nodeID {
-			log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, network.Mac)
-		}
-		nodes.iFaceToNodeID[network.Mac] = nodeID
+	nodes.Lock()
+	defer nodes.Unlock()
 
-		for _, batinterface := range network.Mesh {
-			interfaces := batinterface.Interfaces
-			addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
-
-			for _, mac := range addresses {
-				if cNodeID, ok := nodes.iFaceToNodeID[mac]; ok && cNodeID != nodeID {
-					log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, mac)
-				}
-				nodes.iFaceToNodeID[mac] = nodeID
+	for _, batinterface := range network.Mesh {
+		for _, mac := range append(batinterface.Addresses(), network.Mac) {
+			if cNodeID, ok := nodes.ifaceToNodeID[mac]; ok && cNodeID != nodeID {
+				log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, mac)
 			}
+			nodes.ifaceToNodeID[mac] = nodeID
 		}
-		nodes.Unlock()
 	}
 }
 
@@ -163,8 +158,10 @@ func (nodes *Nodes) load() {
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
 
-			for nodeID, node := range nodes.List {
-				nodes.readIfaces(nodeID, node)
+			for _, node := range nodes.List {
+				if node.Nodeinfo != nil {
+					nodes.readIfaces(node.Nodeinfo)
+				}
 			}
 
 		} else {
