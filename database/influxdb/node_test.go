@@ -47,6 +47,7 @@ func TestToInflux(t *testing.T) {
 			},
 		},
 		Nodeinfo: &data.NodeInfo{
+			NodeID: "deadbeef",
 			Owner: &data.Owner{
 				Contact: "nobody",
 			},

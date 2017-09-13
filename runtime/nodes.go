@@ -138,6 +138,11 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 	nodeID := nodeinfo.NodeID
 	network := nodeinfo.Network
 
+	if nodeID == "" {
+		log.Printf("nodeID missing in nodeinfo")
+		return
+	}
+
 	nodes.Lock()
 	defer nodes.Unlock()
 
