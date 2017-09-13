@@ -143,10 +143,13 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 
 	for _, batinterface := range network.Mesh {
 		for _, mac := range append(batinterface.Addresses(), network.Mac) {
-			if cNodeID, ok := nodes.ifaceToNodeID[mac]; ok && cNodeID != nodeID {
-				log.Printf("override nodeID from %s to %s on mac address %s", cNodeID, nodeID, mac)
+			if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
+				if oldNodeID != "" {
+					log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
+				}
+				nodes.ifaceToNodeID[mac] = nodeID
 			}
-			nodes.ifaceToNodeID[mac] = nodeID
+
 		}
 	}
 }
