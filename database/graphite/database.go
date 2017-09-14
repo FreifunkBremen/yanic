@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/fgrosse/graphigo"
 )
 
@@ -37,7 +36,7 @@ func (c Config) Enable() bool {
 	return c["enable"].(bool)
 }
 
-func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
+func Connect(configuration interface{}) (database.Connection, error) {
 	var config Config
 
 	config = configuration.(map[string]interface{})

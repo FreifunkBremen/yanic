@@ -25,7 +25,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	stats := node.Statistics
 	time := node.Lastseen.GetTime()
 
-	if stats == nil {
+	if stats == nil || stats.NodeID == "" {
 		return
 	}
 
@@ -81,10 +81,6 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		batadv := 0
 		for _, batadvNeighbours := range neighbours.Batadv {
 			batadv += len(batadvNeighbours.Neighbours)
-			for neighbourMAC, link := range batadvNeighbours.Neighbours {
-				neighbourID := conn.nodes.GetNodeIDByIface(neighbourMAC)
-				conn.insertLinkStatistics(stats.NodeID, neighbourID, link.Tq, time)
-			}
 		}
 		fields["neighbours.batadv"] = batadv
 
@@ -134,13 +130,4 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	conn.addPoint(MeasurementNode, tags, fields, time)
 
 	return
-}
-
-// adds a link data point
-func (conn *Connection) insertLinkStatistics(source string, target string, tq int, t time.Time) {
-	tags := models.Tags{}
-	tags.SetString("source", source)
-	tags.SetString("target", target)
-
-	conn.addPoint(MeasurementLink, tags, models.Fields{"tq": float32(tq) / 2.55}, t)
 }

@@ -60,6 +60,7 @@ func TestToInflux(t *testing.T) {
 			},
 		},
 		Neighbours: &data.Neighbours{
+			NodeID: "deadbeef",
 			Batadv: map[string]data.BatadvNeighbours{
 				"a-interface": data.BatadvNeighbours{
 					Neighbours: map[string]data.BatmanLink{
@@ -87,18 +88,10 @@ func TestToInflux(t *testing.T) {
 	var fields map[string]interface{}
 	var tags map[string]string
 
-	assert.Len(points, 3)
+	assert.Len(points, 2)
 
 	// first point contains the neighbour
-	nPoint := points[0]
-	tags = nPoint.Tags()
-	fields, _ = nPoint.Fields()
-	assert.EqualValues("link", nPoint.Name())
-	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "foobar"}, tags)
-	assert.EqualValues(80, fields["tq"])
-
-	// second point contains the statistics
-	sPoint := points[1]
+	sPoint := points[0]
 	tags = sPoint.Tags()
 	fields, _ = sPoint.Fields()
 
@@ -119,6 +112,14 @@ func TestToInflux(t *testing.T) {
 	assert.EqualValues(int64(1322), fields["traffic.forward.bytes"])
 	assert.EqualValues(int64(2331), fields["traffic.mgmt_rx.bytes"])
 	assert.EqualValues(float64(2327), fields["traffic.mgmt_tx.packets"])
+
+	// second point contains the neighbour
+	nPoint := points[1]
+	tags = nPoint.Tags()
+	fields, _ = nPoint.Fields()
+	assert.EqualValues("link", nPoint.Name())
+	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "foobar"}, tags)
+	assert.EqualValues(80, fields["tq"])
 }
 
 // Processes data and returns the InfluxDB points
@@ -134,7 +135,6 @@ func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
 	// Create dummy connection
 	conn := &Connection{
 		points: make(chan *client.Point),
-		nodes:  nodesList,
 		client: influxClient,
 	}
 
@@ -146,6 +146,11 @@ func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
 	go func() {
 		for _, node := range nodes {
 			conn.InsertNode(node)
+			if node.Neighbours != nil {
+				for _, link := range nodesList.NodeLinks(node) {
+					conn.InsertLink(&link, node.Lastseen.GetTime())
+				}
+			}
 		}
 		conn.Close()
 	}()

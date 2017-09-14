@@ -12,13 +12,13 @@ type Connection struct {
 	list []database.Connection
 }
 
-func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
+func Connect(configuration interface{}) (database.Connection, error) {
 	var list []database.Connection
 	allConnection := configuration.(map[string][]interface{})
 	for dbType, conn := range database.Adapters {
 		dbConfigs := allConnection[dbType]
 		for _, config := range dbConfigs {
-			connected, err := conn(config, nodes)
+			connected, err := conn(config)
 			if err != nil {
 				return nil, err
 			}
@@ -34,6 +34,12 @@ func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connecti
 func (conn *Connection) InsertNode(node *runtime.Node) {
 	for _, item := range conn.list {
 		item.InsertNode(node)
+	}
+}
+
+func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
+	for _, item := range conn.list {
+		item.InsertLink(link, time)
 	}
 }
 

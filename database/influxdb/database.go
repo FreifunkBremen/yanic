@@ -9,7 +9,6 @@ import (
 	"github.com/influxdata/influxdb/models"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 const (
@@ -25,7 +24,6 @@ const (
 type Connection struct {
 	database.Connection
 	config Config
-	nodes  *runtime.Nodes
 	client client.Client
 	points chan *client.Point
 	wg     sync.WaitGroup
@@ -58,7 +56,7 @@ func (c Config) Tags() map[string]interface{} {
 func init() {
 	database.RegisterAdapter("influxdb", Connect)
 }
-func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
+func Connect(configuration interface{}) (database.Connection, error) {
 	var config Config
 	config = configuration.(map[string]interface{})
 	if !config.Enable() {
@@ -78,7 +76,6 @@ func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connecti
 	db := &Connection{
 		config: config,
 		client: c,
-		nodes:  nodes,
 		points: make(chan *client.Point, 1000),
 	}
 

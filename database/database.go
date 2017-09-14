@@ -11,8 +11,11 @@ type Connection interface {
 	// InsertNode stores statistics per node
 	InsertNode(node *runtime.Node)
 
+	// InsertLink stores statistics per link
+	InsertLink(*runtime.Link, time.Time)
+
 	// InsertGlobals stores global statistics
-	InsertGlobals(stats *runtime.GlobalStats, time time.Time)
+	InsertGlobals(*runtime.GlobalStats, time.Time)
 
 	// PruneNodes prunes historical per-node data
 	PruneNodes(deleteAfter time.Duration)
@@ -22,7 +25,7 @@ type Connection interface {
 }
 
 // Connect function with config to get DB connection interface
-type Connect func(config interface{}, nodes *runtime.Nodes) (Connection, error)
+type Connect func(config interface{}) (Connection, error)
 
 // Adapters is the list of registered database adapters
 var Adapters = map[string]Connect{}

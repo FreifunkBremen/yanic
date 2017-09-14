@@ -34,7 +34,7 @@ func init() {
 	database.RegisterAdapter("logging", Connect)
 }
 
-func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connection, error) {
+func Connect(configuration interface{}) (database.Connection, error) {
 	var config Config
 	config = configuration.(map[string]interface{})
 	if !config.Enable() {
@@ -50,6 +50,10 @@ func Connect(configuration interface{}, nodes *runtime.Nodes) (database.Connecti
 
 func (conn *Connection) InsertNode(node *runtime.Node) {
 	conn.log("InsertNode: [", node.Statistics.NodeID, "] clients: ", node.Statistics.Clients.Total)
+}
+
+func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
+	conn.log("InsertLink: ", link)
 }
 
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {

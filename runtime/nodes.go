@@ -90,9 +90,25 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 	return result
 }
 
-// Get nodeid by hardware address of any interface
-func (nodes *Nodes) GetNodeIDByIface(mac string) string {
-	return nodes.ifaceToNodeID[mac]
+// NodeLinks returns a list of links to known neighbours
+func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
+	// Store link data
+	neighbours := node.Neighbours
+	if neighbours == nil || neighbours.NodeID == "" {
+		return
+	}
+
+	nodes.RLock()
+	defer nodes.RUnlock()
+
+	for _, batadv := range neighbours.Batadv {
+		for neighbourMAC, link := range batadv.Neighbours {
+			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
+				result = append(result, Link{neighbours.NodeID, neighbourID, link.Tq})
+			}
+		}
+	}
+	return result
 }
 
 // Periodically saves the cached DB to json file

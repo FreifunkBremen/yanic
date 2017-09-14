@@ -18,6 +18,13 @@ type Node struct {
 	Neighbours *data.Neighbours `json:"-"`
 }
 
+// Link represents a link between two nodes
+type Link struct {
+	SourceID string
+	TargetID string
+	TQ       int
+}
+
 // IsGateway returns whether the node is a gateway
 func (node *Node) IsGateway() bool {
 	if info := node.Nodeinfo; info != nil {

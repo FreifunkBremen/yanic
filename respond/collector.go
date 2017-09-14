@@ -220,8 +220,15 @@ func (coll *Collector) saveResponse(addr net.UDPAddr, res *data.ResponseData) {
 	node.Address = addr.IP
 
 	// Store statistics in database
-	if coll.db != nil {
-		coll.db.InsertNode(node)
+	if db := coll.db; db != nil {
+		db.InsertNode(node)
+
+		// Store link data
+		if neighbours := node.Neighbours; neighbours != nil {
+			for _, link := range coll.nodes.NodeLinks(node) {
+				db.InsertLink(&link, node.Lastseen.GetTime())
+			}
+		}
 	}
 }
 

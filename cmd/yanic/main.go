@@ -45,7 +45,7 @@ func main() {
 
 	nodes = runtime.NewNodes(config)
 
-	connections, err = all.Connect(config.Database.Connection, nodes)
+	connections, err = all.Connect(config.Database.Connection)
 	if err != nil {
 		panic(err)
 	}
