@@ -73,8 +73,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 
 			// Batman neighbours
 			for _, batinterface := range nodeinfo.Network.Mesh {
-				interfaces := batinterface.Interfaces
-				addresses := append(append(interfaces.Other, interfaces.Tunnel...), interfaces.Wireless...)
+				addresses := batinterface.Addresses()
 
 				for _, sourceAddress := range addresses {
 					builder.macToID[sourceAddress] = sourceID

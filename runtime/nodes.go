@@ -90,6 +90,7 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 	return result
 }
 
+// Get nodeid by hardware address of any interface
 func (nodes *Nodes) GetNodeIDByIface(mac string) string {
 	return nodes.ifaceToNodeID[mac]
 }
