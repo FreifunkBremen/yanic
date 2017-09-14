@@ -142,5 +142,5 @@ func (conn *Connection) insertLinkStatistics(source string, target string, tq in
 	tags.SetString("source", source)
 	tags.SetString("target", target)
 
-	conn.addPoint(MeasurementLink, tags, models.Fields{"tq": tq}, t)
+	conn.addPoint(MeasurementLink, tags, models.Fields{"tq": float32(tq) / 2.55}, t)
 }

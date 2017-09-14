@@ -64,7 +64,7 @@ func TestToInflux(t *testing.T) {
 				"a-interface": data.BatadvNeighbours{
 					Neighbours: map[string]data.BatmanLink{
 						"BAFF1E5": data.BatmanLink{
-							Tq: 75,
+							Tq: 204,
 						},
 					},
 				},
@@ -95,7 +95,7 @@ func TestToInflux(t *testing.T) {
 	fields, _ = nPoint.Fields()
 	assert.EqualValues("link", nPoint.Name())
 	assert.EqualValues(map[string]string{"source": "deadbeef", "target": "foobar"}, tags)
-	assert.EqualValues(75, fields["tq"])
+	assert.EqualValues(80, fields["tq"])
 
 	// second point contains the statistics
 	sPoint := points[1]
