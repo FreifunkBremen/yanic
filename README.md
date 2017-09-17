@@ -28,16 +28,77 @@ Recently seen nodes that does not reply are requested via a unicast message.
 * [Mobi](https://www.gitbook.com/download/mobi/book/freifunkbremen/yanic)
 * [ePUB](https://www.gitbook.com/download/epub/book/freifunkbremen/yanic)
 
+## Configuration
+Read comments in [config_example.toml](config_example.toml) for more information.
 
-## Quick startup
+## Running
+
+Yanic provides several commands:
 
 ### Usage
+
+Run Yanic without any arguments to get the usage information:
+
 ```
-Usage of ./yanic:
-  -config path/to/config.toml
+Usage:
+  yanic [command]
+
+Available Commands:
+  help        Help about any command
+  import      Imports global statistics from the given RRD files, requires InfluxDB
+  query       Sends a query on the interface to the destination and waits for a response
+  serve       Runs the yanic server
+
+Flags:
+  -h, --help         help for yanic
+      --timestamps   Enables timestamps for log output
+
+Use "yanic [command] --help" for more information about a command.
 ```
-### Configuration
-Read comments in [config_example.toml](config_example.toml) for more information.
+
+#### Serve
+
+```
+Usage:
+  yanic serve [flags]
+
+Examples:
+  yanic serve -config /etc/yanic.toml
+
+Flags:
+  -c, --config string   Path to configuration file (default "config.toml")
+  -h, --help            help for serve
+```
+
+#### Import
+
+```
+Usage:
+  yanic import <file.rrd> [flags]
+
+Examples:
+  yanic import -config /etc/yanic.toml olddata.rrd
+
+Flags:
+  -c, --config string   Path to configuration file (default "config.toml")
+  -h, --help            help for import
+```
+
+
+#### Query
+
+```
+Usage:
+  yanic query <interface> <destination> [flags]
+
+Examples:
+  yanic query wlan0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"
+
+Flags:
+  -h, --help       help for query
+      --wait int   Seconds to wait for a response (default 1)
+```
+
 
 ### Live
 * [meshviewer](https://map.bremen.freifunk.net) **Freifunk Bremen** with a patch to show state-version of `nodes.json`
