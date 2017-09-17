@@ -45,12 +45,12 @@ func ReadConfigFile(path string) (config *Config, err error) {
 
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	err = toml.Unmarshal(file, config)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return

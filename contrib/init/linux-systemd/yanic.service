@@ -4,7 +4,7 @@ Description=yanic
 [Service]
 Type=simple
 User=yanic
-ExecStart=/opt/go/bin/yanic -config /etc/yanic.conf
+ExecStart=/opt/go/bin/yanic serve -config /etc/yanic.conf
 Restart=always
 RestartSec=5s
 Environment=PATH=/usr/bin:/usr/local/bin
