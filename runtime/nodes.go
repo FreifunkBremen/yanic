@@ -101,10 +101,16 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	nodes.RLock()
 	defer nodes.RUnlock()
 
-	for _, batadv := range neighbours.Batadv {
+	for sourceMAC, batadv := range neighbours.Batadv {
 		for neighbourMAC, link := range batadv.Neighbours {
 			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
-				result = append(result, Link{neighbours.NodeID, neighbourID, link.Tq})
+				result = append(result, Link{
+					SourceID:  neighbours.NodeID,
+					SourceMAC: sourceMAC,
+					TargetID:  neighbourID,
+					TargetMAC: neighbourMAC,
+					TQ:        link.Tq,
+				})
 			}
 		}
 	}
