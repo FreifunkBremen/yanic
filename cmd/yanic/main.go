@@ -42,6 +42,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	if config.Respondd.InterfaceSendUnicast == "" {
+		config.Respondd.InterfaceSendUnicast = config.Respondd.InterfaceListen
+	}
+	if config.Respondd.InterfaceSendMulticast == "" {
+		config.Respondd.InterfaceSendMulticast = config.Respondd.InterfaceListen
+	}
 
 	nodes = runtime.NewNodes(config)
 
@@ -75,7 +81,7 @@ func main() {
 			time.Sleep(delay)
 		}
 
-		collector = respond.NewCollector(connections, nodes, config.Respondd.Interface, config.Respondd.Port)
+		collector = respond.NewCollector(connections, nodes, config.Respondd.InterfaceListen, config.Respondd.InterfaceSendMulticast, config.Respondd.InterfaceSendUnicast, config.Respondd.Port)
 		collector.Start(config.Respondd.CollectInterval.Duration)
 		defer collector.Close()
 	}

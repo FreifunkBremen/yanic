@@ -79,6 +79,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 					builder.macToID[sourceAddress] = sourceID
 				}
 			}
+
 		}
 
 		// Iterate over local MAC addresses from LLDP
@@ -98,6 +99,22 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 					for targetAddress, link := range batadvNeighbours.Neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
 							builder.addLink(targetID, sourceID, link.Tq)
+						}
+					}
+				}
+				// Wifi neighbours
+				for _, wifiNeighbours := range neighbours.WifiNeighbours {
+					for targetAddress, link := range wifiNeighbours.Neighbours {
+						if targetID, found := builder.macToID[targetAddress]; found {
+							builder.addLink(targetID, sourceID, link.Noise/link.Signal)
+						}
+					}
+				}
+				// Babel neighbours
+				for _, babelNeighbours := range neighbours.Babel {
+					for _, link := range babelNeighbours {
+						if targetID, found := builder.macToID[link.Address]; found {
+							builder.addLink(targetID, sourceID, 1)
 						}
 					}
 				}

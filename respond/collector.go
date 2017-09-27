@@ -17,18 +17,19 @@ import (
 
 // Collector for a specificle respond messages
 type Collector struct {
-	connection *net.UDPConn   // UDP socket
-	queue      chan *Response // received responses
-	iface      string
-	db         database.Connection
-	nodes      *runtime.Nodes
-	interval   time.Duration // Interval for multicast packets
-	stop       chan interface{}
+	connection         *net.UDPConn   // UDP socket
+	queue              chan *Response // received responses
+	ifaceSendUnicast   string
+	ifaceSendMulticast string
+	db                 database.Connection
+	nodes              *runtime.Nodes
+	interval           time.Duration // Interval for multicast packets
+	stop               chan interface{}
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db database.Connection, nodes *runtime.Nodes, iface string, port int) *Collector {
-	linkLocalAddr, err := getLinkLocalAddr(iface)
+func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaceListen string, ifaceSendUnicast string, ifaceSendMulticast string, port int) *Collector {
+	linkLocalAddr, err := getLinkLocalAddr(ifaceListen)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -37,7 +38,7 @@ func NewCollector(db database.Connection, nodes *runtime.Nodes, iface string, po
 	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   linkLocalAddr,
 		Port: port,
-		Zone: iface,
+		Zone: ifaceListen,
 	})
 	if err != nil {
 		log.Panic(err)
@@ -45,12 +46,13 @@ func NewCollector(db database.Connection, nodes *runtime.Nodes, iface string, po
 	conn.SetReadBuffer(maxDataGramSize)
 
 	collector := &Collector{
-		connection: conn,
-		db:         db,
-		nodes:      nodes,
-		iface:      iface,
-		queue:      make(chan *Response, 400),
-		stop:       make(chan interface{}),
+		connection:         conn,
+		db:                 db,
+		nodes:              nodes,
+		ifaceSendUnicast:   ifaceSendUnicast,
+		ifaceSendMulticast: ifaceSendMulticast,
+		queue:              make(chan *Response, 400),
+		stop:               make(chan interface{}),
 	}
 
 	go collector.receiver()
@@ -117,7 +119,10 @@ func (coll *Collector) sendOnce() {
 
 func (coll *Collector) sendMulticast() {
 	log.Println("sending multicast")
-	coll.SendPacket(net.ParseIP(multiCastGroup))
+	coll.SendPacket(net.UDPAddr{
+		IP:   net.ParseIP(multiCastGroup),
+		Zone: coll.ifaceSendMulticast,
+	})
 }
 
 // Send unicast packets to nodes that did not answer the multicast
@@ -132,19 +137,17 @@ func (coll *Collector) sendUnicasts(seenBefore jsontime.Time) {
 	// Send unicast packets
 	log.Printf("sending unicast to %d nodes", len(nodes))
 	for _, node := range nodes {
-		coll.SendPacket(node.Address)
+		coll.SendPacket(net.UDPAddr{
+			IP:   node.Address,
+			Zone: coll.ifaceSendUnicast,
+		})
 		time.Sleep(10 * time.Millisecond)
 	}
 }
 
 // SendPacket sends a UDP request to the given unicast or multicast address
-func (coll *Collector) SendPacket(address net.IP) {
-	addr := net.UDPAddr{
-		IP:   address,
-		Port: port,
-		Zone: coll.iface,
-	}
-
+func (coll *Collector) SendPacket(addr net.UDPAddr) {
+	addr.Port = port
 	if _, err := coll.connection.WriteToUDP([]byte("GET nodeinfo statistics neighbours"), &addr); err != nil {
 		log.Println("WriteToUDP failed:", err)
 	}

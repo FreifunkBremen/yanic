@@ -9,11 +9,13 @@ import (
 //Config the config File of this daemon
 type Config struct {
 	Respondd struct {
-		Enable          bool     `toml:"enable"`
-		Synchronize     Duration `toml:"synchronize"`
-		Interface       string   `toml:"interface"`
-		Port            int      `toml:"port"`
-		CollectInterval Duration `toml:"collect_interval"`
+		Enable                 bool     `toml:"enable"`
+		Synchronize            Duration `toml:"synchronize"`
+		InterfaceListen        string   `toml:"interface"`
+		InterfaceSendMulticast string   `toml:"interface_send_multicast"`
+		InterfaceSendUnicast   string   `toml:"interface_send_unicast"`
+		Port                   int      `toml:"port"`
+		CollectInterval        Duration `toml:"collect_interval"`
 	}
 	Webserver struct {
 		Enable  bool   `toml:"enable"`
