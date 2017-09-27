@@ -11,24 +11,28 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-// InsertNode implementation of database
-func (conn *Connection) InsertNode(node *runtime.Node) {
-	tags, fields := buildNodeStats(node)
-	conn.addPoint(MeasurementNode, tags, fields, time.Now())
-}
-
+// PruneNodes prunes historical per-node data
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
-	query := fmt.Sprintf("delete from %s where time < now() - %ds", MeasurementNode, deleteAfter/time.Second)
-	conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
+	for _, measurement := range []string{MeasurementNode, MeasurementLink} {
+		query := fmt.Sprintf("delete from %s where time < now() - %ds", measurement, deleteAfter/time.Second)
+		conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
+	}
+
 }
 
-// returns tags and fields for InfluxDB
-func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields) {
+// InsertNode stores statistics and neighbours in the database
+func (conn *Connection) InsertNode(node *runtime.Node) {
 	stats := node.Statistics
+	time := node.Lastseen.GetTime()
 
+	if stats == nil || stats.NodeID == "" {
+		return
+	}
+
+	tags := models.Tags{}
 	tags.SetString("nodeid", stats.NodeID)
 
-	fields = map[string]interface{}{
+	fields := models.Fields{
 		"load":           stats.LoadAverage,
 		"time.up":        int64(stats.Uptime),
 		"time.idle":      int64(stats.Idletime),
@@ -122,6 +126,8 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 		fields["airtime"+suffix+".frequency"] = airtime.Frequency
 		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
+
+	conn.addPoint(MeasurementNode, tags, fields, time)
 
 	return
 }

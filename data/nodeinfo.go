@@ -23,6 +23,11 @@ type BatInterface struct {
 	} `json:"interfaces"`
 }
 
+// Addresses returns a flat list of all MAC addresses
+func (iface *BatInterface) Addresses() []string {
+	return append(append(iface.Interfaces.Other, iface.Interfaces.Tunnel...), iface.Interfaces.Wireless...)
+}
+
 // Network struct
 type Network struct {
 	Mac            string                   `json:"mac"`

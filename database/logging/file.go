@@ -52,6 +52,10 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	conn.log("InsertNode: [", node.Statistics.NodeID, "] clients: ", node.Statistics.Clients.Total)
 }
 
+func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
+	conn.log("InsertLink: ", link)
+}
+
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	conn.log("InsertGlobals: [", time.String(), "] nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
 }

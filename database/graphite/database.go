@@ -1,10 +1,11 @@
 package graphite
 
 import (
-	"github.com/FreifunkBremen/yanic/database"
-	"github.com/fgrosse/graphigo"
 	"log"
 	"sync"
+
+	"github.com/FreifunkBremen/yanic/database"
+	"github.com/fgrosse/graphigo"
 )
 
 const (

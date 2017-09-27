@@ -11,8 +11,11 @@ type Connection interface {
 	// InsertNode stores statistics per node
 	InsertNode(node *runtime.Node)
 
+	// InsertLink stores statistics per link
+	InsertLink(*runtime.Link, time.Time)
+
 	// InsertGlobals stores global statistics
-	InsertGlobals(stats *runtime.GlobalStats, time time.Time)
+	InsertGlobals(*runtime.GlobalStats, time.Time)
 
 	// PruneNodes prunes historical per-node data
 	PruneNodes(deleteAfter time.Duration)

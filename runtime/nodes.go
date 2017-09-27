@@ -13,16 +13,18 @@ import (
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
-	List   map[string]*Node `json:"nodes"` // the current nodemap, indexed by node ID
-	config *Config
+	List          map[string]*Node  `json:"nodes"` // the current nodemap, indexed by node ID
+	ifaceToNodeID map[string]string // mapping from MAC address to NodeID
+	config        *Config
 	sync.RWMutex
 }
 
 // NewNodes create Nodes structs
 func NewNodes(config *Config) *Nodes {
 	nodes := &Nodes{
-		List:   make(map[string]*Node),
-		config: config,
+		List:          make(map[string]*Node),
+		ifaceToNodeID: make(map[string]string),
+		config:        config,
 	}
 
 	if config.Nodes.StatePath != "" {
@@ -52,28 +54,23 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	}
 	nodes.Unlock()
 
+	// Update wireless statistics
+	if statistics := res.Statistics; statistics != nil {
+		// Update channel utilization if previous statistics are present
+		if node.Statistics != nil && node.Statistics.Wireless != nil && statistics.Wireless != nil {
+			statistics.Wireless.SetUtilization(node.Statistics.Wireless)
+		}
+	}
+
+	// Update fields
 	node.Lastseen = now
 	node.Online = true
+	node.Neighbours = res.Neighbours
+	node.Nodeinfo = res.NodeInfo
+	node.Statistics = res.Statistics
 
-	// Update neighbours
-	if val := res.Neighbours; val != nil {
-		node.Neighbours = val
-	}
-
-	// Update nodeinfo
-	if val := res.NodeInfo; val != nil {
-		node.Nodeinfo = val
-	}
-
-	// Update statistics
-	if val := res.Statistics; val != nil {
-
-		// Update channel utilization if previous statistics are present
-		if node.Statistics != nil && node.Statistics.Wireless != nil && val.Wireless != nil {
-			val.Wireless.SetUtilization(node.Statistics.Wireless)
-		}
-
-		node.Statistics = val
+	if node.Nodeinfo != nil {
+		nodes.readIfaces(node.Nodeinfo)
 	}
 
 	return node
@@ -88,6 +85,33 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 	for _, node := range nodes.List {
 		if f(node) {
 			result = append(result, node)
+		}
+	}
+	return result
+}
+
+// NodeLinks returns a list of links to known neighbours
+func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
+	// Store link data
+	neighbours := node.Neighbours
+	if neighbours == nil || neighbours.NodeID == "" {
+		return
+	}
+
+	nodes.RLock()
+	defer nodes.RUnlock()
+
+	for sourceMAC, batadv := range neighbours.Batadv {
+		for neighbourMAC, link := range batadv.Neighbours {
+			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
+				result = append(result, Link{
+					SourceID:  neighbours.NodeID,
+					SourceMAC: sourceMAC,
+					TargetID:  neighbourID,
+					TargetMAC: neighbourMAC,
+					TQ:        link.Tq,
+				})
+			}
 		}
 	}
 	return result
@@ -132,12 +156,47 @@ func (nodes *Nodes) expire() {
 	}
 }
 
+// adds the nodes interface addresses to the internal map
+func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
+	nodeID := nodeinfo.NodeID
+	network := nodeinfo.Network
+
+	if nodeID == "" {
+		log.Println("nodeID missing in nodeinfo")
+		return
+	}
+	nodes.Lock()
+	defer nodes.Unlock()
+
+	addresses := []string{network.Mac}
+
+	for _, batinterface := range network.Mesh {
+		addresses = append(addresses, batinterface.Addresses()...)
+	}
+
+	for _, mac := range addresses {
+		if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
+			if oldNodeID != "" {
+				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
+			}
+			nodes.ifaceToNodeID[mac] = nodeID
+		}
+	}
+}
+
 func (nodes *Nodes) load() {
 	path := nodes.config.Nodes.StatePath
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
 			log.Println("loaded", len(nodes.List), "nodes")
+
+			for _, node := range nodes.List {
+				if node.Nodeinfo != nil {
+					nodes.readIfaces(node.Nodeinfo)
+				}
+			}
+
 		} else {
 			log.Println("failed to unmarshal nodes:", err)
 		}

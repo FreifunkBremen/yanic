@@ -43,6 +43,8 @@ func main() {
 		panic(err)
 	}
 
+	nodes = runtime.NewNodes(config)
+
 	connections, err = all.Connect(config.Database.Connection)
 	if err != nil {
 		panic(err)
@@ -55,7 +57,6 @@ func main() {
 		return
 	}
 
-	nodes = runtime.NewNodes(config)
 	nodes.Start()
 	meshviewer.Start(config, nodes)
 

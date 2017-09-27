@@ -37,6 +37,12 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	}
 }
 
+func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
+	for _, item := range conn.list {
+		item.InsertLink(link, time)
+	}
+}
+
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	for _, item := range conn.list {
 		item.InsertGlobals(stats, time)
