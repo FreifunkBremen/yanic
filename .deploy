@@ -1,0 +1,3 @@
+#!/bin/sh
+gem install package_cloud
+package_cloud push FreifunkBremen/yanic/debian/jessie $GOPATH/src/github.com/FreifunkBremen/yanic/build/*/yanic*.deb

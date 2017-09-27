@@ -1,12 +1,20 @@
 language: go
 go:
-  - 1.8.x
-  - master
+  - tip
 install:
-  - go get -t github.com/FreifunkBremen/yanic/...
-  - go get github.com/mattn/goveralls
-  - go get golang.org/x/tools/cmd/cover
+- go get -t github.com/FreifunkBremen/yanic/...
+- go get github.com/mattn/goveralls
+- go get golang.org/x/tools/cmd/cover
 script:
-  - ./.test-coverage
-  - go install github.com/FreifunkBremen/yanic/cmd/yanic
-  - go install github.com/FreifunkBremen/yanic/cmd/yanic-query
+- "./.test-coverage"
+- go install github.com/FreifunkBremen/yanic/cmd/yanic
+- go install github.com/FreifunkBremen/yanic/cmd/yanic-query
+before_deploy:
+- go get github.com/laher/goxc
+- goxc -pv=$(date +%Y%m%d)
+deploy:
+  provider: script
+  script: "./.deploy"
+  skip_cleanup: true
+  on:
+    branch: package
