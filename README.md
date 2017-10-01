@@ -63,7 +63,7 @@ Usage:
   yanic serve [flags]
 
 Examples:
-  yanic serve -config /etc/yanic.toml
+  yanic serve --config /etc/yanic.toml
 
 Flags:
   -c, --config string   Path to configuration file (default "config.toml")
@@ -77,7 +77,7 @@ Usage:
   yanic import <file.rrd> [flags]
 
 Examples:
-  yanic import -config /etc/yanic.toml olddata.rrd
+  yanic import --config /etc/yanic.toml olddata.rrd
 
 Flags:
   -c, --config string   Path to configuration file (default "config.toml")

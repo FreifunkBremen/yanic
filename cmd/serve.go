@@ -20,7 +20,7 @@ import (
 var serveCmd = &cobra.Command{
 	Use:     "serve",
 	Short:   "Runs the yanic server",
-	Example: "yanic serve -config /etc/yanic.toml",
+	Example: "yanic serve --config /etc/yanic.toml",
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
 
