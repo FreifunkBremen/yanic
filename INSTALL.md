@@ -26,7 +26,7 @@ export PATH=$PATH:$GOPATH/bin
 
 ### Compile
 ```sh
-go get -v -u github.com/FreifunkBremen/yanic/cmd/...
+go get -v -u github.com/FreifunkBremen/yanic
 ```
 
 #### Work with other databases
@@ -40,7 +40,7 @@ cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.co
 You only need to edit `/etc/yanic.conf` under section `[respondd]` the `interface` for a easy startup.
 And create the following folders:
 ```sh
-mkdir -p /var/lib/collector
+mkdir -p /var/lib/yanic
 mkdir -p /var/www/html/meshviewer/data
 ```
 

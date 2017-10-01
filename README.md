@@ -92,7 +92,7 @@ Usage:
   yanic query <interface> <destination> [flags]
 
 Examples:
-  yanic query wlan0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"
+  yanic query wlan0 "fe80::eade:27ff:dead:beef"
 
 Flags:
   -h, --help       help for query
