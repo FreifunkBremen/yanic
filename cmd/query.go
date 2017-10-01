@@ -16,11 +16,11 @@ var wait int
 var queryCmd = &cobra.Command{
 	Use:     "query <interface> <destination>",
 	Short:   "Sends a query on the interface to the destination and waits for a response",
-	Example: `yanic query wlan0 "[fe80::eade:27ff:dead:beef%wlp4s0]:1001"`,
+	Example: `yanic query wlan0 "fe80::eade:27ff:dead:beef"`,
 	Args:    cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		iface := args[0]
-		dstAddress := args[1]
+		dstAddress := net.ParseIP(args[1])
 
 		log.Printf("Sending request address=%s iface=%s", dstAddress, iface)
 
@@ -28,7 +28,7 @@ var queryCmd = &cobra.Command{
 
 		collector := respond.NewCollector(nil, nodes, iface, 0)
 		defer collector.Close()
-		collector.SendPacket(net.ParseIP(dstAddress))
+		collector.SendPacket(dstAddress)
 
 		time.Sleep(time.Second * time.Duration(wait))
 
