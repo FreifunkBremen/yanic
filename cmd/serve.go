@@ -38,7 +38,8 @@ var serveCmd = &cobra.Command{
 		if config.Webserver.Enable {
 			log.Println("starting webserver on", config.Webserver.Bind)
 			srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
-			go srv.Close()
+			go webserver.Start(srv)
+			defer srv.Close()
 		}
 
 		if config.Respondd.Enable {
