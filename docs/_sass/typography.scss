@@ -1,0 +1,40 @@
+h2 {
+  font-size: 34px;
+  hyphens: auto;
+}
+
+h3 {
+  font-size: 28px;
+  hyphens: auto;
+}
+
+html {
+  font-size: 21px;
+  color: #333;
+  line-height: 1.3;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+a {
+  color: $freifunk_magenta;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  text-align: justify;
+  hyphens: auto;
+}
+
+.small {
+  font-size: small;
+}
+
+.center {
+  text-align: center;
+}
+/* vim: syntax=css sw=2 ts=2 sts=2 et
+ */

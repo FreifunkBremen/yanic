@@ -1,0 +1,30 @@
+---
+- name: Start
+  id: 0
+  items:
+    - name: Home
+      link: /
+    - name: Running
+      link: /home/running.html
+    - name: About
+      link: /home/about.html
+- name: Documentation
+  id: 1
+  items:
+    - name: Build and Install
+      link: /docs/install.html
+    - name: Usage
+      link: /docs/usage.html
+    - name: Quick Configuration
+      link: /docs/quick_configuration.html
+    - name: Configuration
+      link: /docs/configuration.html
+- name: Developing
+  id: 2
+  items:
+    - name: Add database type
+      link: /dev/database.html
+    - name: Source Code
+      link: https://github.com/FreifunkBremen/yanic/
+    - name: Issues
+      link: https://github.com/FreifunkBremen/yanic/issues

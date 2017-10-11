@@ -1,0 +1,292 @@
+@charset "UTF-8";
+
+#pageheader {
+  background-color: $dark_background;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 6;
+  font-size: 16px;
+  box-shadow: 0 0 5px #000;
+
+  h1 {
+    color: $dark_textcolor;
+  }
+	> h1 {
+		margin-left: calc((100vw - #{$max_design_width}) / 2 + 188px);
+	}
+
+  nav {
+    max-width: $max_design_width;
+    margin-left: calc((100vw - #{$max_design_width}) / 2 + 188px);
+    font-weight: 700;
+
+		h1 {
+			display: none;
+		}
+
+    li {
+      display: inline-block;
+
+      a {
+        display: inline-block;
+        padding: 10px;
+        cursor: pointer;
+        text-decoration: none !important;
+        color: inherit;
+        height: $navi_height;
+        box-sizing: border-box;
+      }
+    }
+    ul {
+      padding: 0;
+      margin: 0;
+
+      ul li:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    #mainnav {
+      margin-bottom: $navi_height;
+      display: inline-block;
+
+      > li ul {
+        display: none; /* this is overwritten for :hover and .active */
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding-left: calc((100vw - #{$max_design_width}) / 2);
+        box-sizing: border-box;
+        background: inherit;
+      }
+
+      > li:nth-child(1) {
+        background: $menu_background_1;
+        color: $menu_textcolor_1;
+      }
+
+      > li:nth-child(2) {
+        background: $menu_background_2;
+        color: $menu_textcolor_2;
+      }
+
+      > li:nth-child(3) {
+        background: $menu_background_3;
+        color: $menu_textcolor_3;
+      }
+
+      > li:nth-child(4) {
+        background: $menu_background_4;
+        color: $menu_textcolor_4;
+      }
+
+      > li.active ul {
+        display: block;
+      }
+      > li:hover ul {
+        display: block !important;
+      }
+    }
+
+    #mainnav:hover li.active ul {
+      display: none;
+    }
+  }
+
+  #navbutton {
+    box-sizing: content-box;
+    position: fixed;
+    top: -60px;
+    left: 0;
+    padding: 20px;
+    border: 0;
+    cursor: pointer;
+    background: $dark_background;
+    display: none;
+    z-index: 5;
+    transition: margin-top .2s;
+  }
+
+  #navbutton::before {
+    content: "";
+    height: 0.25em;
+    width: 1.5em;
+    border-top: 0.75em double #fff;
+    border-bottom: 0.25em solid #fff;
+    display: block;
+  }
+}
+
+@media screen and (min-width: #{$max_content_width}) {
+  #pageheader.fixed {
+    position: fixed;
+    top: -84px;
+    transition: margin-top .2s;
+  }
+
+  #pageheader.fixed.detail {
+    margin-top: $navi_height;
+  }
+
+  body {
+    padding-top: 120px;
+  }
+}
+
+body {
+  position: relative;
+}
+
+@media screen and (max-width: #{$max_design_width - 1}) {
+  #pageheader {
+		> h1 {
+			margin-left: 188px;
+		}
+    nav {
+      margin-left: 188px;
+    }
+  }
+}
+
+@media screen and (max-width: #{$max_content_width - 1}) {
+  #pageheader.fixed {
+    position: static;
+  }
+  #pageheader.fixed.detail {
+    margin-top: 0;
+  }
+
+  #pageheader.detail #navbutton {
+    margin-top: 60px;
+  }
+
+  #pageheader {
+    width: auto;
+    position: static;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    #navbutton {
+      display: block;
+    }
+
+		h1 {
+			display: none;
+		}
+
+    nav {
+      transition: left .5s;
+      display: block;
+      position: fixed;
+      left: -250px;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      overflow: auto;
+      margin-left: 0;
+      z-index: 100;
+      background-color: inherit;
+      font-weight: 600;
+
+      li, ul, a {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+			h1 {
+				display: block;
+			}
+
+      #mainnav {
+        > li:hover > ul {
+          display: none !important;
+        }
+        > li > ul {
+          position: static;
+
+          li a {
+            padding-left: 25px;
+          }
+        }
+      }
+      #mainnav:hover > li.active > ul {
+        display: block !important;
+      }
+    }
+  }
+
+  body.navopen, body > div {
+    overflow: hidden;
+  }
+
+  body > div > div {
+    transition: margin-left .5s;
+    width: 100%;
+  }
+
+  body.navopen {
+    > div > div {
+      margin-left: 250px;
+    }
+
+    #pageheader nav {
+      left: 0;
+    }
+
+    #blur {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      cursor: pointer;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #pageheader {
+    justify-content: space-around;
+  }
+}
+
+footer {
+  background-color: $dark_background;
+  font-size: 14px;
+  padding: 20px calc((100vw - #{$max_design_width}) / 2);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  clear: both;
+  color: #fff;
+
+  div {
+    padding: 0 10px;
+  }
+
+  a {
+    color: $freifunk_gelb;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: inline-block;
+    padding: 0 10px;
+  }
+}
+
+#edit_this_page {
+  display: none;
+}
+
+/* vim: syntax=css sw=2 ts=2 sts=2 et
+ */

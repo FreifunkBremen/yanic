@@ -1,0 +1,108 @@
+div {
+  max-width: 100%;
+}
+
+section {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 80px calc((100vw - #{$max_content_width}) / 2) 50px;
+  position: relative;
+
+  h2 + p {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+section.wide {
+  padding: 80px calc((100vw - #{$max_design_width}) / 2) 50px;
+}
+
+section:first-child {
+  padding-top: 50px;
+}
+
+h2 {
+  width: -moz-max-content;
+  width: -webkit-max-content;
+  margin: 0 auto 20px;
+  text-align: center;
+  max-width: 100%;
+}
+
+h2::after {
+  content: "";
+  background-color: $freifunk_magenta;
+  display: block;
+  height: 5px;
+  min-width: 80%;
+  width: calc(100% - 2em);
+  margin: 5px auto;
+}
+
+section:nth-child(even) {
+  background-color: $dark_background;
+  color: #fff;
+
+  h2::after {
+    background-color: $freifunk_gelb;
+  }
+
+  a {
+    color: $freifunk_gelb;
+  }
+
+  .btn {
+    background-color: $freifunk_gelb;
+    color: #000 !important;
+  }
+  .btn:hover {
+    background-color: darken($freifunk_gelb, 5%);
+  }
+}
+
+.flexbtns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  > * {
+    margin: 10px;
+  }
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  > * {
+    padding: 0 20px;
+    position: relative;
+    flex: 1 1 0;
+  }
+}
+
+@media screen and (max-width: #{$max_content_width - 1}) {
+  section {
+    padding: 80px 20px 50px;
+  }
+  .flex {
+    margin-left: 0;
+
+    > * {
+      flex-basis: auto;
+    }
+  }
+}
+
+.flex:first-child {
+  margin-top: -170px;
+
+  > * {
+    padding-top: 170px;
+  }
+}
+
+/* vim: syntax=css sw=2 ts=2 sts=2 et
+ */

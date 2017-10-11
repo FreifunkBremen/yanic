@@ -1,0 +1,19 @@
+.btn {
+  display: inline-block;
+  padding: .5em 1em;
+  border-radius: 2em;
+  color: #fff;
+  background-color: $freifunk_magenta;
+  text-align: center;
+}
+
+.btn:hover {
+  background: lighten($freifunk_magenta, 5%);
+}
+
+a.btn:hover {
+  text-decoration: none;
+}
+
+/* vim: syntax=css sw=2 ts=2 sts=2 et
+ */
