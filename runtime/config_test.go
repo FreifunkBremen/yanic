@@ -36,4 +36,12 @@ func TestReadConfig(t *testing.T) {
 	assert.Len(dbs, 1, "more graphitedb are given")
 	graphitedb = dbs[0].(map[string]interface{})
 	assert.Equal(graphitedb["address"], "localhost:2003")
+
+	_, err = ReadConfigFile("testdata/config_failed.toml")
+	assert.Error(err, "not unmarshalable")
+	assert.Contains(err.Error(), "Near line ")
+
+	_, err = ReadConfigFile("testdata/adsa.toml")
+	assert.Error(err, "not found able")
+	assert.Contains(err.Error(), "no such file or directory")
 }

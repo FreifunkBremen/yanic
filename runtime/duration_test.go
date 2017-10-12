@@ -44,4 +44,14 @@ func TestDuration(t *testing.T) {
 			assert.EqualError(err, test.err)
 		}
 	}
+
+	d := Duration{}
+	err := d.UnmarshalTOML(3)
+	assert.Error(err)
+	assert.Contains(err.Error(), "invalid duration")
+
+	err = d.UnmarshalTOML("am")
+	assert.Error(err)
+	assert.Contains(err.Error(), "unable to parse duration")
+
 }
