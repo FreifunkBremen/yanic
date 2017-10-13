@@ -21,6 +21,7 @@ done
 # Failures have incomplete results, so don't send
 if [ "$FAIL" -eq 0 ]; then
   goveralls -service=travis-ci -v -coverprofile=profile.cov
+  bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f profile.cov
 fi
 
 exit $FAIL
