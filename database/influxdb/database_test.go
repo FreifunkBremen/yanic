@@ -10,6 +10,27 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestConnect(t *testing.T) {
+	assert := assert.New(t)
+
+	conn, err := Connect(map[string]interface{}{
+		"address":  "",
+		"username": "",
+		"password": "",
+	})
+	assert.Nil(conn)
+	assert.Error(err)
+
+	conn, err = Connect(map[string]interface{}{
+		"address":  "http://localhost",
+		"database": "",
+		"username": "",
+		"password": "",
+	})
+	assert.NotNil(conn)
+	assert.NoError(err)
+}
+
 func TestAddPoint(t *testing.T) {
 	assert := assert.New(t)
 

@@ -23,9 +23,6 @@ type Connection struct {
 
 type Config map[string]interface{}
 
-func (c Config) Enable() bool {
-	return c["enable"].(bool)
-}
 func (c Config) Path() string {
 	return c["path"].(string)
 }
@@ -34,12 +31,9 @@ func init() {
 	database.RegisterAdapter("logging", Connect)
 }
 
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(configuration map[string]interface{}) (database.Connection, error) {
 	var config Config
-	config = configuration.(map[string]interface{})
-	if !config.Enable() {
-		return nil, nil
-	}
+	config = configuration
 
 	file, err := os.OpenFile(config.Path(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {

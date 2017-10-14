@@ -82,7 +82,9 @@ func TestToInflux(t *testing.T) {
 					},
 				},
 			},
-			LLDP: map[string]data.LLDPNeighbours{},
+			LLDP: map[string]data.LLDPNeighbours{
+				"b-interface": data.LLDPNeighbours{},
+			},
 		},
 	}
 

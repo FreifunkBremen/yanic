@@ -31,15 +31,15 @@ func TestReadConfig(t *testing.T) {
 	assert.Equal("/var/www/html/meshviewer/data/nodes.json", meshviewer["nodes_path"])
 
 	var influxdb map[string]interface{}
-	dbs := config.Database.Connection["influxdb"]
+	dbs := config.Database.Connection["influxdb"].([]map[string]interface{})
 	assert.Len(dbs, 1, "more influxdb are given")
-	influxdb = dbs[0].(map[string]interface{})
+	influxdb = dbs[0]
 	assert.Equal(influxdb["database"], "ffhb")
 
 	var graphitedb map[string]interface{}
-	dbs = config.Database.Connection["graphite"]
+	dbs = config.Database.Connection["graphite"].([]map[string]interface{})
 	assert.Len(dbs, 1, "more graphitedb are given")
-	graphitedb = dbs[0].(map[string]interface{})
+	graphitedb = dbs[0]
 	assert.Equal(graphitedb["address"], "localhost:2003")
 
 	_, err = ReadConfigFile("testdata/config_failed.toml")

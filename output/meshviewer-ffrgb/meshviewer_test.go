@@ -172,12 +172,14 @@ func TestTransform(t *testing.T) {
 			assert.Equal("node:b:mac:wifi", link.TargetMAC)
 			assert.Equal(float32(0.6), link.SourceTQ)
 			assert.Equal(float32(0.8), link.TargetTQ)
-		default:
+		case "node:b:mac:lan":
 			assert.Equal("other", link.Type)
 			assert.Equal("node:c:mac:lan", link.TargetMAC)
 			assert.Equal(float32(0.8), link.SourceTQ)
 			assert.Equal(float32(0.4), link.TargetTQ)
 			break
+		default:
+			assert.False(true, "invalid link.SourceMAC found")
 		}
 	}
 }

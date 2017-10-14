@@ -1,6 +1,7 @@
 package all
 
 import (
+	"log"
 	"time"
 
 	"github.com/FreifunkBremen/yanic/database"
@@ -12,12 +13,23 @@ type Connection struct {
 	list []database.Connection
 }
 
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(allConnection map[string]interface{}) (database.Connection, error) {
 	var list []database.Connection
-	allConnection := configuration.(map[string][]interface{})
 	for dbType, conn := range database.Adapters {
-		dbConfigs := allConnection[dbType]
+		configForType := allConnection[dbType]
+		if configForType == nil {
+			log.Printf("the output type '%s' has no configuration\n", dbType)
+			continue
+		}
+		dbConfigs, ok := configForType.([]map[string]interface{})
+		if !ok {
+			log.Panicf("the output type '%s' has the wrong format\n", dbType)
+		}
+
 		for _, config := range dbConfigs {
+			if c, ok := config["enable"].(bool); ok && !c {
+				continue
+			}
 			connected, err := conn(config)
 			if err != nil {
 				return nil, err
