@@ -31,10 +31,11 @@ type Collector struct {
 func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaces []string, port int) *Collector {
 
 	coll := &Collector{
-		db:    db,
-		nodes: nodes,
-		queue: make(chan *Response, 400),
-		stop:  make(chan interface{}),
+		db:          db,
+		nodes:       nodes,
+		queue:       make(chan *Response, 400),
+		stop:        make(chan interface{}),
+		ifaceToConn: make(map[string]*net.UDPConn),
 	}
 
 	for _, iface := range ifaces {
