@@ -11,7 +11,7 @@ type Config struct {
 	Respondd struct {
 		Enable          bool     `toml:"enable"`
 		Synchronize     Duration `toml:"synchronize"`
-		Interface       string   `toml:"interface"`
+		Interfaces      []string `toml:"interfaces"`
 		Port            int      `toml:"port"`
 		CollectInterval Duration `toml:"collect_interval"`
 	}

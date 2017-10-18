@@ -9,7 +9,7 @@ import (
 
 // Node struct
 type Node struct {
-	Address    net.IP           `json:"address"` // the last known IP address
+	Address    *net.UDPAddr     `json:"-"` // the last known address
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
 	Online     bool             `json:"online"`
