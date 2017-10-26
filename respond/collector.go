@@ -19,6 +19,7 @@ import (
 type Collector struct {
 	connections []*net.UDPConn          // UDP sockets
 	ifaceToConn map[string]*net.UDPConn // map from interface name to UDP socket
+	port        int
 
 	queue    chan *Response // received responses
 	db       database.Connection
@@ -33,6 +34,7 @@ func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaces []string,
 	coll := &Collector{
 		db:          db,
 		nodes:       nodes,
+		port:        port,
 		queue:       make(chan *Response, 400),
 		stop:        make(chan interface{}),
 		ifaceToConn: make(map[string]*net.UDPConn),
@@ -63,7 +65,7 @@ func (coll *Collector) listenUDP(iface string) {
 	// Open socket
 	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		IP:   linkLocalAddr,
-		Port: port,
+		Port: coll.port,
 		Zone: iface,
 	})
 	if err != nil {
