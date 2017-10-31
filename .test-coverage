@@ -30,4 +30,22 @@ if [ "$FAIL" -eq 0 ]; then
   bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f profile.cov
 fi
 
+# Test if every package has testfiles
+for dir in $(find . -name "*.go" -printf '%h\0'| sort -zu | sed -z 's/$/\n/');
+do
+  if [ "$(ls $dir/*_test.go 2> /dev/null | wc -l)" -eq "0" ]; then
+   echo -n "no test files for $dir";
+   case $dir in
+    '.' | './cmd' | './database/graphite')
+      echo " - but ignored";
+      continue
+    ;;
+    *)
+      echo "";
+      FAIL=1;
+      ;;
+   esac
+  fi
+done
+
 exit $FAIL
