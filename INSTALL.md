@@ -9,14 +9,14 @@ tar xvf go1.8.linux-amd64.tar.gz
 rm go1.8.linux-amd64.tar.gz
 ```
 
-### Configurate
-put this lines into a shell place at root:
+### Configure go
+Add these lines in your root shell startup file (i.e. `/root/.bashrc`):
 ```sh
 export GOPATH=/opt/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 ```
 
-put this lines also into a shell place to use go by normal user:
+and these in the shell startup file of a normal user:
 ```sh
 export GOPATH=~/go
 export PATH=$PATH:$GOPATH/bin
@@ -25,32 +25,41 @@ export PATH=$PATH:$GOPATH/bin
 ## Yanic
 
 ### Compile
+As root:
 ```sh
 go get -v -u github.com/FreifunkBremen/yanic
 ```
 
 #### Work with other databases
-If you did like a other database solution like influxdb,
-you are welcome to create another subpackage from database in your fork like the logging.
+If you like to use another database solution than influxdb, Pull Requests are
+welcome. Just fork this project and create another subpackage within the folder
+`database/`. Take this folder as example: `database/logging/`.
 
-### Configurate
+### Configure Yanic
 ```sh
 cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.conf
 ```
-You only need to edit `/etc/yanic.conf` under section `[respondd]` the `interface` for a easy startup.
-And create the following folders:
+For an easy startup you only need to edit the `interfaces` in section
+`[respondd]` in file `/etc/yanic.conf`.  
+
+Then create the following folders:
 ```sh
 mkdir -p /var/lib/yanic
 mkdir -p /var/www/html/meshviewer/data
 ```
 
 #### Standalone
-If you like to run a meshviewer standalone, just set `enable` under section `[webserver]` to `true`.
-Configurate the [meshviewer](https://github.com/ffrgb/meshviewer) set `dataPath` in `config.json` to `/data/` and put the `build` directory under `/var/www/html/meshviewer`.
+If you like to run a standalone meshviewer, just set `enable` in section
+`[webserver]` to `true`.
+
+##### Configure the [meshviewer](https://github.com/ffrgb/meshviewer):
+set `dataPath` in `config.json` to `/data/` and make the `build` directory
+accessible under `/var/www/html/meshviewer`.
 
 #### With webserver (Apache, nginx)
-Change following path under section `[nodes]` to what you need.
-For `nodes_path` and `graph_path` should be under the same folder for a meshviewer.
+The meshviewer needs the output files like `nodes_path` and `graph_path` inside
+the same directory as the `dataPath`. Change the path in the section
+`[meshviewer]` accordingly.
 
 ### Service
 ```bash
