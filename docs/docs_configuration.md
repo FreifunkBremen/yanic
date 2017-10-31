@@ -16,9 +16,9 @@ Group for configuration of respondd request.
 ```toml
 [respondd]
 enable           = true
-#synchronize      = "1m"
+# synchronize    = "1m"
 collect_interval = "1m"
-interface        = "eth0"
+interfaces       = ["eth0"]
 #port            = 10001
 ```
 
@@ -53,11 +53,11 @@ collect_interval = "1m"
 
 
 
-### interface
-On which interface listen and send request.
+### interfaces
+On which interfaces listen and send request.
 
 ```toml
-interface        = "eth0"
+interfaces       = ["eth0"]
 ```
 
 
