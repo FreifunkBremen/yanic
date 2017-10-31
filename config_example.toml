@@ -73,7 +73,9 @@ password = ""
 # Tags used by Yanic would override the tags from this config
 # nodeid, hostname, owner, model and firmware are tags which are already used
 #tagname1 = "tagvalue 1"
-#tagname2 = "tagvalue 2"
+# some usefull e.g.:
+#system   = "productive"
+#site     = "ffhb"
 
 # Logging
 [[database.connection.logging]]
