@@ -1,12 +1,13 @@
 # Howto install Yanic
 
 ## go
+
 ### Install
 ```sh
 cd /usr/local/
-wget https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz
-tar xvf go1.8.linux-amd64.tar.gz
-rm go1.8.linux-amd64.tar.gz
+wget https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz -O go-release-linux-amd64.tar.gz
+tar xvf go-release-linux-amd64.tar.gz
+rm go-release-linux-amd64.tar.gz
 ```
 
 ### Configure go
@@ -14,12 +15,6 @@ Add these lines in your root shell startup file (e.g. `/root/.bashrc`):
 ```sh
 export GOPATH=/opt/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-```
-
-and these in the shell startup file of a normal user:
-```sh
-export GOPATH=~/go
-export PATH=$PATH:$GOPATH/bin
 ```
 
 ## Yanic
@@ -64,8 +59,8 @@ the same directory as the `dataPath`. Change the path in the section
 `[[nodes.output.meshviewer]]` accordingly.
 
 ### Service
-```sh
-cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.service /lib/systemd/system/
+```bash
+cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.service /lib/systemd/system/yanic.service
 systemctl daemon-reload
 systemctl start yanic
 systemctl enable yanic

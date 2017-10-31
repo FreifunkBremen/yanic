@@ -138,7 +138,7 @@ password = ""
 # Tagging of the data (optional)
 [database.connection.influxdb.tags]
 # Tags used by Yanic would override the tags from this config
-# nodeid, hostname, owner, model and firmware are tags which are already used
+# nodeid, hostname, owner, model, firmware_base, firmware_release,frequency11g and frequency11a are tags which are already used
 #tagname1 = "tagvalue 1"
 # some usefull e.g.:
 #system   = "productive"

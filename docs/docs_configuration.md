@@ -42,7 +42,7 @@ synchronize      = "1m"
 
 
 ### collect_interval
-How oftern send request per respondd.
+How often send request per respondd.
 
 It will send UDP packets with multicast group `ff02::2:1001` and port `1001`.
 If a node does not answer after the half time, it will request with the last know address under the port `1001`.
@@ -63,7 +63,7 @@ interfaces       = ["eth0"]
 
 ### port
 Define a port to listen and send the respondd packages.
-If it is not set or 0 would choose the kernel a free port at his own
+If not set or set to 0 the kernel will use a random free port at its own.
 
 ```toml
 port              = 10001
@@ -119,7 +119,7 @@ prune_after = "7d"
 
 
 ### enable
-Enable the storing and writing of json files
+Enable the storing and writing of json files.
 
 ```toml
 enable         = true
@@ -127,7 +127,7 @@ enable         = true
 
 
 ### state_path
-State-version of nodes.json to store cached data, these is the directly collected respondd data.
+A json file to cache all data collected directly from respondd.
 
 ```toml
 state_path     = "/var/lib/yanic/state.json"
@@ -151,7 +151,7 @@ offline_after = "10m"
 
 
 ### prune_after
-Prune offline nodes after a time of inactivity.
+Prune data in RAM, cache-file and output json files (i.e. nodes.json) that were inactive for longer than.
 
 ```toml
 prune_after = "7d"
@@ -167,10 +167,10 @@ graph_path     = "/var/www/html/meshviewer/data/graph.json"
 ```
 
 ### version
-The structur of nodes.json of which `nodes_path` `nodes.json` should saved:
-* version 1 is to support legacy meshviewer (which are in master branch)
+The structure version of the output which should be generated (i.e. nodes.json)
+* version 1 is accepted by the legacy meshviewer (which is the master branch)
 * https://github.com/ffnord/meshviewer/tree/master
-* version 2 is to support new version of meshviewer (which are in legacy develop branch or newer)
+* version 2 is accepted by the new version of meshviewer (which are in legacy develop branch or newer)
 * https://github.com/ffnord/meshviewer/tree/dev
 * https://github.com/ffrgb/meshviewer/tree/develop
 
@@ -210,7 +210,7 @@ delete_interval = "1h"
 
 
 ### delete_interval
-Cleaning data of node, which are older than 7d.
+This will send delete commands to the database to prune data which is older than:
 
 ```toml
 delete_after = "7d"
@@ -218,7 +218,7 @@ delete_after = "7d"
 
 
 ### delete_interval
-How often run the cleaning.
+How often run the delete commands.
 
 ```toml
 delete_interval = "1h"
@@ -227,11 +227,12 @@ delete_interval = "1h"
 
 
 ## [[database.connection.influxdb]]
-Save collected data to InfluxDB there would be the following measurements:
-- node: store node spezific data i.e. clients memory, airtime
+Save collected data to InfluxDB.
+There are would be the following measurements:
+- node: store node specific data i.e. clients memory, airtime
 - global: store global data, i.e. count of clients and nodes
-- firmware: store count of nodes tagged with firmware
-- model: store count of nodes tagged with hardware model
+- firmware: store the count of nodes tagged with firmware
+- model: store the count of nodes tagged with hardware model
 
 ```toml
 enable   = false
@@ -289,9 +290,13 @@ password = ""
 You could set manuelle tags with inserting into a influxdb.
 Usefull if you want to identify the yanic instance when you use multiple own on the same influxdb (e.g. multisites).
 
-Warning, you could not overright tags which ware used by yanic (e.g. `nodeid`).
+Warning:
+Tags used by Yanic would override the tags from this config (e.g. `nodeid`, `hostname`, `owner`, `model`, `firmware_base`, `firmware_release`, `frequency11g`, `frequency11a`).
 ```toml
-tagname = "value"
+tagname1 = "tagvalue 1s"
+# some usefull e.g.:
+system   = "productive"
+site     = "ffhb"
 ```
 
 
@@ -324,7 +329,12 @@ address = "localhost:2003"
 
 
 ### prefix
-Prefix for every measurment key in this graphite database.
+Graphite is replacing every "." in the metric name with a slash "/" and uses
+that for the file system hierarchy it generates. it is recommended to at least
+move the metrics out of the root namespace (that would be the empty prefix).
+If you only intend to run one community and only freifunk on your graphite node
+then the prefix can be set to anything (including the empty string) since you
+probably wont care much about "polluting" the namespace.
 
 ```toml
 prefix = "freifunk"
