@@ -111,7 +111,7 @@ webroot = "/var/www/html/meshviewer"
 ```toml
 [nodes]
 enable         = true
-state_path     = "/var/lib/collector/state.json"
+state_path     = "/var/lib/yanic/state.json"
 save_interval = "5s"
 offline_after = "10m"
 prune_after = "7d"
@@ -130,7 +130,7 @@ enable         = true
 State-version of nodes.json to store cached data, these is the directly collected respondd data.
 
 ```toml
-state_path     = "/var/lib/collector/state.json"
+state_path     = "/var/lib/yanic/state.json"
 ```
 
 

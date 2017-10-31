@@ -32,13 +32,13 @@ Flags:
 To import firstseen values there is a little script in contrib:
 
 ```
-/opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s state.json /var/lib/collector/state.json
+/opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s state.json /var/lib/yanic/state.json
 ```
 
 On a productive system @ once:
 
 ```
-systemctl stop yanic; cp /var/lib/collector/state.json /var/lib/collector/state.bak; /opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s /var/lib/collector/state.json; systemctl start yanic;
+systemctl stop yanic; cp /var/lib/yanic/state.json /var/lib/yanic/state.bak; /opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s /var/lib/yanic/state.json; systemctl start yanic;
 ```
 
 ## Serve
