@@ -25,6 +25,10 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 		node := NewNode(nodes, nodeOrigin)
 		meshviewer.Nodes = append(meshviewer.Nodes, node)
 
+		if !nodeOrigin.Online {
+			continue
+		}
+
 		typeList := make(map[string]string)
 
 		if nodeinfo := nodeOrigin.Nodeinfo; nodeinfo != nil {

@@ -13,6 +13,7 @@ func TestTransform(t *testing.T) {
 
 	nodes := runtime.NewNodes(&runtime.Config{})
 	nodes.AddNode(&runtime.Node{
+		Online: true,
 		Nodeinfo: &data.NodeInfo{
 			NodeID: "node_a",
 			Network: data.Network{
@@ -49,6 +50,7 @@ func TestTransform(t *testing.T) {
 		},
 	})
 	nodes.AddNode(&runtime.Node{
+		Online: true,
 		Nodeinfo: &data.NodeInfo{
 			NodeID: "node_c",
 			Network: data.Network{
@@ -78,6 +80,7 @@ func TestTransform(t *testing.T) {
 		},
 	})
 	nodes.AddNode(&runtime.Node{
+		Online: true,
 		Nodeinfo: &data.NodeInfo{
 			NodeID: "node_b",
 			Network: data.Network{
@@ -112,10 +115,46 @@ func TestTransform(t *testing.T) {
 			},
 		},
 	})
+	nodes.AddNode(&runtime.Node{
+		Online: false,
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "node_d",
+			Network: data.Network{
+				Mac: "node:d:mac",
+				Mesh: map[string]*data.BatInterface{
+					"bat0": &data.BatInterface{
+						Interfaces: struct {
+							Wireless []string `json:"wireless,omitempty"`
+							Other    []string `json:"other,omitempty"`
+							Tunnel   []string `json:"tunnel,omitempty"`
+						}{
+							Wireless: []string{"node:b:mac:wifi"},
+							Other:    []string{"node:b:mac:lan"},
+						},
+					},
+				},
+			},
+		},
+		Neighbours: &data.Neighbours{
+			NodeID: "node_d",
+			Batadv: map[string]data.BatadvNeighbours{
+				"node:d:mac:lan": data.BatadvNeighbours{
+					Neighbours: map[string]data.BatmanLink{
+						"node:c:mac:lan": data.BatmanLink{Tq: 204},
+					},
+				},
+				"node:d:mac:wifi": data.BatadvNeighbours{
+					Neighbours: map[string]data.BatmanLink{
+						"node:a:mac:wifi": data.BatmanLink{Tq: 204},
+					},
+				},
+			},
+		},
+	})
 
 	meshviewer := transform(nodes)
 	assert.NotNil(meshviewer)
-	assert.Len(meshviewer.Nodes, 3)
+	assert.Len(meshviewer.Nodes, 4)
 	links := meshviewer.Links
 	assert.Len(links, 3)
 
