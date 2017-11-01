@@ -34,7 +34,17 @@ save_interval = "5s"
 offline_after = "10m"
 
 
+## [[nodes.output.-]]
+# every output:
+#  needs to be enabled just adding:
+#    enable = true
+#  could filter the nodes by using a there filter entry (see output meshviewer)
+#   [nodes.output.-.filter]
+#  could be used multiple times (suggested by the "[[...]]" instatt of "[...]")
+#  it is useful for e.g. filter by different array and use multiple meshviewers
+
 [[nodes.output.meshviewer]]
+enable = true
 # The structure version of the output which should be generated (i.e. nodes.json)
 # version 1 is accepted by the legacy meshviewer (which is the master branch)
 #   i.e. https://github.com/ffnord/meshviewer/tree/master
@@ -74,6 +84,13 @@ path = "/var/www/html/meshviewer/data/meshviewer.json"
 delete_after    = "7d"
 # how often run the cleaning
 delete_interval = "1h"
+
+## [[database.connection.-]]
+# every output:
+#  needs to be enabled just adding:
+#    enable = true
+#  could be used multiple times (suggested by the "[[...]]" instatt of "[...]")
+#  it is useful for e.g. save into a database before and behind a firewall
 
 # Save collected data to InfluxDB.
 # There are the following measurments:
