@@ -27,7 +27,7 @@ enable        = true
 state_path    = "/var/lib/yanic/state.json"
 # prune data in RAM, cache-file and output json files (i.e. nodes.json)
 # that were inactive for longer than
-prune_after   = "60d"
+prune_after   = "7d"
 # Export nodes and graph periodically
 save_interval = "5s"
 # Set node to offline if not seen within this period
@@ -81,7 +81,7 @@ path = "/var/www/html/meshviewer/data/meshviewer.json"
 [database]
 # this will send delete commands to the database to prune data
 # which is older than:
-delete_after    = "90d"
+delete_after    = "7d"
 # how often run the cleaning
 delete_interval = "1h"
 
