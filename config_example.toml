@@ -5,8 +5,8 @@ enable           = true
 synchronize      = "1m"
 # how often request per multicast
 collect_interval = "1m"
-# on which interface
-interfaces       = ["eth0"]
+# interface that has an IP in your mesh network
+interfaces       = ["br-ffxx"]
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
 #port = 10001
@@ -27,7 +27,7 @@ enable        = true
 state_path    = "/var/lib/yanic/state.json"
 # prune data in RAM, cache-file and output json files (i.e. nodes.json)
 # that were inactive for longer than
-prune_after   = "7d"
+prune_after   = "60d"
 # Export nodes and graph periodically
 save_interval = "5s"
 # Set node to offline if not seen within this period
@@ -81,7 +81,7 @@ path = "/var/www/html/meshviewer/data/meshviewer.json"
 [database]
 # this will send delete commands to the database to prune data
 # which is older than:
-delete_after    = "7d"
+delete_after    = "90d"
 # how often run the cleaning
 delete_interval = "1h"
 

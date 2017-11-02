@@ -10,7 +10,7 @@ rm go1.8.linux-amd64.tar.gz
 ```
 
 ### Configure go
-Add these lines in your root shell startup file (i.e. `/root/.bashrc`):
+Add these lines in your root shell startup file (e.g. `/root/.bashrc`):
 ```sh
 export GOPATH=/opt/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
@@ -64,7 +64,7 @@ the same directory as the `dataPath`. Change the path in the section
 `[[nodes.output.meshviewer]]` accordingly.
 
 ### Service
-```bash
+```sh
 cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.service /lib/systemd/system/
 systemctl daemon-reload
 systemctl start yanic
@@ -73,7 +73,7 @@ systemctl enable yanic
 
 ### Update
 For an update just stop yanic and then call the same `go` command again (again as root):
-```bash
+```sh
 systemctl stop yanic
 go get -v -u github.com/FreifunkBremen/yanic
 ```
@@ -81,4 +81,3 @@ Then update the config file, for example look at the diff with the new example:
 ```sh
 diff /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.conf
 ```
-(or side-by-side with `vimdiff`, if installed)
