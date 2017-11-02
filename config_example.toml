@@ -6,7 +6,7 @@ synchronize      = "1m"
 # how often request per multicast
 collect_interval = "1m"
 # interface that has an IP in your mesh network
-interfaces       = ["br-ffxx"]
+interfaces       = ["br-ffhb"]
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
 #port = 10001
