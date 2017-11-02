@@ -42,10 +42,12 @@ cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.co
 For an easy startup you only need to edit the `interfaces` in section
 `[respondd]` in file `/etc/yanic.conf`.  
 
-Then create the following folders:
+Then create the following files and folders:
 ```sh
 mkdir -p /var/lib/yanic
 mkdir -p /var/www/html/meshviewer/data
+touch /var/log/yanic.log
+chown yanic /var/log/yanic.log /var/lib/yanic /var/www/html/meshviewer/data
 ```
 
 #### Standalone
@@ -68,3 +70,15 @@ systemctl daemon-reload
 systemctl start yanic
 systemctl enable yanic
 ```
+
+### Update
+For an update just stop yanic and then call the same `go` command again (again as root):
+```bash
+systemctl stop yanic
+go get -v -u github.com/FreifunkBremen/yanic
+```
+Then update the config file, for example look at the diff with the new example:
+```sh
+diff /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.conf
+```
+(or side-by-side with `vimdiff`, if installed)
