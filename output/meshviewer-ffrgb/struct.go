@@ -33,6 +33,7 @@ type Node struct {
 	Network        Network       `json:"network"`
 	SiteCode       string        `json:"site_code,omitempty"`
 	Hostname       string        `json:"hostname"`
+	Owner          string        `json:"owner,omitempty"`
 	Location       *Location     `json:"location,omitempty"`
 	Firmware       Firmware      `json:"firmware,omitempty"`
 	Autoupdater    Autoupdater   `json:"autoupdater"`
@@ -93,6 +94,9 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		}
 		node.SiteCode = nodeinfo.System.SiteCode
 		node.Hostname = nodeinfo.Hostname
+		if owner := nodeinfo.Owner; owner != nil {
+			node.Owner = owner.Contact
+		}
 		if location := nodeinfo.Location; location != nil {
 			node.Location = &Location{
 				Longtitude: location.Longtitude,
