@@ -13,6 +13,9 @@ func TestRegister(t *testing.T) {
 	nodes := runtime.NewNodes(&runtime.Config{})
 	node := NewNode(nodes, &runtime.Node{
 		Nodeinfo: &data.NodeInfo{
+			Owner: &data.Owner{
+				Contact: "whoami",
+			},
 			Network: data.Network{
 				Mac: "blub",
 			},
@@ -43,6 +46,7 @@ func TestRegister(t *testing.T) {
 		},
 	})
 	assert.NotNil(node)
+	assert.Equal("whoami", node.Owner)
 	assert.Equal("blub", node.Network.MAC)
 	assert.Equal(13.3, node.Location.Longtitude)
 	assert.Equal(8.7, node.Location.Latitude)
