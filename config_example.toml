@@ -59,11 +59,16 @@ graph_path = "/var/www/html/meshviewer/data/graph.json"
 
 
 [nodes.output.meshviewer.filter]
-# no_owner = true
+# set this to false, if you want to add the owner to the json files
+no_owner = true
+# what is this for ????
 has_location = true
+# nodes that should be filtered out, so they won't appear in output
+# why vpnid ??? woh do you define more ids???
 blacklist = ["vpnid"]
 
 [nodes.output.meshviewer.filter.in_area]
+# nodes outside this area are not shown on the map but are still listed as a node without coordinates
 latitude_min = 34.30
 latitude_max = 71.85
 longitude_min = -24.96
