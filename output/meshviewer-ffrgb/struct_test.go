@@ -47,7 +47,7 @@ func TestRegister(t *testing.T) {
 	})
 	assert.NotNil(node)
 	assert.Equal("whoami", node.Owner)
-	assert.Equal("blub", node.Network.MAC)
+	assert.Equal("blub", node.MAC)
 	assert.Equal(13.3, node.Location.Longtitude)
 	assert.Equal(8.7, node.Location.Latitude)
 	assert.Equal(0.74, *node.MemoryUsage)

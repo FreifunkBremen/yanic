@@ -30,7 +30,8 @@ type Node struct {
 	GatewayIPv4    string        `json:"gateway,omitempty"`
 	GatewayIPv6    string        `json:"gateway6,omitempty"`
 	NodeID         string        `json:"node_id"`
-	Network        Network       `json:"network"`
+	MAC            string        `json:"mac"`
+	Addresses      []string      `json:"addresses"`
 	SiteCode       string        `json:"site_code,omitempty"`
 	Hostname       string        `json:"hostname"`
 	Owner          string        `json:"owner,omitempty"`
@@ -54,11 +55,6 @@ type Autoupdater struct {
 	Branch  string `json:"branch,omitempty"`
 }
 
-// Network struct
-type Network struct {
-	MAC       string   `json:"mac"`
-	Addresses []string `json:"addresses"`
-}
 
 // Location struct
 type Location struct {
@@ -88,10 +84,8 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 
 	if nodeinfo := n.Nodeinfo; nodeinfo != nil {
 		node.NodeID = nodeinfo.NodeID
-		node.Network = Network{
-			MAC:       nodeinfo.Network.Mac,
-			Addresses: nodeinfo.Network.Addresses,
-		}
+		node.MAC = nodeinfo.Network.Mac
+		node.Addresses = nodeinfo.Network.Addresses
 		node.SiteCode = nodeinfo.System.SiteCode
 		node.Hostname = nodeinfo.Hostname
 		if owner := nodeinfo.Owner; owner != nil {
