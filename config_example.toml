@@ -82,6 +82,18 @@ path = "/var/www/html/meshviewer/data/nodelist.json"
 enable   = true
 path = "/var/www/html/meshviewer/data/meshviewer.json"
 
+# e.g. of using filter in action (for detail see above under [[nodes.output.output_name]]):
+#[nodes.output.meshviewer-ffrgb.filter]
+#no_owner = true
+#blacklist = ["00112233445566", "1337f0badead"]
+#has_location = true
+
+#[nodes.output.meshviewer-ffrgb.filter.in_area]
+#latitude_min = 34.30
+#latitude_max = 71.85
+#longitude_min = -24.96
+#longitude_max = 39.72
+
 [database]
 # this will send delete commands to the database to prune data
 # which is older than:
