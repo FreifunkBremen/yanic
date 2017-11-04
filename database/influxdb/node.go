@@ -60,6 +60,9 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		tags.SetString("model", nodeinfo.Hardware.Model)
 		tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
 		tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
+		if nodeinfo.Software.Autoupdater.Enabled {
+			tags.SetString("autoupdater", nodeinfo.Software.Autoupdater.Branch)
+		}
 
 	}
 

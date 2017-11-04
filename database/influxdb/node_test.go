@@ -58,6 +58,15 @@ func TestToInflux(t *testing.T) {
 			Network: data.Network{
 				Mac: "DEADMAC",
 			},
+			Software: data.Software{
+				Autoupdater: struct {
+					Enabled bool   `json:"enabled,omitempty"`
+					Branch  string `json:"branch,omitempty"`
+				}{
+					Enabled: true,
+					Branch:  "testing",
+				},
+			},
 		},
 		Neighbours: &data.Neighbours{
 			NodeID: "deadbeef",
@@ -97,6 +106,7 @@ func TestToInflux(t *testing.T) {
 
 	assert.EqualValues("deadbeef", tags["nodeid"])
 	assert.EqualValues("nobody", tags["owner"])
+	assert.EqualValues("testing", tags["autoupdater"])
 	assert.EqualValues(0.5, fields["load"])
 	assert.EqualValues(0, fields["neighbours.lldp"])
 	assert.EqualValues(1, fields["neighbours.batadv"])
