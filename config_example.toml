@@ -58,6 +58,23 @@ offline_after = "10m"
 #longitude_max = 39.72
 
 
+# definition for the new more compressed meshviewer.json
+[[nodes.output.meshviewer-ffrgb]]
+enable   = true
+path = "/var/www/html/meshviewer/data/meshviewer.json"
+
+#[nodes.output.meshviewer-ffrgb.filter]
+#no_owner = false
+#blacklist = ["00112233445566", "1337f0badead"]
+#has_location = true
+
+#[nodes.output.meshviewer-ffrgb.filter.in_area]
+#latitude_min = 34.30
+#latitude_max = 71.85
+#longitude_min = -24.96
+#longitude_max = 39.72
+
+
 # definition for nodes.json
 [[nodes.output.meshviewer]]
 enable = false
@@ -85,22 +102,6 @@ path = "/var/www/html/meshviewer/data/nodelist.json"
 #[nodes.output.nodelist.filter]
 #no_owner = false
 
-
-# definition for the new more compressed meshviewer.json
-[[nodes.output.meshviewer-ffrgb]]
-enable   = true
-path = "/var/www/html/meshviewer/data/meshviewer.json"
-
-#[nodes.output.meshviewer-ffrgb.filter]
-#no_owner = false
-#blacklist = ["00112233445566", "1337f0badead"]
-#has_location = true
-
-#[nodes.output.meshviewer-ffrgb.filter.in_area]
-#latitude_min = 34.30
-#latitude_max = 71.85
-#longitude_min = -24.96
-#longitude_max = 39.72
 
 
 [database]
