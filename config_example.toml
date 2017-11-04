@@ -38,24 +38,25 @@ save_interval = "5s"
 offline_after = "10m"
 
 
-## [[nodes.output.output_name]]
-#  Each output format has its own config block and needs to be enabled by adding:
+## [[nodes.output.example]]
+# Each output format has its own config block and needs to be enabled by adding:
 #enable = true
-# For each output format different filters can be set
-#[nodes.output.output_name.filter]
-# set this to false, if you want to save/keep the owner to the json files
+# For each output format there can be set different filters
+#[nodes.output.example.filter]
+# Set to false, if you want the json files to contain the owner information
 #no_owner = true
-# list of nodeids of nodes that should be filtered out, so they won't appear in output
+# List of nodeids of nodes that should be filtered out, so they won't appear in output
 #blacklist = ["00112233445566", "1337f0badead"]
-# commented this has no sensible effect, you can only set this to false, if you want to hide nodes that have coordinates
+# upcoming feature - at the moment this has no sensible effect, you could only set this to false, if you'd want to hide nodes that have coordinates
 #has_location = true
 
-#[nodes.output.output_name.filter.in_area]
+#[nodes.output.example.filter.in_area]
 # nodes outside this area are not shown on the map but are still listed as a node without coordinates
 #latitude_min = 34.30
 #latitude_max = 71.85
 #longitude_min = -24.96
 #longitude_max = 39.72
+
 
 # definition for nodes.json
 [[nodes.output.meshviewer]]
@@ -72,19 +73,26 @@ nodes_path = "/var/www/html/meshviewer/data/nodes.json"
 # path where to store graph.json
 graph_path = "/var/www/html/meshviewer/data/graph.json"
 
+#[nodes.output.meshviewer.filter]
+#no_owner = false
+
+
 # definition for nodelist.json
 [[nodes.output.nodelist]]
 enable   = true
 path = "/var/www/html/meshviewer/data/nodelist.json"
+
+#[nodes.output.nodelist.filter]
+#no_owner = false
+
 
 # definition for the new more compressed meshviewer.json
 [[nodes.output.meshviewer-ffrgb]]
 enable   = true
 path = "/var/www/html/meshviewer/data/meshviewer.json"
 
-# e.g. of using filter in action (for detail see above under [[nodes.output.output_name]]):
 #[nodes.output.meshviewer-ffrgb.filter]
-#no_owner = true
+#no_owner = false
 #blacklist = ["00112233445566", "1337f0badead"]
 #has_location = true
 
@@ -94,6 +102,7 @@ path = "/var/www/html/meshviewer/data/meshviewer.json"
 #longitude_min = -24.96
 #longitude_max = 39.72
 
+
 [database]
 # this will send delete commands to the database to prune data
 # which is older than:
@@ -101,7 +110,7 @@ delete_after    = "7d"
 # how often run the cleaning
 delete_interval = "1h"
 
-## [[database.connection.db_name]]
+## [[database.connection.example]]
 # Each database-connection has its own config block and needs to be enabled by adding:
 #enable = true
 
