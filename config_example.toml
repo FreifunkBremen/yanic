@@ -41,13 +41,18 @@ offline_after = "10m"
 ## [[nodes.output.example]]
 # Each output format has its own config block and needs to be enabled by adding:
 #enable = true
+#
 # For each output format there can be set different filters
 #[nodes.output.example.filter]
+#
 # Set to false, if you want the json files to contain the owner information
 #no_owner = true
+#
 # List of nodeids of nodes that should be filtered out, so they won't appear in output
 #blacklist = ["00112233445566", "1337f0badead"]
-# upcoming feature - at the moment this has no sensible effect, you could only set this to false, if you'd want to hide nodes that have coordinates
+#
+# set has_location to true if you want to include only nodes that have geo-coordinates set
+# (setting this to false has no sensible effect, unless you'd want to hide nodes that have coordinates)
 #has_location = true
 
 #[nodes.output.example.filter.in_area]
