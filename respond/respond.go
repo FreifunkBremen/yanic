@@ -8,7 +8,6 @@ import (
 var multiCastGroup = net.ParseIP("ff02:0:0:0:0:0:2:1001")
 
 const (
-
 	// default udp port used by announced
 	port = 1001
 
