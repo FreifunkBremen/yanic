@@ -1,24 +1,29 @@
 {
-	"nodeinfo":{
-		"node_id":"node2.json",
-		"network":{
-			"mesh":{
-				"bat0":{
-					"interfaces":{
-						"wireless":["b"]
-					}
-				}
-			}
-		}
-	},
-	"neighbours":{
-		"batadv":{
-			"b":{
-					"neighbours":{
-						"a":{"tq":250,"lastseen":0.42}
-					}
-				}
-		}
-	}
+  "nodeinfo": {
+    "node_id": "node2.json",
+    "network": {
+      "mesh": {
+        "bat0": {
+          "interfaces": {
+            "wireless": [
+              "b"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "neighbours": {
+    "batadv": {
+      "b": {
+        "neighbours": {
+          "a": {
+            "tq": 250,
+            "lastseen": 0.42
+          }
+        }
+      }
+    }
+  }
 
 }
