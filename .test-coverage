@@ -1,6 +1,12 @@
 #!/bin/bash
 # Issue:  https://github.com/mattn/goveralls/issues/20
 # Source: https://github.com/uber/go-torch/blob/63da5d33a225c195fea84610e2456d5f722f3963/.test-cover.sh
+CI=$1
+echo "run for $CI"
+
+if [ "$CI" == "circle-ci" ]; then
+  cd ${GOPATH}/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
+fi
 
 echo "mode: count" > profile.cov
 FAIL=0
@@ -20,7 +26,7 @@ done
 
 # Failures have incomplete results, so don't send
 if [ "$FAIL" -eq 0 ]; then
-  goveralls -service=travis-ci -v -coverprofile=profile.cov
+  goveralls -service=$CI -v -coverprofile=profile.cov
   bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f profile.cov
 fi
 
