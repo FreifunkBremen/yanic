@@ -32,7 +32,6 @@ func TestStart(t *testing.T) {
 	conn := &testConn{}
 	config := &runtime.Config{
 		Nodes: struct {
-			Enable       bool             `toml:"enable"`
 			StatePath    string           `toml:"state_path"`
 			SaveInterval runtime.Duration `toml:"save_interval"`
 			OfflineAfter runtime.Duration `toml:"offline_after"`

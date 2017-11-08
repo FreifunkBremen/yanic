@@ -59,7 +59,7 @@ the same directory as the `dataPath`. Change the path in the section
 `[[nodes.output.meshviewer]]` accordingly.
 
 ### Service
-```bash
+```sh
 cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.service /lib/systemd/system/yanic.service
 systemctl daemon-reload
 systemctl start yanic
