@@ -22,7 +22,6 @@ type Config struct {
 		Webroot string `toml:"webroot"`
 	}
 	Nodes struct {
-		Enable       bool     `toml:"enable"`
 		StatePath    string   `toml:"state_path"`
 		SaveInterval Duration `toml:"save_interval"` // Save nodes periodically
 		OfflineAfter Duration `toml:"offline_after"` // Set node to offline if not seen within this period
