@@ -12,7 +12,7 @@ import (
 func TestConnectError(t *testing.T) {
 	assert := assert.New(t)
 	assert.Panics(func() {
-		Dial("tcp6", "[::]:30303")
+		Dial("tcp4", "127.0.0.1:30303")
 	}, "could connect")
 }
 
@@ -20,12 +20,12 @@ func TestRecieveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
 		"enable":  true,
-		"type":    "tcp6",
-		"address": "[::]:1337",
+		"type":    "tcp4",
+		"address": "127.0.0.1:10337",
 	})
 	assert.NoError(err)
 
-	d := Dial("tcp6", "[::]:1337")
+	d := Dial("tcp4", "127.0.0.1:10337")
 	assert.NotNil(d)
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)

@@ -21,6 +21,7 @@ type Connection struct {
 	listener  net.Listener
 	clients   map[net.Addr]net.Conn
 	clientMux sync.Mutex
+	buffer    chan *Message
 }
 
 func init() {
@@ -38,8 +39,13 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	conn := &Connection{listener: ln, clients: make(map[net.Addr]net.Conn)}
+	conn := &Connection{
+		listener: ln,
+		clients:  make(map[net.Addr]net.Conn),
+		buffer:   make(chan *Message),
+	}
 	go conn.handleSocketConnection(ln)
+	go conn.writer()
 
 	log.Println("[socket-database] listen on: ", ln.Addr())
 
@@ -47,15 +53,15 @@ func Connect(configuration interface{}) (database.Connection, error) {
 }
 
 func (conn *Connection) InsertNode(node *runtime.Node) {
-	conn.sendJSON(Message{Event: MessageEventInsertNode, Body: node})
+	conn.sendJSON(&Message{Event: MessageEventInsertNode, Body: node})
 }
 
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
-	conn.sendJSON(Message{Event: MessageEventInsertGlobals, Body: stats})
+	conn.sendJSON(&Message{Event: MessageEventInsertGlobals, Body: stats})
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
-	conn.sendJSON(Message{Event: MessageEventPruneNodes})
+	conn.sendJSON(&Message{Event: MessageEventPruneNodes})
 }
 
 func (conn *Connection) Close() {
