@@ -24,6 +24,10 @@ func TestGlobalStats(t *testing.T) {
 	// check firmwares
 	assert.Len(stats.Firmwares, 1)
 	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
+
+	// check autoupdater
+	assert.Len(stats.Autoupdater, 2)
+	assert.EqualValues(1, stats.Autoupdater["stable"])
 }
 
 func createTestNodes() *Nodes {
@@ -57,6 +61,15 @@ func createTestNodes() *Nodes {
 			NodeID: "112233445566",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
+			},
+			Software: data.Software{
+				Autoupdater: struct {
+					Enabled bool   `json:"enabled,omitempty"`
+					Branch  string `json:"branch,omitempty"`
+				}{
+					Enabled: true,
+					Branch:  "stable",
+				},
 			},
 		},
 	})

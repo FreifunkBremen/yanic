@@ -12,6 +12,7 @@ func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time
 	conn.addPoint(MeasurementGlobal, nil, GlobalStatsFields(stats), time)
 	conn.addCounterMap(CounterMeasurementModel, stats.Models, time)
 	conn.addCounterMap(CounterMeasurementFirmware, stats.Firmwares, time)
+	conn.addCounterMap(CounterMeasurementAutoupdater, stats.Autoupdater, time)
 }
 
 // GlobalStatsFields returns fields for InfluxDB

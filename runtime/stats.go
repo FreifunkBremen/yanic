@@ -1,5 +1,7 @@
 package runtime
 
+const DISABLED_AUTOUPDATER = "disabled"
+
 // CounterMap to manage multiple values
 type CounterMap map[string]uint32
 
@@ -12,15 +14,17 @@ type GlobalStats struct {
 	Gateways      uint32
 	Nodes         uint32
 
-	Firmwares CounterMap
-	Models    CounterMap
+	Firmwares   CounterMap
+	Models      CounterMap
+	Autoupdater CounterMap
 }
 
 //NewGlobalStats returns global statistics for InfluxDB
 func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 	result = &GlobalStats{
-		Firmwares: make(CounterMap),
-		Models:    make(CounterMap),
+		Firmwares:   make(CounterMap),
+		Models:      make(CounterMap),
+		Autoupdater: make(CounterMap),
 	}
 
 	nodes.RLock()
@@ -39,6 +43,11 @@ func NewGlobalStats(nodes *Nodes) (result *GlobalStats) {
 			if info := node.Nodeinfo; info != nil {
 				result.Models.Increment(info.Hardware.Model)
 				result.Firmwares.Increment(info.Software.Firmware.Release)
+				if info.Software.Autoupdater.Enabled {
+					result.Autoupdater.Increment(info.Software.Autoupdater.Branch)
+				} else {
+					result.Autoupdater.Increment(DISABLED_AUTOUPDATER)
+				}
 			}
 		}
 	}

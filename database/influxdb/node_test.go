@@ -89,15 +89,36 @@ func TestToInflux(t *testing.T) {
 			Network: data.Network{
 				Mac: "BAFF1E5",
 			},
+			Software: data.Software{
+				Autoupdater: struct {
+					Enabled bool   `json:"enabled,omitempty"`
+					Branch  string `json:"branch,omitempty"`
+				}{
+					Enabled: false,
+				},
+			},
+		},
+		Statistics: &data.Statistics{
+			NodeID: "foobar",
+		},
+	}
+
+	// do not add a empty statistics of a node
+	droppednode := &runtime.Node{
+		Nodeinfo: &data.NodeInfo{
+			NodeID: "notfound",
+			Network: data.Network{
+				Mac: "instats",
+			},
 		},
 		Statistics: &data.Statistics{},
 	}
 
-	points := testPoints(node, neigbour)
+	points := testPoints(node, neigbour, droppednode)
 	var fields map[string]interface{}
 	var tags map[string]string
 
-	assert.Len(points, 2)
+	assert.Len(points, 3)
 
 	// first point contains the neighbour
 	sPoint := points[0]
@@ -123,7 +144,7 @@ func TestToInflux(t *testing.T) {
 	assert.EqualValues(int64(2331), fields["traffic.mgmt_rx.bytes"])
 	assert.EqualValues(float64(2327), fields["traffic.mgmt_tx.packets"])
 
-	// second point contains the neighbour
+	// second point contains the link
 	nPoint := points[1]
 	tags = nPoint.Tags()
 	fields, _ = nPoint.Fields()
@@ -135,6 +156,11 @@ func TestToInflux(t *testing.T) {
 		"target.mac": "BAFF1E5",
 	}, tags)
 	assert.EqualValues(80, fields["tq"])
+
+	// third point contains the neighbour
+	nPoint = points[2]
+	tags = nPoint.Tags()
+	assert.EqualValues("disabled", tags["autoupdater"])
 }
 
 // Processes data and returns the InfluxDB points
