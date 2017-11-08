@@ -1,9 +1,4 @@
----
-layout: default
-title: Quick Configuration
-category_id: 1
-permalink: /docs/quick_configuration.html
----
+# Quick Configuration
 
 ```sh
 cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.conf
@@ -13,10 +8,12 @@ cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.co
 For an easy startup you only need to edit the `interfaces` in section
 `[respondd]` in file `/etc/yanic.conf`.  
 
-Then create the following folders:
+Then create the following files and folders:
 ```sh
 mkdir -p /var/lib/yanic
 mkdir -p /var/www/html/meshviewer/data
+touch /var/log/yanic.log
+chown yanic /var/log/yanic.log /var/lib/yanic /var/www/html/meshviewer/data
 ```
 
 #### Standalone

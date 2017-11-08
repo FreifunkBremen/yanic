@@ -1,8 +1,4 @@
----
-layout: default
-title: Running Yanic
-permalink: /home/running.html
----
+# Running Yanic
 
 | Community | Meshviewer | Database Visualisation \(Grafana\) |
 | :--- | :--- | :--- |
@@ -14,4 +10,15 @@ permalink: /home/running.html
 | Freifunk in Mainz , Wiesbaden & Umgebung | [meshviewer ](https://mapng.freifunk-mwu.de/)from Freifunk Regensburg | [grafana](https://stats.freifunk-mwu.de) with influxdb |
 | Freifunk Ulzen | [meshviewer ](http://map.ffue.eu)from Freifunk Regensburg | - |
 | Freifunk Gera Greiz | [meshviewer](https://www.freifunk-gera-greiz.de/meshviewer/) from Freifunk Regensburg | [grafana](https://www.freifunk-gera-greiz.de/grafana/dashboard/db/meshviewer-graphen) - with influxdb |
-| Freifunk Westpfalz | [meshviewer ](https://map.freifunk-westpfalz.de/)from Freifunk Regensburg | [grafana ](https://stats.freifunk-westpfalz.de/)- with influxdb |
+| Freifunk Westpfalz | [meshviewer ](https://map.freifunk-westpfalz.de/)from Freifunk Regensburg | [grafana](https://stats.freifunk-westpfalz.de/)- with influxdb |
+
+
+### meshviewer-collector
+A little project starts, to collect meshviewer-ffrgb data from multiple communities.
+
+
+List of communities:
+[https://github.com/genofire/meshviewer-collector](https://github.com/genofire/meshviewer-collector/blob/master/config.toml)
+
+Meshviewer with colleced data:
+[https://web.fireorbit.de/meshviewer](https://web.fireorbit.de/meshviewer).

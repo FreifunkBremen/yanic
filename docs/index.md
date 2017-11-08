@@ -1,7 +1,5 @@
----
-layout: default
-title: Home
----
+# Home
+
 
     __   __          _
     \ \ / /_ _ _ __ (_) ___
@@ -10,9 +8,12 @@ title: Home
       |_|\__,_|_| |_|_|\___|
     Yet another node info collector
 
-\(previously [respond-collector](https://github.com/FreifunkBremen/respond-collector)\)
+(previously [respond-collector](https://github.com/FreifunkBremen/respond-collector))
 
-[![Build Status](https://travis-ci.org/FreifunkBremen/yanic.svg?branch=master)](https://travis-ci.org/FreifunkBremen/yanic) [![](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/yanic?branch=master) [![](https://goreportcard.com/badge/github.com/FreifunkBremen/yanic)](https://goreportcard.com/report/github.com/FreifunkBremen/yanic)
+[![Build Status](https://travis-ci.org/FreifunkBremen/yanic.svg?branch=master)](https://travis-ci.org/FreifunkBremen/yanic)
+[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/yanic?branch=master)
+[![codecov](https://codecov.io/gh/FreifunkBremen/yanic/branch/master/graph/badge.svg)](https://codecov.io/gh/FreifunkBremen/yanic)
+[![Go Report Card](https://goreportcard.com/badge/github.com/FreifunkBremen/yanic)](https://goreportcard.com/report/github.com/FreifunkBremen/yanic)
 
 `yanic` is a respondd client that fetches, stores and publishes information about a Freifunk network.
 

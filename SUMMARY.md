@@ -12,6 +12,4 @@
 
 * Developing
   * [Add new database type](/docs/dev_database.md)
-
-
-
+  * [Add new output type](/docs/dev_output.md)

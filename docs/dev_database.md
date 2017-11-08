@@ -1,9 +1,4 @@
----
-layout: default
-title: Add new database type
-category_id: 2
-permalink: /dev/database.html
----
+# Add new database type
 
 Write a new package to implement the interface [database.Connection:](https://github.com/FreifunkBremen/yanic/blob/master/database/database.go)
 

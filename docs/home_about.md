@@ -1,10 +1,9 @@
----
-layout: default
-title: About
-permalink: /home/about.html
----
+# About
 
-## How it works
+A little overview of yanic in connection with other software:
+![Overview](overview.svg)
+
+## How respondd works
 
 It sends the `gluon-neighbour-info` request and collects the answers.
 
@@ -14,12 +13,33 @@ If a node does not answer, it will request with the last know address under the 
 
 ## Related projects
 
-Collecting data from respondd:
+#### yanic collecting data
+VPNs (respondd for servers):
+
+* [mesh-announce](https://github.com/ffnord/mesh-announce) from FreiFunkNord
+* [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
+
+Nodes (respondd for nodes): [gluon](https://github.com/freifunk-gluon/gluon/)
+
+#### Alternative collectors of respondd data:
 
 * [Node informant](https://github.com/ffdo/node-informant) written in Go
 * [HopGlass Server](https://github.com/plumpudding/hopglass-server) written in Node.js
 
-Respondd for servers:
+#### yanic published data
 
-* [ffnord-alfred-announce](https://github.com/ffnord/ffnord-alfred-announce) from FreiFunkNord
-* [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
+**Databases:**
+
+* [InfluxDB](https://influxdata.com/) SQL-like timeserial database
+* [Graphite](https://graphiteapp.org/) RRD file Based
+
+	Visualization from Databases: [Grafana](https://grafana.com/)
+
+**Output:**
+* meshviewer-ffrgb:
+  * [meshviewer](https://github.com/ffrgb/meshviewer)
+* nodelist:
+  * [ffapi](https://freifunk.net/api-generator/)
+    * [freifunk-karte.de](https://freifunk-karte.de)
+* meshviewer (others):
+  *  unmaintained [origin meshviewer](https://github.com/ffnord/meshviewer) branch: master (v1) and dev (v2)

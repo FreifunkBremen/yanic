@@ -1,9 +1,4 @@
----
-layout: default
-title: Usage
-category_id: 1
-permalink: /docs/usage.html
----
+# Usage
 
 Yanic provides several commands:
 

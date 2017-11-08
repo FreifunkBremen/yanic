@@ -1,0 +1,22 @@
+{
+    "plugins": [
+        "theme-api",
+        "anchors",
+        "sitemap"
+    ],
+    "pluginsConfig": {
+        "theme-api": {
+          "split": true,
+            "languages": [
+                {
+                    "lang": "toml",
+                    "name": "TOML",
+                    "default": true
+                }
+            ]
+        },
+        "sitemap": {
+            "hostname": "https://freifunkbremen.gitbooks.io/yanic/"
+        }
+    }
+}
