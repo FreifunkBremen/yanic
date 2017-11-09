@@ -21,11 +21,14 @@ func TestReceiveMessages(t *testing.T) {
 	server, err := socket.Connect(map[string]interface{}{
 		"enable":  true,
 		"type":    "tcp4",
-		"address": "127.0.0.1:10337",
+		"address": "127.0.0.1:10339",
 	})
 	assert.NoError(err)
 
-	d := Dial("tcp4", "127.0.0.1:10337")
+	// test for drop queue
+	queueMaxSize = 1
+
+	d := Dial("tcp4", "127.0.0.1:10339")
 	assert.NotNil(d)
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)
@@ -54,14 +57,17 @@ func TestReceiveMessages(t *testing.T) {
 	time.Sleep(5 * time.Millisecond)
 	assert.True(executed, "node not pruned")
 
+	// test for drop queue (only visible at test coverage)
+	server.InsertNode(&runtime.Node{})
+	server.InsertNode(&runtime.Node{})
+	server.InsertNode(&runtime.Node{})
+	time.Sleep(5 * time.Millisecond)
+
 	d.Close()
 
 	time.Sleep(5 * time.Millisecond)
 	executed = false
-	d.PruneNodesHandler = func() {
-		executed = true
-	}
-	server.PruneNodes(time.Hour * 24 * 7)
+	server.InsertNode(&runtime.Node{})
 	time.Sleep(5 * time.Millisecond)
 	assert.False(executed, "message re")
 

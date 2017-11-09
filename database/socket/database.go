@@ -16,12 +16,14 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
+var queueMaxSize = 1024
+
 type Connection struct {
 	database.Connection
 	listener  net.Listener
 	clients   map[net.Addr]net.Conn
 	clientMux sync.Mutex
-	buffer    chan *Message
+	queue     chan *Message
 }
 
 func init() {
@@ -42,7 +44,7 @@ func Connect(configuration interface{}) (database.Connection, error) {
 	conn := &Connection{
 		listener: ln,
 		clients:  make(map[net.Addr]net.Conn),
-		buffer:   make(chan *Message),
+		queue:    make(chan *Message, queueMaxSize),
 	}
 	go conn.handleSocketConnection(ln)
 	go conn.writer()

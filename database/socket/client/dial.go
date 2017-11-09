@@ -9,6 +9,8 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
+var queueMaxSize = 1024
+
 type Dialer struct {
 	conn              net.Conn
 	queue             chan socket.Message
@@ -21,11 +23,11 @@ type Dialer struct {
 func Dial(ctype, addr string) *Dialer {
 	conn, err := net.Dial(ctype, addr)
 	if err != nil {
-		log.Panicf("yanic dial to %s:%s failed", ctype, addr)
+		log.Panicf("[yanic-client] dial to %s:%s failed", ctype, addr)
 	}
 	dialer := &Dialer{
 		conn:  conn,
-		queue: make(chan socket.Message),
+		queue: make(chan socket.Message, queueMaxSize),
 		quit:  make(chan struct{}),
 	}
 
@@ -51,8 +53,17 @@ func (d *Dialer) receiver() {
 			close(d.queue)
 			return
 		default:
-			decoder.Decode(&msg)
-			d.queue <- msg
+			err := decoder.Decode(&msg)
+			if err != nil {
+				log.Printf("[yanic-client] could not decode message %s", err)
+				continue
+			}
+			select {
+			case d.queue <- msg:
+			default:
+				log.Println("[yanic-client] full queue, drop latest entry")
+				<-d.queue
+			}
 		}
 	}
 }

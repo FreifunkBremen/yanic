@@ -44,13 +44,16 @@ func TestClient(t *testing.T) {
 
 	config["enable"] = true
 	config["type"] = "tcp4"
-	config["address"] = "127.0.0.1:10337"
+	config["address"] = "127.0.0.1:10338"
+
+	// test for drop queue
+	queueMaxSize = 1
 
 	conn, err := Connect(config)
 	assert.NoError(err, "connection should work")
 	assert.NotNil(conn)
 
-	client, err := net.Dial("tcp4", "127.0.0.1:10337")
+	client, err := net.Dial("tcp4", "127.0.0.1:10338")
 	assert.NoError(err, "connection should work")
 	assert.NotNil(client)
 	time.Sleep(time.Duration(3) * time.Microsecond)
@@ -69,7 +72,12 @@ func TestClient(t *testing.T) {
 	conn.PruneNodes(time.Hour * 24 * 7)
 	decoder.Decode(&msg)
 	assert.Equal("prune_nodes", msg.Event)
-	time.Sleep(time.Duration(3) * time.Microsecond)
+
+	// test for drop queue (only visible at test coverage)
+	conn.InsertNode(&runtime.Node{})
+	conn.InsertNode(&runtime.Node{})
+	conn.InsertNode(&runtime.Node{})
+	decoder.Decode(&msg)
 
 	// to reach in sendJSON removing of disconnection
 	conn.Close()

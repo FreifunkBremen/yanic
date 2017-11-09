@@ -25,7 +25,7 @@ func (conn *Connection) handleSocketConnection(ln net.Listener) {
 }
 
 func (conn *Connection) writer() {
-	for msg := range conn.buffer {
+	for msg := range conn.queue {
 		conn.clientMux.Lock()
 		for addr, c := range conn.clients {
 			err := json.NewEncoder(c).Encode(&msg)
@@ -40,5 +40,10 @@ func (conn *Connection) writer() {
 }
 
 func (conn *Connection) sendJSON(msg *Message) {
-	conn.buffer <- msg
+	select {
+	case conn.queue <- msg:
+	default:
+		log.Println("[socket-database] full queue, drop lates entry")
+		<-conn.queue
+	}
 }
