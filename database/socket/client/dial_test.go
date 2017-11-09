@@ -16,7 +16,7 @@ func TestConnectError(t *testing.T) {
 	}, "could connect")
 }
 
-func TestRecieveMessages(t *testing.T) {
+func TestReceiveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
 		"enable":  true,
@@ -30,40 +30,40 @@ func TestRecieveMessages(t *testing.T) {
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)
 
-	runned := false
+	executed := false
 	d.NodeHandler = func(node *runtime.Node) {
-		runned = true
+		executed = true
 	}
 	server.InsertNode(nil)
 	time.Sleep(5 * time.Millisecond)
-	assert.True(runned, "node not inserted")
+	assert.True(executed, "node not inserted")
 
-	runned = false
+	executed = false
 	d.GlobalsHandler = func(stats *runtime.GlobalStats) {
-		runned = true
+		executed = true
 	}
 	server.InsertGlobals(nil, time.Now())
 	time.Sleep(5 * time.Millisecond)
-	assert.True(runned, "global stats not inserted")
+	assert.True(executed, "global stats not inserted")
 
-	runned = false
+	executed = false
 	d.PruneNodesHandler = func() {
-		runned = true
+		executed = true
 	}
 	server.PruneNodes(time.Hour * 24 * 7)
 	time.Sleep(5 * time.Millisecond)
-	assert.True(runned, "node not pruned")
+	assert.True(executed, "node not pruned")
 
 	d.Close()
 
 	time.Sleep(5 * time.Millisecond)
-	runned = false
+	executed = false
 	d.PruneNodesHandler = func() {
-		runned = true
+		executed = true
 	}
 	server.PruneNodes(time.Hour * 24 * 7)
 	time.Sleep(5 * time.Millisecond)
-	assert.False(runned, "message recieve")
+	assert.False(executed, "message re")
 
 	server.Close()
 }

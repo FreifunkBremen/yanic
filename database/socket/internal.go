@@ -30,7 +30,7 @@ func (conn *Connection) writer() {
 		for addr, c := range conn.clients {
 			err := json.NewEncoder(c).Encode(&msg)
 			if err != nil {
-				log.Println("[socket-database] client has not recieve event:", err)
+				log.Println("[socket-database] client has not receive event:", err)
 				c.Close()
 				delete(conn.clients, addr)
 			}

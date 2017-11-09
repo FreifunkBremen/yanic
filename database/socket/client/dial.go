@@ -33,7 +33,7 @@ func Dial(ctype, addr string) *Dialer {
 }
 
 func (d *Dialer) Start() {
-	go d.reciever()
+	go d.receiver()
 	d.parser()
 }
 func (d *Dialer) Close() {
@@ -41,7 +41,7 @@ func (d *Dialer) Close() {
 	close(d.quit)
 }
 
-func (d *Dialer) reciever() {
+func (d *Dialer) receiver() {
 	decoder := json.NewDecoder(d.conn)
 	var msg socket.Message
 

@@ -18,6 +18,7 @@ func TestStartup(t *testing.T) {
 	config["enable"] = false
 	conn, err := Connect(config)
 	assert.Nil(conn)
+	assert.NoError(err)
 
 	config["enable"] = true
 	config["type"] = ""
