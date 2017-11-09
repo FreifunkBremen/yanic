@@ -58,6 +58,10 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	conn.sendJSON(&Message{Event: MessageEventInsertNode, Body: node})
 }
 
+func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
+	conn.sendJSON(&Message{Event: MessageEventInsertLink, Body: link})
+}
+
 func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
 	conn.sendJSON(&Message{Event: MessageEventInsertGlobals, Body: stats})
 }

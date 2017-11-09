@@ -62,22 +62,29 @@ func TestClient(t *testing.T) {
 	var msg Message
 
 	conn.InsertNode(&runtime.Node{})
-	decoder.Decode(&msg)
+	err = decoder.Decode(&msg)
+	assert.NoError(err)
 	assert.Equal("insert_node", msg.Event)
 
 	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now())
-	decoder.Decode(&msg)
+	err = decoder.Decode(&msg)
+	assert.NoError(err)
 	assert.Equal("insert_globals", msg.Event)
 
+	conn.InsertLink(&runtime.Link{}, time.Now())
+	err = decoder.Decode(&msg)
+	assert.NoError(err)
+	assert.Equal("insert_link", msg.Event)
+
 	conn.PruneNodes(time.Hour * 24 * 7)
-	decoder.Decode(&msg)
+	err = decoder.Decode(&msg)
+	assert.NoError(err)
 	assert.Equal("prune_nodes", msg.Event)
 
 	// test for drop queue (only visible at test coverage)
 	conn.InsertNode(&runtime.Node{})
 	conn.InsertNode(&runtime.Node{})
 	conn.InsertNode(&runtime.Node{})
-	decoder.Decode(&msg)
 
 	// to reach in sendJSON removing of disconnection
 	conn.Close()

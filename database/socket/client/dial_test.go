@@ -1,6 +1,7 @@
 package yanic
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -16,6 +17,23 @@ func TestConnectError(t *testing.T) {
 	}, "could connect")
 }
 
+type SafeBoolean struct {
+	value bool
+	sync.Mutex
+}
+
+func (s *SafeBoolean) Set(value bool) {
+	s.Lock()
+	s.value = value
+	s.Unlock()
+}
+
+func (s *SafeBoolean) Get() bool {
+	s.Lock()
+	defer s.Unlock()
+	return s.value
+}
+
 func TestReceiveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
@@ -29,33 +47,41 @@ func TestReceiveMessages(t *testing.T) {
 	queueMaxSize = 1
 
 	d := Dial("tcp4", "127.0.0.1:10339")
+	executed := SafeBoolean{value: false}
+	d.NodeHandler = func(node *runtime.Node) {
+		executed.Set(true)
+	}
+	d.LinkHandler = func(link *runtime.Link) {
+		executed.Set(true)
+	}
+	d.GlobalsHandler = func(stats *runtime.GlobalStats) {
+		executed.Set(true)
+	}
+	d.PruneNodesHandler = func() {
+		executed.Set(true)
+	}
 	assert.NotNil(d)
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)
 
-	executed := false
-	d.NodeHandler = func(node *runtime.Node) {
-		executed = true
-	}
 	server.InsertNode(nil)
 	time.Sleep(5 * time.Millisecond)
-	assert.True(executed, "node not inserted")
+	assert.True(executed.Get(), "node not inserted")
 
-	executed = false
-	d.GlobalsHandler = func(stats *runtime.GlobalStats) {
-		executed = true
-	}
+	executed.Set(false)
+	server.InsertLink(nil, time.Now())
+	time.Sleep(5 * time.Millisecond)
+	assert.True(executed.Get(), "link not inserted")
+
+	executed.Set(false)
 	server.InsertGlobals(nil, time.Now())
 	time.Sleep(5 * time.Millisecond)
-	assert.True(executed, "global stats not inserted")
+	assert.True(executed.Get(), "global stats not inserted")
 
-	executed = false
-	d.PruneNodesHandler = func() {
-		executed = true
-	}
+	executed.Set(false)
 	server.PruneNodes(time.Hour * 24 * 7)
 	time.Sleep(5 * time.Millisecond)
-	assert.True(executed, "node not pruned")
+	assert.True(executed.Get(), "node not pruned")
 
 	// test for drop queue (only visible at test coverage)
 	server.InsertNode(&runtime.Node{})
@@ -66,10 +92,10 @@ func TestReceiveMessages(t *testing.T) {
 	d.Close()
 
 	time.Sleep(5 * time.Millisecond)
-	executed = false
+	executed.Set(false)
 	server.InsertNode(&runtime.Node{})
 	time.Sleep(5 * time.Millisecond)
-	assert.False(executed, "message re")
+	assert.False(executed.Get(), "message re")
 
 	server.Close()
 }

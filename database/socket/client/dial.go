@@ -16,6 +16,7 @@ type Dialer struct {
 	queue             chan socket.Message
 	quit              chan struct{}
 	NodeHandler       func(*runtime.Node)
+	LinkHandler       func(*runtime.Link)
 	GlobalsHandler    func(*runtime.GlobalStats)
 	PruneNodesHandler func()
 }
@@ -78,6 +79,15 @@ func (d *Dialer) parser() {
 				obj, _ := json.Marshal(msg.Body)
 				json.Unmarshal(obj, &node)
 				d.NodeHandler(&node)
+			}
+		case socket.MessageEventInsertLink:
+			if d.GlobalsHandler != nil {
+				var link runtime.Link
+
+				obj, _ := json.Marshal(msg.Body)
+				json.Unmarshal(obj, &link)
+
+				d.LinkHandler(&link)
 			}
 		case socket.MessageEventInsertGlobals:
 			if d.GlobalsHandler != nil {

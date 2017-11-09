@@ -8,5 +8,6 @@ type Message struct {
 const (
 	MessageEventInsertNode    = "insert_node"
 	MessageEventInsertGlobals = "insert_globals"
+	MessageEventInsertLink    = "insert_link"
 	MessageEventPruneNodes    = "prune_nodes"
 )
