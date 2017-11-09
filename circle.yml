@@ -24,9 +24,18 @@ jobs:
       - store_test_results:
           path: ./
           destination: profile.cov
+  test_race:
+    docker:
+      - image: circleci/golang:latest
+    working_directory: /go/src/github.com/FreifunkBremen/yanic
+    steps:
+      - checkout
+      - run: go get -t -d -v ./...
+      - run: go test -race ./...
 workflows:
   version: 2
-  build_and_test:
+  build_and_tests:
     jobs:
       - build
       - test
+      - test_race

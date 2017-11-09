@@ -1,6 +1,7 @@
 package output
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -10,11 +11,19 @@ import (
 
 type testConn struct {
 	Output
-	CountSave int
+	countSave int
+	sync.Mutex
 }
 
 func (c *testConn) Save(nodes *runtime.Nodes) {
-	c.CountSave++
+	c.Lock()
+	c.countSave++
+	c.Unlock()
+}
+func (c *testConn) Get() int {
+	c.Lock()
+	defer c.Unlock()
+	return c.countSave
 }
 
 func TestStart(t *testing.T) {
@@ -38,12 +47,12 @@ func TestStart(t *testing.T) {
 	Start(conn, nil, config)
 	assert.NotNil(quit)
 
-	assert.Equal(0, conn.CountSave)
+	assert.Equal(0, conn.Get())
 	time.Sleep(time.Millisecond * 12)
-	assert.Equal(1, conn.CountSave)
+	assert.Equal(1, conn.Get())
 
 	time.Sleep(time.Millisecond * 12)
 	Close()
-	assert.Equal(2, conn.CountSave)
+	assert.Equal(2, conn.Get())
 
 }

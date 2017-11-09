@@ -2,6 +2,7 @@ package all
 
 import (
 	"errors"
+	"sync"
 	"testing"
 
 	"github.com/FreifunkBremen/yanic/output"
@@ -11,11 +12,19 @@ import (
 
 type testOutput struct {
 	output.Output
-	CountSave int
+	countSave int
+	sync.Mutex
 }
 
 func (c *testOutput) Save(nodes *runtime.Nodes) {
-	c.CountSave++
+	c.Lock()
+	c.countSave++
+	c.Unlock()
+}
+func (c *testOutput) Get() int {
+	c.Lock()
+	defer c.Unlock()
+	return c.countSave
 }
 
 func TestStart(t *testing.T) {
@@ -69,9 +78,9 @@ func TestStart(t *testing.T) {
 	})
 	assert.NoError(err)
 
-	assert.Equal(0, globalOutput.CountSave)
+	assert.Equal(0, globalOutput.Get())
 	allOutput.Save(nodes)
-	assert.Equal(3, globalOutput.CountSave)
+	assert.Equal(3, globalOutput.Get())
 
 	_, err = Register(map[string]interface{}{
 		"e": []map[string]interface{}{
