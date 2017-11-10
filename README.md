@@ -26,9 +26,18 @@ Recently seen nodes that does not reply are requested via a unicast message.
 ## Documentation
 Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/master/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
 
-
 ## Configuration
 Read comments in [config_example.toml](config_example.toml) for more information.
+
+## Installation
+Read [INSTALL.md](INSTALL.md).
+
+### Optional features
+
+If you add those packages to your Gluon Firmware, Yanic will be able to collect and publish some extra data:
+
+* gluon-radv-filterd: with this package, yanic will show on which Gateway you are connected via IPv4 and IPv6 separately (you must remove the package *gluon-ebtables-filter-ra-dhcp*)
+* gluon-config-mode-contact-info: show the owner to each node (Nickname, email or telephone ...)
 
 ## Running
 
