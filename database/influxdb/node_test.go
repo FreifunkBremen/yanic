@@ -51,6 +51,9 @@ func TestToInflux(t *testing.T) {
 			Owner: &data.Owner{
 				Contact: "nobody",
 			},
+			System: &data.System{
+				SiteCode: "ffhb",
+			},
 			Wireless: &data.Wireless{
 				TxPower24: 3,
 				Channel24: 4,
@@ -97,6 +100,7 @@ func TestToInflux(t *testing.T) {
 
 	assert.EqualValues("deadbeef", tags["nodeid"])
 	assert.EqualValues("nobody", tags["owner"])
+	assert.EqualValues("ffhb", tags["site_code"])
 	assert.EqualValues(0.5, fields["load"])
 	assert.EqualValues(0, fields["neighbours.lldp"])
 	assert.EqualValues(1, fields["neighbours.batadv"])
