@@ -55,7 +55,6 @@ type Autoupdater struct {
 	Branch  string `json:"branch,omitempty"`
 }
 
-
 // Location struct
 type Location struct {
 	Longtitude float64 `json:"longitude,omitempty"`
@@ -64,14 +63,13 @@ type Location struct {
 
 // Link
 type Link struct {
-	Type     string  `json:"type"`
-	Source   string  `json:"source"`
-	Target   string  `json:"target"`
-	SourceTQ float32 `json:"source_tq"`
-	TargetTQ float32 `json:"target_tq"`
-	// keep the logic for maybe later implementation
-	SourceMAC string `json:"-"`
-	TargetMAC string `json:"-"`
+	Type      string  `json:"type"`
+	Source    string  `json:"source"`
+	Target    string  `json:"target"`
+	SourceTQ  float32 `json:"source_tq"`
+	TargetTQ  float32 `json:"target_tq"`
+	SourceMAC string  `json:"source_mac"`
+	TargetMAC string  `json:"target_mac"`
 }
 
 func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
