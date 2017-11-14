@@ -7,5 +7,5 @@ install:
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
 script:
-  - ./.test-coverage
+  - ./.test-coverage travis-ci
   - go install github.com/FreifunkBremen/yanic
