@@ -37,6 +37,8 @@ func createTestNodes() *runtime.Nodes {
 		},
 	}
 	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
+	nodeData.Nodeinfo.Software.Autoupdater.Enabled = true
+	nodeData.Nodeinfo.Software.Autoupdater.Branch = "stable"
 	nodes.AddNode(nodeData)
 
 	nodes.AddNode(&runtime.Node{

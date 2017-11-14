@@ -12,13 +12,14 @@ import (
 )
 
 const (
-	MeasurementLink            = "link"     // Measurement for per-link statistics
-	MeasurementNode            = "node"     // Measurement for per-node statistics
-	MeasurementGlobal          = "global"   // Measurement for summarized global statistics
-	CounterMeasurementFirmware = "firmware" // Measurement for firmware statistics
-	CounterMeasurementModel    = "model"    // Measurement for model statistics
-	batchMaxSize               = 500
-	batchTimeout               = 5 * time.Second
+	MeasurementLink               = "link"        // Measurement for per-link statistics
+	MeasurementNode               = "node"        // Measurement for per-node statistics
+	MeasurementGlobal             = "global"      // Measurement for summarized global statistics
+	CounterMeasurementFirmware    = "firmware"    // Measurement for firmware statistics
+	CounterMeasurementModel       = "model"       // Measurement for model statistics
+	CounterMeasurementAutoupdater = "autoupdater" // Measurement for autoupdater
+	batchMaxSize                  = 500
+	batchTimeout                  = 5 * time.Second
 )
 
 type Connection struct {
