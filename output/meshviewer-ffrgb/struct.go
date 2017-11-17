@@ -22,8 +22,8 @@ type Node struct {
 	ClientsWifi24  uint32        `json:"clients_wifi24"`
 	ClientsWifi5   uint32        `json:"clients_wifi5"`
 	ClientsOthers  uint32        `json:"clients_other"`
-	RootFSUsage    float64       `json:"rootfs_usage,omitempty"`
-	LoadAverage    float64       `json:"loadavg,omitempty"`
+	RootFSUsage    float64       `json:"rootfs_usage"`
+	LoadAverage    float64       `json:"loadavg"`
 	MemoryUsage    *float64      `json:"memory_usage,omitempty"`
 	Uptime         jsontime.Time `json:"uptime,omitempty"`
 	GatewayNexthop string        `json:"gateway_nexthop,omitempty"`
