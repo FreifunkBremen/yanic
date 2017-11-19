@@ -33,10 +33,6 @@ func init() {
 func Connect(configuration interface{}) (database.Connection, error) {
 	config := configuration.(map[string]interface{})
 
-	if !config["enable"].(bool) {
-		return nil, nil
-	}
-
 	ln, err := net.Listen(config["type"].(string), config["address"].(string))
 	if err != nil {
 		return nil, err

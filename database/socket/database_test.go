@@ -15,15 +15,9 @@ func TestStartup(t *testing.T) {
 
 	config := make(map[string]interface{})
 
-	config["enable"] = false
-	conn, err := Connect(config)
-	assert.Nil(conn)
-	assert.NoError(err)
-
-	config["enable"] = true
 	config["type"] = ""
 	config["address"] = ""
-	conn, err = Connect(config)
+	conn, err := Connect(config)
 	assert.Error(err, "connection should not work")
 	assert.Nil(conn)
 

@@ -37,7 +37,6 @@ func (s *SafeBoolean) Get() bool {
 func TestReceiveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
-		"enable":  true,
 		"type":    "tcp4",
 		"address": "127.0.0.1:10339",
 	})

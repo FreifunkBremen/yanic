@@ -2,6 +2,7 @@ package yanic
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"net"
 
@@ -56,7 +57,14 @@ func (d *Dialer) receiver() {
 		default:
 			err := decoder.Decode(&msg)
 			if err != nil {
-				log.Printf("[yanic-client] could not decode message %s", err)
+				if err == io.EOF {
+					log.Printf("[yanic-client] connection closed: %s", err)
+					d.conn.Close()
+					close(d.quit)
+					close(d.queue)
+					return
+				}
+				log.Printf("[yanic-client] could not decode message: %s", err)
 				continue
 			}
 			select {
