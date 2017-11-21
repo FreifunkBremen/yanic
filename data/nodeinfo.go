@@ -48,9 +48,9 @@ type System struct {
 
 // Location struct
 type Location struct {
-	Longtitude float64 `json:"longitude,omitempty"`
-	Latitude   float64 `json:"latitude,omitempty"`
-	Altitude   float64 `json:"altitude,omitempty"`
+	Longitude float64 `json:"longitude,omitempty"`
+	Latitude  float64 `json:"latitude,omitempty"`
+	Altitude  float64 `json:"altitude,omitempty"`
 }
 
 // Software struct

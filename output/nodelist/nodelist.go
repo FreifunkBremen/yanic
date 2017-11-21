@@ -35,7 +35,7 @@ func NewNode(n *runtime.Node) (node *Node) {
 			Name: nodeinfo.Hostname,
 		}
 		if location := nodeinfo.Location; location != nil {
-			node.Position = &Position{Lat: location.Latitude, Long: location.Longtitude}
+			node.Position = &Position{Lat: location.Latitude, Long: location.Longitude}
 		}
 
 		node.Status.Online = n.Online

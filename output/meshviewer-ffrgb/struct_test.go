@@ -20,7 +20,7 @@ func TestRegister(t *testing.T) {
 				Mac: "blub",
 			},
 			Location: &data.Location{
-				Longtitude: 13.3,
+				Longitude: 13.3,
 				Latitude:   8.7,
 			},
 		},
@@ -48,7 +48,7 @@ func TestRegister(t *testing.T) {
 	assert.NotNil(node)
 	assert.Equal("whoami", node.Owner)
 	assert.Equal("blub", node.MAC)
-	assert.Equal(13.3, node.Location.Longtitude)
+	assert.Equal(13.3, node.Location.Longitude)
 	assert.Equal(8.7, node.Location.Latitude)
 	assert.Equal(0.74, *node.MemoryUsage)
 }

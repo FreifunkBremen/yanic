@@ -48,7 +48,7 @@ func createTestNodes() *runtime.Nodes {
 			},
 			Location: &data.Location{
 				Latitude:   23,
-				Longtitude: 2,
+				Longitude: 2,
 			},
 		},
 	})

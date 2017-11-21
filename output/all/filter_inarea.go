@@ -31,7 +31,7 @@ func (f filterConfig) InArea() filterFunc {
 				if location == nil {
 					return node
 				}
-				if location.Latitude >= a.latitudeMin && location.Latitude <= a.latitudeMax && location.Longtitude >= a.longitudeMin && location.Longtitude <= a.longitudeMax {
+				if location.Latitude >= a.latitudeMin && location.Latitude <= a.latitudeMax && location.Longitude >= a.longitudeMin && location.Longitude <= a.longitudeMax {
 					return node
 				}
 			}
