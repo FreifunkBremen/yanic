@@ -8,26 +8,49 @@ import (
 	"github.com/FreifunkBremen/yanic/data"
 )
 
+const TEST_SITE = "ffxx"
+
 func TestGlobalStats(t *testing.T) {
-	stats := NewGlobalStats(createTestNodes())
+	stats := NewGlobalStats(createTestNodes(), []string{TEST_SITE})
 
 	assert := assert.New(t)
-	assert.EqualValues(1, stats.Gateways)
-	assert.EqualValues(3, stats.Nodes)
-	assert.EqualValues(25, stats.Clients)
+	assert.Len(stats, 2)
+
+	//check GLOBAL_SITE stats
+	assert.EqualValues(1, stats[GLOBAL_SITE].Gateways)
+	assert.EqualValues(3, stats[GLOBAL_SITE].Nodes)
+	assert.EqualValues(25, stats[GLOBAL_SITE].Clients)
 
 	// check models
-	assert.Len(stats.Models, 2)
-	assert.EqualValues(2, stats.Models["TP-Link 841"])
-	assert.EqualValues(1, stats.Models["Xeon Multi-Core"])
+	assert.Len(stats[GLOBAL_SITE].Models, 2)
+	assert.EqualValues(2, stats[GLOBAL_SITE].Models["TP-Link 841"])
+	assert.EqualValues(1, stats[GLOBAL_SITE].Models["Xeon Multi-Core"])
 
 	// check firmwares
-	assert.Len(stats.Firmwares, 1)
-	assert.EqualValues(1, stats.Firmwares["2016.1.6+entenhausen1"])
+	assert.Len(stats[GLOBAL_SITE].Firmwares, 1)
+	assert.EqualValues(1, stats[GLOBAL_SITE].Firmwares["2016.1.6+entenhausen1"])
 
 	// check autoupdater
-	assert.Len(stats.Autoupdater, 2)
-	assert.EqualValues(1, stats.Autoupdater["stable"])
+	assert.Len(stats[GLOBAL_SITE].Autoupdater, 2)
+	assert.EqualValues(1, stats[GLOBAL_SITE].Autoupdater["stable"])
+
+	// check TEST_SITE stats
+	assert.EqualValues(1, stats[TEST_SITE].Gateways)
+	assert.EqualValues(2, stats[TEST_SITE].Nodes)
+	assert.EqualValues(23, stats[TEST_SITE].Clients)
+
+	// check models
+	assert.Len(stats[TEST_SITE].Models, 2)
+	assert.EqualValues(1, stats[TEST_SITE].Models["TP-Link 841"])
+	assert.EqualValues(1, stats[TEST_SITE].Models["Xeon Multi-Core"])
+
+	// check firmwares
+	assert.Len(stats[TEST_SITE].Firmwares, 1)
+	assert.EqualValues(1, stats[TEST_SITE].Firmwares["2016.1.6+entenhausen1"])
+
+	// check autoupdater
+	assert.Len(stats[TEST_SITE].Autoupdater, 1)
+	assert.EqualValues(0, stats[TEST_SITE].Autoupdater["stable"])
 }
 
 func createTestNodes() *Nodes {
@@ -44,6 +67,9 @@ func createTestNodes() *Nodes {
 			NodeID: "abcdef012345",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
+			},
+			System: data.System{
+				SiteCode: TEST_SITE,
 			},
 		},
 	}
@@ -81,6 +107,9 @@ func createTestNodes() *Nodes {
 			VPN:    true,
 			Hardware: data.Hardware{
 				Model: "Xeon Multi-Core",
+			},
+			System: data.System{
+				SiteCode: TEST_SITE,
 			},
 		},
 	})

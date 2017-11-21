@@ -12,6 +12,7 @@ type Config struct {
 		Enable          bool     `toml:"enable"`
 		Synchronize     Duration `toml:"synchronize"`
 		Interfaces      []string `toml:"interfaces"`
+		Sites           []string `toml:"sites"`
 		Port            int      `toml:"port"`
 		CollectInterval Duration `toml:"collect_interval"`
 	}

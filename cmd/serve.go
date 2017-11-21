@@ -58,7 +58,7 @@ var serveCmd = &cobra.Command{
 				time.Sleep(delay)
 			}
 
-			collector = respond.NewCollector(connections, nodes, config.Respondd.Interfaces, config.Respondd.Port)
+			collector = respond.NewCollector(connections, nodes, config.Respondd.Sites, config.Respondd.Interfaces, config.Respondd.Port)
 			collector.Start(config.Respondd.CollectInterval.Duration)
 			defer collector.Close()
 		}

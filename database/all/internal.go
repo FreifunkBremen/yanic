@@ -43,9 +43,9 @@ func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
 	}
 }
 
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
 	for _, item := range conn.list {
-		item.InsertGlobals(stats, time)
+		item.InsertGlobals(stats, time, site)
 	}
 }
 

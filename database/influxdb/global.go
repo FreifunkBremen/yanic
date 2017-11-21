@@ -8,11 +8,29 @@ import (
 )
 
 // InsertGlobals implementation of database
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
-	conn.addPoint(MeasurementGlobal, nil, GlobalStatsFields(stats), time)
-	conn.addCounterMap(CounterMeasurementModel, stats.Models, time)
-	conn.addCounterMap(CounterMeasurementFirmware, stats.Firmwares, time)
-	conn.addCounterMap(CounterMeasurementAutoupdater, stats.Autoupdater, time)
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
+	var tags models.Tags
+
+	measurementGlobal := MeasurementGlobal
+	counterMeasurementModel := CounterMeasurementModel
+	counterMeasurementFirmware := CounterMeasurementFirmware
+	counterMeasurementAutoupdater := CounterMeasurementAutoupdater
+
+	if site != runtime.GLOBAL_SITE {
+		tags = models.Tags{
+			models.Tag{Key: []byte("site"), Value: []byte(site)},
+		}
+
+		measurementGlobal += "_site"
+		counterMeasurementModel += "_site"
+		counterMeasurementFirmware += "_site"
+		counterMeasurementAutoupdater += "_site"
+	}
+
+	conn.addPoint(measurementGlobal, tags, GlobalStatsFields(stats), time)
+	conn.addCounterMap(counterMeasurementModel, stats.Models, time, site)
+	conn.addCounterMap(counterMeasurementFirmware, stats.Firmwares, time, site)
+	conn.addCounterMap(counterMeasurementAutoupdater, stats.Autoupdater, time, site)
 }
 
 // GlobalStatsFields returns fields for InfluxDB
@@ -30,12 +48,13 @@ func GlobalStatsFields(stats *runtime.GlobalStats) map[string]interface{} {
 // Saves the values of a CounterMap in the database.
 // The key are used as 'value' tag.
 // The value is used as 'counter' field.
-func (conn *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time) {
+func (conn *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time, site string) {
 	for key, count := range m {
 		conn.addPoint(
 			name,
 			models.Tags{
 				models.Tag{Key: []byte("value"), Value: []byte(key)},
+				models.Tag{Key: []byte("site"), Value: []byte(site)},
 			},
 			models.Fields{"count": count},
 			t,

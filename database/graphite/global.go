@@ -7,20 +7,30 @@ import (
 	"github.com/fgrosse/graphigo"
 )
 
-func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
-	c.addPoint(GlobalStatsFields(stats))
-	c.addCounterMap(CounterMeasurementModel, stats.Models, time)
-	c.addCounterMap(CounterMeasurementFirmware, stats.Firmwares, time)
+func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
+	measurementGlobal := MeasurementGlobal
+	counterMeasurementModel := CounterMeasurementModel
+	counterMeasurementFirmware := CounterMeasurementFirmware
+
+	if site != runtime.GLOBAL_SITE {
+		measurementGlobal += "_" + site
+		counterMeasurementModel += "_" + site
+		counterMeasurementFirmware += "_" + site
+	}
+
+	c.addPoint(GlobalStatsFields(measurementGlobal, stats))
+	c.addCounterMap(counterMeasurementModel, stats.Models, time)
+	c.addCounterMap(counterMeasurementFirmware, stats.Firmwares, time)
 }
 
-func GlobalStatsFields(stats *runtime.GlobalStats) []graphigo.Metric {
+func GlobalStatsFields(name string, stats *runtime.GlobalStats) []graphigo.Metric {
 	return []graphigo.Metric{
-		{Name: MeasurementGlobal + ".nodes", Value: stats.Nodes},
-		{Name: MeasurementGlobal + ".gateways", Value: stats.Gateways},
-		{Name: MeasurementGlobal + ".clients.total", Value: stats.Clients},
-		{Name: MeasurementGlobal + ".clients.wifi", Value: stats.ClientsWifi},
-		{Name: MeasurementGlobal + ".clients.wifi24", Value: stats.ClientsWifi24},
-		{Name: MeasurementGlobal + ".clients.wifi5", Value: stats.ClientsWifi5},
+		{Name: name + ".nodes", Value: stats.Nodes},
+		{Name: name + ".gateways", Value: stats.Gateways},
+		{Name: name + ".clients.total", Value: stats.Clients},
+		{Name: name + ".clients.wifi", Value: stats.ClientsWifi},
+		{Name: name + ".clients.wifi24", Value: stats.ClientsWifi24},
+		{Name: name + ".clients.wifi5", Value: stats.ClientsWifi5},
 	}
 }
 
