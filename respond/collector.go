@@ -24,16 +24,18 @@ type Collector struct {
 	queue    chan *Response // received responses
 	db       database.Connection
 	nodes    *runtime.Nodes
+	sites    []string
 	interval time.Duration // Interval for multicast packets
 	stop     chan interface{}
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db database.Connection, nodes *runtime.Nodes, ifaces []string, port int) *Collector {
+func NewCollector(db database.Connection, nodes *runtime.Nodes, sites []string , ifaces []string, port int) *Collector {
 
 	coll := &Collector{
 		db:          db,
 		nodes:       nodes,
+		sites:       sites,
 		port:        port,
 		queue:       make(chan *Response, 400),
 		stop:        make(chan interface{}),
@@ -300,7 +302,9 @@ func (coll *Collector) globalStatsWorker() {
 
 // saves global statistics
 func (coll *Collector) saveGlobalStats() {
-	stats := runtime.NewGlobalStats(coll.nodes)
+	stats := runtime.NewGlobalStats(coll.nodes, coll.sites)
 
-	coll.db.InsertGlobals(stats, time.Now())
+	for site, stat := range stats {
+		coll.db.InsertGlobals(stat, time.Now(), site)
+	}
 }

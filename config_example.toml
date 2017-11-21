@@ -11,6 +11,8 @@ synchronize      = "1m"
 collect_interval = "1m"
 # interface that has an IP in your mesh network
 interfaces       = ["br-ffhb"]
+# list of sites to save stats for (empty for global only)
+sites            = []
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
 #port = 10001

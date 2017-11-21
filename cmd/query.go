@@ -26,7 +26,7 @@ var queryCmd = &cobra.Command{
 
 		nodes := runtime.NewNodes(&runtime.Config{})
 
-		collector := respond.NewCollector(nil, nodes, []string{iface}, 0)
+		collector := respond.NewCollector(nil, nodes, []string{}, []string{iface}, 0)
 		defer collector.Close()
 		collector.SendPacket(dstAddress)
 

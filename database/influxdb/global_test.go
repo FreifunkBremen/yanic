@@ -9,14 +9,20 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
+const TEST_SITE = "ffxx"
+
 func TestGlobalStats(t *testing.T) {
-	stats := runtime.NewGlobalStats(createTestNodes())
+	stats := runtime.NewGlobalStats(createTestNodes(), []string{TEST_SITE})
 
 	assert := assert.New(t)
-	fields := GlobalStatsFields(stats)
 
-	// check fields
+	// check SITE_GLOBAL fields
+	fields := GlobalStatsFields(stats[runtime.GLOBAL_SITE])
 	assert.EqualValues(3, fields["nodes"])
+
+	// check TEST_SITE fields
+	fields = GlobalStatsFields(stats[TEST_SITE])
+	assert.EqualValues(2, fields["nodes"])
 }
 
 func createTestNodes() *runtime.Nodes {
@@ -33,6 +39,9 @@ func createTestNodes() *runtime.Nodes {
 			NodeID: "abcdef012345",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
+			},
+			System: data.System{
+				SiteCode: TEST_SITE,
 			},
 		},
 	}
@@ -63,6 +72,9 @@ func createTestNodes() *runtime.Nodes {
 			VPN:    true,
 			Hardware: data.Hardware{
 				Model: "Xeon Multi-Core",
+			},
+			System: data.System{
+				SiteCode: TEST_SITE,
 			},
 		},
 	})
