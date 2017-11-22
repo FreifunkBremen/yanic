@@ -21,6 +21,9 @@ func (f filterConfig) filtering(nodesOrigin *runtime.Nodes) *runtime.Nodes {
 		f.NoOwner(),
 	}
 
+	nodesOrigin.Lock()
+	defer nodesOrigin.Unlock()
+
 	for _, nodeOrigin := range nodesOrigin.List {
 		//maybe cloning of this object is better?
 		node := nodeOrigin
