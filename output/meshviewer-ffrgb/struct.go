@@ -57,8 +57,8 @@ type Autoupdater struct {
 
 // Location struct
 type Location struct {
-	Longtitude float64 `json:"longitude,omitempty"`
-	Latitude   float64 `json:"latitude,omitempty"`
+	Longitude float64 `json:"longitude,omitempty"`
+	Latitude  float64 `json:"latitude,omitempty"`
 }
 
 // Link
@@ -91,7 +91,7 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		}
 		if location := nodeinfo.Location; location != nil {
 			node.Location = &Location{
-				Longtitude: location.Longtitude,
+				Longitude: location.Longitude,
 				Latitude:   location.Latitude,
 			}
 		}
