@@ -11,16 +11,19 @@ func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, s
 	measurementGlobal := MeasurementGlobal
 	counterMeasurementModel := CounterMeasurementModel
 	counterMeasurementFirmware := CounterMeasurementFirmware
+	counterMeasurementAutoupdater := CounterMeasurementAutoupdater
 
 	if site != runtime.GLOBAL_SITE {
 		measurementGlobal += "_" + site
 		counterMeasurementModel += "_" + site
 		counterMeasurementFirmware += "_" + site
+		counterMeasurementAutoupdater += "_" + site
 	}
 
 	c.addPoint(GlobalStatsFields(measurementGlobal, stats))
 	c.addCounterMap(counterMeasurementModel, stats.Models, time)
 	c.addCounterMap(counterMeasurementFirmware, stats.Firmwares, time)
+	c.addCounterMap(counterMeasurementAutoupdater, stats.Autoupdater, time)
 }
 
 func GlobalStatsFields(name string, stats *runtime.GlobalStats) []graphigo.Metric {

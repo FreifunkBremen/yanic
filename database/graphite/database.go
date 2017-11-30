@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	MeasurementNode            = "node"     // Measurement for per-node statistics
-	MeasurementGlobal          = "global"   // Measurement for summarized global statistics
-	CounterMeasurementFirmware = "firmware" // Measurement for firmware statistics
-	CounterMeasurementModel    = "model"    // Measurement for model statistics
+	MeasurementNode               = "node"        // Measurement for per-node statistics
+	MeasurementGlobal             = "global"      // Measurement for summarized global statistics
+	CounterMeasurementFirmware    = "firmware"    // Measurement for firmware statistics
+	CounterMeasurementModel       = "model"       // Measurement for model statistics
+	CounterMeasurementAutoupdater = "autoupdater" // Measurement for autoupdater
 )
 
 type Connection struct {
