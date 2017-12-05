@@ -9,6 +9,12 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
+const (
+	LINK_TYPE_WIRELESS = "wifi"
+	LINK_TYPE_TUNNEL   = "vpn"
+	LINK_TYPE_FALLBACK = "other"
+)
+
 func transform(nodes *runtime.Nodes) *Meshviewer {
 
 	meshviewer := &Meshviewer{
@@ -34,11 +40,11 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 		if nodeinfo := nodeOrigin.Nodeinfo; nodeinfo != nil {
 			if meshes := nodeinfo.Network.Mesh; meshes != nil {
 				for _, mesh := range meshes {
-					for _, mac := range mesh.Interfaces.Wireless {
-						typeList[mac] = "wifi"
+					for _, addr := range mesh.Interfaces.Wireless {
+						typeList[addr] = LINK_TYPE_WIRELESS
 					}
-					for _, mac := range mesh.Interfaces.Tunnel {
-						typeList[mac] = "vpn"
+					for _, addr := range mesh.Interfaces.Tunnel {
+						typeList[addr] = LINK_TYPE_TUNNEL
 					}
 				}
 			}
@@ -47,52 +53,70 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 		for _, linkOrigin := range nodes.NodeLinks(nodeOrigin) {
 			var key string
 			// keep source and target in the same order
-			switchSourceTarget := strings.Compare(linkOrigin.SourceMAC, linkOrigin.TargetMAC) > 0
+			switchSourceTarget := strings.Compare(linkOrigin.SourceAddress, linkOrigin.TargetAddress) > 0
 			if switchSourceTarget {
-				key = fmt.Sprintf("%s-%s", linkOrigin.SourceMAC, linkOrigin.TargetMAC)
+				key = fmt.Sprintf("%s-%s", linkOrigin.SourceAddress, linkOrigin.TargetAddress)
 			} else {
-				key = fmt.Sprintf("%s-%s", linkOrigin.TargetMAC, linkOrigin.SourceMAC)
+				key = fmt.Sprintf("%s-%s", linkOrigin.TargetAddress, linkOrigin.SourceAddress)
 			}
+
 			if link := links[key]; link != nil {
+				linkType, linkTypeFound := typeList[linkOrigin.SourceAddress]
+				if !linkTypeFound {
+					linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
+				}
+
 				if switchSourceTarget {
-					link.TargetTQ = float32(linkOrigin.TQ) / 255.0
-					if link.Type == "other" {
-						link.Type = typeList[linkOrigin.TargetMAC]
-					} else if link.Type != typeList[linkOrigin.TargetMAC] {
-						log.Printf("different linktypes %s:%s current: %s source: %s target: %s", linkOrigin.SourceMAC, linkOrigin.TargetMAC, link.Type, typeList[linkOrigin.SourceMAC], typeList[linkOrigin.TargetMAC])
+					link.TargetTQ = linkOrigin.TQ
+
+					linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
+					if !linkTypeFound {
+						linkType, linkTypeFound = typeList[linkOrigin.SourceAddress]
 					}
 				} else {
-					link.SourceTQ = float32(linkOrigin.TQ) / 255.0
-					if link.Type == "other" {
-						link.Type = typeList[linkOrigin.SourceMAC]
-					} else if link.Type != typeList[linkOrigin.SourceMAC] {
-						log.Printf("different linktypes %s:%s current: %s source: %s target: %s", linkOrigin.SourceMAC, linkOrigin.TargetMAC, link.Type, typeList[linkOrigin.SourceMAC], typeList[linkOrigin.TargetMAC])
+					link.SourceTQ = linkOrigin.TQ
+				}
+
+				if linkTypeFound && linkType != link.Type {
+					if link.Type == LINK_TYPE_FALLBACK {
+						link.Type = linkType
+					} else {
+						log.Printf("different linktypes for '%s' - '%s' prev: '%s' new: '%s' source: '%s' target: '%s'", linkOrigin.SourceAddress, linkOrigin.TargetAddress, link.Type, linkType, typeList[linkOrigin.SourceAddress], typeList[linkOrigin.TargetAddress])
 					}
 				}
-				if link.Type == "" {
-					link.Type = "other"
-				}
+
 				continue
 			}
-			tq := float32(linkOrigin.TQ) / 255.0
 			link := &Link{
-				Type:      typeList[linkOrigin.SourceMAC],
-				Source:    linkOrigin.SourceID,
-				SourceMAC: linkOrigin.SourceMAC,
-				Target:    linkOrigin.TargetID,
-				TargetMAC: linkOrigin.TargetMAC,
-				SourceTQ:  tq,
-				TargetTQ:  tq,
+				Source:        linkOrigin.SourceID,
+				SourceAddress: linkOrigin.SourceAddress,
+				Target:        linkOrigin.TargetID,
+				TargetAddress: linkOrigin.TargetAddress,
+				SourceTQ:      linkOrigin.TQ,
+				TargetTQ:      linkOrigin.TQ,
 			}
+
+			linkType, linkTypeFound := typeList[linkOrigin.SourceAddress]
+			if !linkTypeFound {
+				linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
+			}
+
 			if switchSourceTarget {
-				link.Type = typeList[linkOrigin.TargetMAC]
 				link.Source = linkOrigin.TargetID
-				link.SourceMAC = linkOrigin.TargetMAC
+				link.SourceAddress = linkOrigin.TargetAddress
 				link.Target = linkOrigin.SourceID
-				link.TargetMAC = linkOrigin.SourceMAC
+				link.TargetAddress = linkOrigin.SourceAddress
+
+				linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
+				if !linkTypeFound {
+					linkType, linkTypeFound = typeList[linkOrigin.SourceAddress]
+				}
 			}
-			if link.Type == "" {
-				link.Type = "other"
+
+			if linkTypeFound {
+				link.Type = linkType
+			} else {
+				link.Type = LINK_TYPE_FALLBACK
 			}
 			links[key] = link
 			meshviewer.Links = append(meshviewer.Links, link)

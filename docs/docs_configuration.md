@@ -14,10 +14,15 @@ Group for configuration of respondd request.
 enable           = true
 # synchronize    = "1m"
 collect_interval = "1m"
-interfaces       = ["br-ffhb"]
-#port            = 10001
+
 #[respondd.sites.example]
 #domains            = ["city"]
+
+[[respondd.interfaces]]
+ifname             = "br-ffhb"
+#ip_address        = "fe80::..."
+#multicast_address = "ff02::2:1001"
+#port              = 10001
 ```
 {% endmethod %}
 
@@ -46,7 +51,7 @@ synchronize      = "1m"
 {% method %}
 How often send request per respondd.
 
-It will send UDP packets with multicast group `ff02::2:1001` and port `1001`.
+It will send UDP packets with multicast address `ff02::2:1001` and port `1001`.
 If a node does not answer after the half time, it will request with the last know address under the port `1001`.
 {% sample lang="toml" %}
 ```toml
@@ -55,25 +60,15 @@ collect_interval = "1m"
 {% endmethod %}
 
 
-### interfaces
+### sites
 {% method %}
-Interface that has an IP in your mesh network
+List of sites to save stats for (empty for global only)
 {% sample lang="toml" %}
 ```toml
-interfaces       = ["br-ffhb"]
+sites            = ["ffhb"]
 ```
 {% endmethod %}
 
-
-### port
-{% method %}
-Define a port to listen and send the respondd packages.
-If not set or set to 0 the kernel will use a random free port at its own.
-{% sample lang="toml" %}
-```toml
-port              = 10001
-```
-{% endmethod %}
 
 ### [respondd.sites.example]
 {% method %}
@@ -85,6 +80,7 @@ Here is the site _ffhb_.
 domains            = ["city"]
 ```
 {% endmethod %}
+
 #### domains
 {% method %}
 list of domains on this site to save stats for (empty for global only)
@@ -94,6 +90,60 @@ domains            = ["city"]
 ```
 {% endmethod %}
 
+
+### [[respondd.interfaces]]
+{% method %}
+Interface that has an ip address in your mesh network.
+It is possible to have multiple interfaces, just add this group again with new parameters (see toml [[array of table]]).
+{% sample lang="toml" %}
+```toml
+[[respondd.interfaces]]
+ifname             = "br-ffhb"
+#ip_address        = "fe80::..."
+#multicast_address = "ff02::2:1001"
+#port              = 10001
+```
+{% endmethod %}
+
+### ifname
+{% method %}
+name of interface on which this collector is running.
+{% sample lang="toml" %}
+```toml
+ifname              = "br-ffhb"
+```
+{% endmethod %}
+
+### ip_address
+{% method %}
+ip address is the own address which is used for sending.
+If not set or set with empty string it will take an address of ifname.
+{% sample lang="toml" %}
+```toml
+ip_address          = "fe80::..."
+```
+{% endmethod %}
+
+### multicast_address
+{% method %}
+Multicast address to destination of respondd.
+If not set or set with empty string it will take the batman default multicast address `ff02::2:1001`
+(Needed in babel for a mesh-network wide routeable multicast addreess `ff05::2:1001`)
+{% sample lang="toml" %}
+```toml
+multicast_address    = "ff02::2:1001"
+```
+{% endmethod %}
+
+### port
+{% method %}
+Define a port to listen and send the respondd packages.
+If not set or set to 0 the kernel will use a random free port at its own.
+{% sample lang="toml" %}
+```toml
+port              = 10001
+```
+{% endmethod %}
 
 
 ## [webserver]

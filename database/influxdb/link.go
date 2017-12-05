@@ -11,9 +11,9 @@ import (
 func (conn *Connection) InsertLink(link *runtime.Link, t time.Time) {
 	tags := models.Tags{}
 	tags.SetString("source.id", link.SourceID)
-	tags.SetString("source.mac", link.SourceMAC)
+	tags.SetString("source.addr", link.SourceAddress)
 	tags.SetString("target.id", link.TargetID)
-	tags.SetString("target.mac", link.TargetMAC)
+	tags.SetString("target.addr", link.TargetAddress)
 
-	conn.addPoint(MeasurementLink, tags, models.Fields{"tq": float32(link.TQ) / 2.55}, t)
+	conn.addPoint(MeasurementLink, tags, models.Fields{"tq": link.TQ * 100}, t)
 }
