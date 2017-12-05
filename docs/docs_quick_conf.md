@@ -5,7 +5,7 @@ cp /opt/go/src/github.com/FreifunkBremen/yanic/config_example.toml /etc/yanic.co
 ```
 
 # Quick configuration
-For an easy startup you only need to edit the `interfaces` in section
+For an easy startup you only need to edit the `[[respondd.interfaces]]` in section
 `[respondd]` in file `/etc/yanic.conf`.  
 
 Then create the following files and folders:

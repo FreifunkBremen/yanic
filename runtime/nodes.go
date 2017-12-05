@@ -100,8 +100,8 @@ func (nodes *Nodes) Select(f func(*Node) bool) []*Node {
 	return result
 }
 
-func (nodes *Nodes) GetNodeIDbyMAC(mac string) string {
-	return nodes.ifaceToNodeID[mac]
+func (nodes *Nodes) GetNodeIDbyAddress(addr string) string {
+	return nodes.ifaceToNodeID[addr]
 }
 
 // NodeLinks returns a list of links to known neighbours
@@ -116,11 +116,24 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 		for neighbourMAC, link := range batadv.Neighbours {
 			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
 				result = append(result, Link{
-					SourceID:  neighbours.NodeID,
-					SourceMAC: sourceMAC,
-					TargetID:  neighbourID,
-					TargetMAC: neighbourMAC,
-					TQ:        link.Tq,
+					SourceID:      neighbours.NodeID,
+					SourceAddress: sourceMAC,
+					TargetID:      neighbourID,
+					TargetAddress: neighbourMAC,
+					TQ:            float32(link.Tq) / 255.0,
+				})
+			}
+		}
+	}
+	for _, iface := range neighbours.Babel {
+		for neighbourIP, link := range iface.Neighbours {
+			if neighbourID := nodes.ifaceToNodeID[neighbourIP]; neighbourID != "" {
+				result = append(result, Link{
+					SourceID:      neighbours.NodeID,
+					SourceAddress: iface.LinkLocalAddress,
+					TargetID:      neighbourID,
+					TargetAddress: neighbourIP,
+					TQ:            1.0 - (float32(link.Cost) / 65535.0),
 				})
 			}
 		}
@@ -179,19 +192,19 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 
 	addresses := []string{network.Mac}
 
-	for _, batinterface := range network.Mesh {
-		addresses = append(addresses, batinterface.Addresses()...)
+	for _, iface := range network.Mesh {
+		addresses = append(addresses, iface.Addresses()...)
 	}
 
-	for _, mac := range addresses {
-		if mac == "" {
+	for _, addr := range addresses {
+		if addr == "" {
 			continue
 		}
-		if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
+		if oldNodeID, _ := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
 			if oldNodeID != "" {
-				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
+				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
 			}
-			nodes.ifaceToNodeID[mac] = nodeID
+			nodes.ifaceToNodeID[addr] = nodeID
 		}
 	}
 }

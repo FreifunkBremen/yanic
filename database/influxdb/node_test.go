@@ -158,10 +158,10 @@ func TestToInflux(t *testing.T) {
 	fields, _ = nPoint.Fields()
 	assert.EqualValues("link", nPoint.Name())
 	assert.EqualValues(map[string]string{
-		"source.id":  "deadbeef",
-		"source.mac": "a-interface",
-		"target.id":  "foobar",
-		"target.mac": "BAFF1E5",
+		"source.id":   "deadbeef",
+		"source.addr": "a-interface",
+		"target.id":   "foobar",
+		"target.addr": "BAFF1E5",
 	}, tags)
 	assert.EqualValues(80, fields["tq"])
 

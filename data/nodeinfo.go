@@ -14,8 +14,8 @@ type NodeInfo struct {
 	Wireless *Wireless `json:"wireless,omitempty"`
 }
 
-// BatInterface struct
-type BatInterface struct {
+// NetworkInterface struct
+type NetworkInterface struct {
 	Interfaces struct {
 		Wireless []string `json:"wireless,omitempty"`
 		Other    []string `json:"other,omitempty"`
@@ -24,16 +24,17 @@ type BatInterface struct {
 }
 
 // Addresses returns a flat list of all MAC addresses
-func (iface *BatInterface) Addresses() []string {
+func (iface *NetworkInterface) Addresses() []string {
 	return append(append(iface.Interfaces.Other, iface.Interfaces.Tunnel...), iface.Interfaces.Wireless...)
 }
 
 // Network struct
 type Network struct {
-	Mac            string                   `json:"mac"`
-	Addresses      []string                 `json:"addresses"`
-	Mesh           map[string]*BatInterface `json:"mesh"`
-	MeshInterfaces []string                 `json:"mesh_interfaces"`
+	Mac       string                       `json:"mac"`
+	Addresses []string                     `json:"addresses"`
+	Mesh      map[string]*NetworkInterface `json:"mesh"`
+	// still used in gluon?
+	MeshInterfaces []string `json:"mesh_interfaces"`
 }
 
 // Owner struct
@@ -64,6 +65,9 @@ type Software struct {
 		Version string `json:"version,omitempty"`
 		Compat  int    `json:"compat,omitempty"`
 	} `json:"batman-adv,omitempty"`
+	Babeld struct {
+		Version string `json:"version,omitempty"`
+	} `json:"babeld,omitempty"`
 	Fastd struct {
 		Enabled bool   `json:"enabled,omitempty"`
 		Version string `json:"version,omitempty"`

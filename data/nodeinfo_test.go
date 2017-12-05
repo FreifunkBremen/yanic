@@ -8,7 +8,7 @@ import (
 
 func TestNodeinfoBatAddresses(t *testing.T) {
 	assert := assert.New(t)
-	batIface := &BatInterface{
+	iface := &NetworkInterface{
 		Interfaces: struct {
 			Wireless []string `json:"wireless,omitempty"`
 			Other    []string `json:"other,omitempty"`
@@ -20,7 +20,7 @@ func TestNodeinfoBatAddresses(t *testing.T) {
 		},
 	}
 
-	addr := batIface.Addresses()
+	addr := iface.Addresses()
 	assert.NotNil(addr)
 	assert.Equal([]string{"aa:aa:aa:aa:aa", "aa:aa:aa:aa:ab"}, addr)
 }

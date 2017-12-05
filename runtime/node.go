@@ -20,11 +20,11 @@ type Node struct {
 
 // Link represents a link between two nodes
 type Link struct {
-	SourceID  string
-	SourceMAC string
-	TargetID  string
-	TargetMAC string
-	TQ        int
+	SourceID      string
+	SourceAddress string
+	TargetID      string
+	TargetAddress string
+	TQ            float32
 }
 
 // IsGateway returns whether the node is a gateway
