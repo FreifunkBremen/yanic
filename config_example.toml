@@ -9,11 +9,6 @@ enable           = true
 synchronize      = "1m"
 # how often request per multicast
 collect_interval = "1m"
-# interface that has an IP in your mesh network
-interfaces       = ["br-ffhb"]
-# define a port to listen
-# if not set or set to 0 the kernel will use a random free port at its own
-#port = 10001
 
 # table of a site to save stats for (not exists for global only)
 #[respondd.sites.example]
@@ -22,6 +17,20 @@ interfaces       = ["br-ffhb"]
 ## example
 [respondd.sites.ffhb]
 domains            = ["city"]
+
+# interface that has an IP in your mesh network
+[[respondd.interfaces]]
+# name of interface on which this collector is running
+ifname = "br-ffhb"
+# ip address which is used for sending
+# (optional - without definition used a address of ifname)
+ip_address = "fd2f:5119:f2d::5"
+# multicast address to destination of respondd
+# (optional - without definition used batman default ff02::2:1001)
+multicast_address = "ff05::2:1001"
+# define a port to listen
+# if not set or set to 0 the kernel will use a random free port at its own
+#port = 10001
 
 # A little build-in webserver, which statically serves a directory.
 # This is useful for testing purposes or for a little standalone installation.
