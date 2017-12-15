@@ -23,7 +23,7 @@ export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 ### Compile
 As root:
 ```sh
-go get -v -u github.com/FreifunkBremen/yanic/cmd/...
+go get -v -u github.com/FreifunkBremen/yanic
 ```
 
 ### Install

@@ -10,6 +10,7 @@ For an easy startup you only need to edit the `interfaces` in section
 
 Then create the following files and folders:
 ```sh
+adduser --system yanic --home /var/lib/yanic
 mkdir -p /var/lib/yanic
 mkdir -p /var/www/html/meshviewer/data
 touch /var/log/yanic.log

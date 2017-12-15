@@ -15,6 +15,7 @@ enable           = true
 # synchronize    = "1m"
 collect_interval = "1m"
 interfaces       = ["br-ffhb"]
+sites            = ["ffhb"]
 #port            = 10001
 ```
 {% endmethod %}
@@ -59,6 +60,16 @@ Interface that has an IP in your mesh network
 {% sample lang="toml" %}
 ```toml
 interfaces       = ["br-ffhb"]
+```
+{% endmethod %}
+
+
+### sites
+{% method %}
+List of sites to save stats for (empty for global only)
+{% sample lang="toml" %}
+```toml
+sites            = ["ffhb"]
 ```
 {% endmethod %}
 

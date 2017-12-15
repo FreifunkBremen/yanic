@@ -25,7 +25,7 @@ In the first step Yanic sends a multicast message to the group `ff02:0:0:0:0:0:2
 Recently seen nodes that does not reply are requested via a unicast message.
 
 ## Documentation
-Take a look at the [website](https://freifunkbremen.github.io/yanic/) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
+Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/master/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
 
 
 ## Configuration
