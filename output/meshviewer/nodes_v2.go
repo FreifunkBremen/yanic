@@ -33,7 +33,7 @@ func BuildNodesV2(nodes *runtime.Nodes) interface{} {
 			},
 			Nodeinfo: nodeOrigin.Nodeinfo,
 		}
-		node.Statistics = NewStatistics(nodeOrigin.Statistics)
+		node.Statistics = NewStatistics(nodeOrigin.Statistics, nodeOrigin.Online)
 		meshviewerNodes.List = append(meshviewerNodes.List, node)
 	}
 	return meshviewerNodes

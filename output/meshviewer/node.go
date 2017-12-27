@@ -47,34 +47,36 @@ type Statistics struct {
 }
 
 // NewStatistics transform respond Statistics to meshviewer Statistics
-func NewStatistics(stats *data.Statistics) *Statistics {
-	total := stats.Clients.Total
-	if total == 0 {
-		total = stats.Clients.Wifi24 + stats.Clients.Wifi5
-	}
-	/* The Meshviewer could not handle absolute memory output
-	 * calc the used memory as a float which 100% equal 1.0
-	 * calc is coppied from node statuspage (look discussion:
-	 * https://github.com/FreifunkBremen/yanic/issues/35)
-	 */
-	var memoryUsage *float64
-	if stats.Memory.Total > 0 {
-		usage := 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
-		memoryUsage = &usage
-	}
-
-	return &Statistics{
+func NewStatistics(stats *data.Statistics, isOnline bool) *Statistics {
+	output := &Statistics{
 		NodeID:      stats.NodeID,
 		GatewayIPv4: stats.GatewayIPv4,
 		GatewayIPv6: stats.GatewayIPv6,
 		RootFsUsage: stats.RootFsUsage,
 		LoadAverage: stats.LoadAverage,
-		MemoryUsage: memoryUsage,
 		Uptime:      stats.Uptime,
 		Idletime:    stats.Idletime,
 		Processes:   stats.Processes,
 		MeshVPN:     stats.MeshVPN,
 		Traffic:     stats.Traffic,
-		Clients:     total,
 	}
+	if isOnline {
+		total := stats.Clients.Total
+		if total == 0 {
+			total = stats.Clients.Wifi24 + stats.Clients.Wifi5
+		}
+		output.Clients = total
+	}
+
+	/* The Meshviewer could not handle absolute memory output
+	 * calc the used memory as a float which 100% equal 1.0
+	 * calc is coppied from node statuspage (look discussion:
+	 * https://github.com/FreifunkBremen/yanic/issues/35)
+	 */
+	if stats.Memory.Total > 0 {
+		usage := 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
+		output.MemoryUsage = &usage
+	}
+
+	return output
 }
