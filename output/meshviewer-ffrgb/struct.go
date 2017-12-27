@@ -92,7 +92,7 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		if location := nodeinfo.Location; location != nil {
 			node.Location = &Location{
 				Longitude: location.Longitude,
-				Latitude:   location.Latitude,
+				Latitude:  location.Latitude,
 			}
 		}
 		node.Firmware = nodeinfo.Software.Firmware
@@ -105,15 +105,17 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		node.VPN = nodeinfo.VPN
 	}
 	if statistic := n.Statistics; statistic != nil {
-		node.Clients = statistic.Clients.Total
-		node.ClientsWifi24 = statistic.Clients.Wifi24
-		node.ClientsWifi5 = statistic.Clients.Wifi5
+		if n.Online {
+			node.Clients = statistic.Clients.Total
+			node.ClientsWifi24 = statistic.Clients.Wifi24
+			node.ClientsWifi5 = statistic.Clients.Wifi5
 
-		clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
-		if node.Clients == 0 {
-			node.Clients = clientsWifi
-		} else if node.Clients >= clientsWifi {
-			node.ClientsOthers = node.Clients - clientsWifi
+			clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
+			if node.Clients == 0 {
+				node.Clients = clientsWifi
+			} else if node.Clients >= clientsWifi {
+				node.ClientsOthers = node.Clients - clientsWifi
+			}
 		}
 
 		node.RootFSUsage = statistic.RootFsUsage

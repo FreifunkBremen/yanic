@@ -40,7 +40,7 @@ func NewNode(n *runtime.Node) (node *Node) {
 
 		node.Status.Online = n.Online
 		node.Status.LastContact = n.Lastseen
-		if statistics := n.Statistics; statistics != nil {
+		if statistics := n.Statistics; statistics != nil && n.Online {
 			node.Status.Clients = statistics.Clients.Total
 		}
 	}
