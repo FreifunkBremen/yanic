@@ -114,3 +114,8 @@ Collecting data from respondd:
 Respondd for servers:
 * [ffnord-alfred-announce](https://github.com/ffnord/ffnord-alfred-announce) from FreiFunkNord
 * [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
+
+
+## License
+
+This software is licensed under the terms of the [AGPL v3 License](LICENSE).
