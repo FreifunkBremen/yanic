@@ -106,15 +106,14 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 	}
 	if statistic := n.Statistics; statistic != nil {
 		node.Clients = statistic.Clients.Total
-		if node.Clients == 0 {
-			node.Clients = statistic.Clients.Wifi24 + statistic.Clients.Wifi5
-		}
 		node.ClientsWifi24 = statistic.Clients.Wifi24
 		node.ClientsWifi5 = statistic.Clients.Wifi5
 
-		wifi := node.ClientsWifi24 + node.ClientsWifi5
-		if node.Clients >= wifi {
-			node.ClientsOthers = node.Clients - wifi
+		clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
+		if node.Clients == 0 {
+			node.Clients = clientsWifi
+		} else if node.Clients >= clientsWifi {
+			node.ClientsOthers = node.Clients - clientsWifi
 		}
 
 		node.RootFSUsage = statistic.RootFsUsage
