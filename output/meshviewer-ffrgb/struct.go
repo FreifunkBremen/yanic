@@ -112,7 +112,7 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		node.ClientsWifi24 = statistic.Clients.Wifi24
 		node.ClientsWifi5 = statistic.Clients.Wifi5
 
-		wifi := node.ClientsWifi24 - node.ClientsWifi5
+		wifi := node.ClientsWifi24 + node.ClientsWifi5
 		if node.Clients >= wifi {
 			node.ClientsOthers = node.Clients - wifi
 		}
