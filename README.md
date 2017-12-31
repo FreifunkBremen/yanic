@@ -24,11 +24,9 @@ Yet another node info collector
 In the first step Yanic sends a multicast message to the group `ff02:0:0:0:0:0:2:1001` and port `1001`.
 Recently seen nodes that does not reply are requested via a unicast message.
 
-## [Documentation](https://www.gitbook.com/book/freifunkbremen/yanic/details)
-* [Webview](https://freifunkbremen.gitbooks.io/yanic/content/)
-* [PDF](https://www.gitbook.com/download/pdf/book/freifunkbremen/yanic)
-* [Mobi](https://www.gitbook.com/download/mobi/book/freifunkbremen/yanic)
-* [ePUB](https://www.gitbook.com/download/epub/book/freifunkbremen/yanic)
+## Documentation
+Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/master/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
+
 
 ## Configuration
 Read comments in [config_example.toml](config_example.toml) for more information.
