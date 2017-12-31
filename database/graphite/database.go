@@ -33,18 +33,10 @@ func (c Config) Prefix() string {
 	return c["prefix"].(string)
 }
 
-func (c Config) Enable() bool {
-	return c["enable"].(bool)
-}
-
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(configuration map[string]interface{}) (database.Connection, error) {
 	var config Config
 
-	config = configuration.(map[string]interface{})
-
-	if !config.Enable() {
-		return nil, nil
-	}
+	config = configuration
 
 	con := &Connection{
 		client: graphigo.Client{

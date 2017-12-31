@@ -32,9 +32,6 @@ type Connection struct {
 
 type Config map[string]interface{}
 
-func (c Config) Enable() bool {
-	return c["enable"].(bool)
-}
 func (c Config) Address() string {
 	return c["address"].(string)
 }
@@ -57,12 +54,10 @@ func (c Config) Tags() map[string]interface{} {
 func init() {
 	database.RegisterAdapter("influxdb", Connect)
 }
-func Connect(configuration interface{}) (database.Connection, error) {
+func Connect(configuration map[string]interface{}) (database.Connection, error) {
 	var config Config
-	config = configuration.(map[string]interface{})
-	if !config.Enable() {
-		return nil, nil
-	}
+	config = configuration
+
 	// Make client
 	c, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     config.Address(),

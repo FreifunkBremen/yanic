@@ -37,7 +37,7 @@ type Config struct {
 	Database struct {
 		DeleteInterval Duration `toml:"delete_interval"` // Delete stats of nodes every n minutes
 		DeleteAfter    Duration `toml:"delete_after"`    // Delete stats of nodes till now-deletetill n minutes
-		Connection     map[string][]interface{}
+		Connection     map[string]interface{}
 	}
 }
 
