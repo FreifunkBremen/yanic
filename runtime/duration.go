@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // Duration is a TOML datatype
@@ -32,7 +34,7 @@ func (d *Duration) UnmarshalTOML(dataInterface interface{}) error {
 	unit := data[len(data)-1]
 	value, err := strconv.Atoi(string(data[:len(data)-1]))
 	if err != nil {
-		return fmt.Errorf("unable to parse duration %s: %s", data, err)
+		return errors.Wrapf(err, "unable to parse duration \"%s\"", data)
 	}
 
 	switch unit {
@@ -49,7 +51,7 @@ func (d *Duration) UnmarshalTOML(dataInterface interface{}) error {
 	case 'y':
 		d.Duration = time.Duration(value) * time.Hour * 24 * 365
 	default:
-		return fmt.Errorf("invalid duration unit: %s", string(unit))
+		return fmt.Errorf("invalid duration unit \"%s\"", string(unit))
 	}
 
 	return nil
