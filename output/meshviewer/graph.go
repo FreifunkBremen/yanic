@@ -57,6 +57,8 @@ func BuildGraph(nodes *runtime.Nodes) *Graph {
 }
 
 func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
+	vpnInterface := make(map[string]interface{})
+
 	// Fill mac->id map
 	for sourceID, node := range nodes {
 		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
@@ -67,6 +69,9 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 
 			// Batman neighbours
 			for _, batinterface := range nodeinfo.Network.Mesh {
+				for _, vpn := range batinterface.Interfaces.Tunnel {
+					vpnInterface[vpn] = nil
+				}
 				addresses := batinterface.Addresses()
 
 				for _, sourceAddress := range addresses {
@@ -86,14 +91,6 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 	// Add links
 	for sourceID, node := range nodes {
 		if node.Online {
-			vpnInterface := make(map[string]interface{})
-			if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-				for _, batinterface := range nodeinfo.Network.Mesh {
-					for _, vpn := range batinterface.Interfaces.Tunnel {
-						vpnInterface[vpn] = nil
-					}
-				}
-			}
 			if neighbours := node.Neighbours; neighbours != nil {
 				// Batman neighbours
 				for sourceMAC, batadvNeighbours := range neighbours.Batadv {

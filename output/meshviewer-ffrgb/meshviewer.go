@@ -2,6 +2,7 @@ package meshviewerFFRGB
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/FreifunkBremen/yanic/lib/jsontime"
@@ -17,6 +18,7 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 	}
 
 	links := make(map[string]*Link)
+	typeList := make(map[string]string)
 
 	nodes.RLock()
 	defer nodes.RUnlock()
@@ -28,8 +30,6 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 		if !nodeOrigin.Online {
 			continue
 		}
-
-		typeList := make(map[string]string)
 
 		if nodeinfo := nodeOrigin.Nodeinfo; nodeinfo != nil {
 			if meshes := nodeinfo.Network.Mesh; meshes != nil {
@@ -56,18 +56,27 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 			if link := links[key]; link != nil {
 				if switchSourceTarget {
 					link.TargetTQ = float32(linkOrigin.TQ) / 255.0
+					if link.Type == "other" {
+						link.Type = typeList[linkOrigin.TargetMAC]
+					} else if link.Type != typeList[linkOrigin.TargetMAC] {
+						log.Printf("different linktypes %s:%s current: %s source: %s target: %s", linkOrigin.SourceMAC, linkOrigin.TargetMAC, link.Type, typeList[linkOrigin.SourceMAC], typeList[linkOrigin.TargetMAC])
+					}
 				} else {
 					link.SourceTQ = float32(linkOrigin.TQ) / 255.0
+					if link.Type == "other" {
+						link.Type = typeList[linkOrigin.SourceMAC]
+					} else if link.Type != typeList[linkOrigin.SourceMAC] {
+						log.Printf("different linktypes %s:%s current: %s source: %s target: %s", linkOrigin.SourceMAC, linkOrigin.TargetMAC, link.Type, typeList[linkOrigin.SourceMAC], typeList[linkOrigin.TargetMAC])
+					}
+				}
+				if link.Type == "" {
+					link.Type = "other"
 				}
 				continue
 			}
-			linkType := typeList[linkOrigin.SourceMAC]
-			if linkType == "" {
-				linkType = "other"
-			}
 			tq := float32(linkOrigin.TQ) / 255.0
 			link := &Link{
-				Type:      linkType,
+				Type:      typeList[linkOrigin.SourceMAC],
 				Source:    linkOrigin.SourceID,
 				SourceMAC: linkOrigin.SourceMAC,
 				Target:    linkOrigin.TargetID,
@@ -76,10 +85,14 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 				TargetTQ:  tq,
 			}
 			if switchSourceTarget {
+				link.Type = typeList[linkOrigin.TargetMAC]
 				link.Source = linkOrigin.TargetID
 				link.SourceMAC = linkOrigin.TargetMAC
 				link.Target = linkOrigin.SourceID
 				link.TargetMAC = linkOrigin.SourceMAC
+			}
+			if link.Type == "" {
+				link.Type = "other"
 			}
 			links[key] = link
 			meshviewer.Links = append(meshviewer.Links, link)
