@@ -89,10 +89,9 @@ func TestStart(t *testing.T) {
 	})
 	assert.Error(err)
 
-	// wrong format -> the only panic in Register
-	assert.Panics(func() {
-		Register(map[string]interface{}{
-			"e": true,
-		})
+	// wrong format
+	_, err = Register(map[string]interface{}{
+		"e": true,
 	})
+	assert.Error(err)
 }

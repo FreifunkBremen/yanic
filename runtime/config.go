@@ -21,23 +21,27 @@ type Config struct {
 		Bind    string `toml:"bind"`
 		Webroot string `toml:"webroot"`
 	}
-	Nodes struct {
-		StatePath    string   `toml:"state_path"`
-		SaveInterval Duration `toml:"save_interval"` // Save nodes periodically
-		OfflineAfter Duration `toml:"offline_after"` // Set node to offline if not seen within this period
-		PruneAfter   Duration `toml:"prune_after"`   // Remove nodes after n days of inactivity
-		Output       map[string]interface{}
-	}
+	Nodes      NodesConfig
 	Meshviewer struct {
 		Version   int    `toml:"version"`
 		NodesPath string `toml:"nodes_path"`
 		GraphPath string `toml:"graph_path"`
 	}
-	Database struct {
-		DeleteInterval Duration `toml:"delete_interval"` // Delete stats of nodes every n minutes
-		DeleteAfter    Duration `toml:"delete_after"`    // Delete stats of nodes till now-deletetill n minutes
-		Connection     map[string]interface{}
-	}
+	Database DatabaseConfig
+}
+
+type NodesConfig struct {
+	StatePath    string   `toml:"state_path"`
+	SaveInterval Duration `toml:"save_interval"` // Save nodes periodically
+	OfflineAfter Duration `toml:"offline_after"` // Set node to offline if not seen within this period
+	PruneAfter   Duration `toml:"prune_after"`   // Remove nodes after n days of inactivity
+	Output       map[string]interface{}
+}
+
+type DatabaseConfig struct {
+	DeleteInterval Duration `toml:"delete_interval"` // Delete stats of nodes every n minutes
+	DeleteAfter    Duration `toml:"delete_after"`    // Delete stats of nodes till now-deletetill n minutes
+	Connection     map[string]interface{}
 }
 
 // ReadConfigFile reads a config model from path of a yml file

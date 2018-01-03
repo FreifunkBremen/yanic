@@ -7,9 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/FreifunkBremen/yanic/database"
 	allDatabase "github.com/FreifunkBremen/yanic/database/all"
-	"github.com/FreifunkBremen/yanic/output"
 	allOutput "github.com/FreifunkBremen/yanic/output/all"
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -25,22 +23,20 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := loadConfig()
 
-		connections, err := allDatabase.Connect(config.Database.Connection)
+		err := allDatabase.Start(config.Database)
 		if err != nil {
 			panic(err)
 		}
-		database.Start(connections, config)
-		defer database.Close(connections)
+		defer allDatabase.Close()
 
 		nodes = runtime.NewNodes(config)
 		nodes.Start()
 
-		outputs, err := allOutput.Register(config.Nodes.Output)
+		err = allOutput.Start(nodes, config.Nodes)
 		if err != nil {
 			panic(err)
 		}
-		output.Start(outputs, nodes, config)
-		defer output.Close()
+		defer allOutput.Close()
 
 		if config.Webserver.Enable {
 			log.Println("starting webserver on", config.Webserver.Bind)
