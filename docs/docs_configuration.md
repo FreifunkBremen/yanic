@@ -196,6 +196,7 @@ enable = true
 [nodes.output.example.filter]
 no_owner  = true
 blacklist = ["00112233445566", "1337f0badead"]
+sites = ["ffhb"]
 has_location = true
 [nodes.output.example.filter.in_area]
 latitude_min  = 34.30
@@ -222,6 +223,7 @@ For each output format there can be set different filters
 [nodes.output.example.filter]
 no_owner  = true
 blacklist = ["00112233445566", "1337f0badead"]
+sites = ["ffhb"]
 has_location = true
 [nodes.output.example.filter.in_area]
 latitude_min  = 34.30
@@ -248,6 +250,16 @@ List of nodeids of nodes that should be filtered out, so they won't appear in ou
 {% sample lang="toml" %}
 ```toml
 blacklist = ["00112233445566", "1337f0badead"]
+```
+{% endmethod %}
+
+
+### sites
+{% method %}
+List of site_codes of nodes that should be included in output
+{% sample lang="toml" %}
+```toml
+sites = ["ffhb"]
 ```
 {% endmethod %}
 
