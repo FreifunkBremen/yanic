@@ -21,12 +21,7 @@ type Config struct {
 		Bind    string `toml:"bind"`
 		Webroot string `toml:"webroot"`
 	}
-	Nodes      NodesConfig
-	Meshviewer struct {
-		Version   int    `toml:"version"`
-		NodesPath string `toml:"nodes_path"`
-		GraphPath string `toml:"graph_path"`
-	}
+	Nodes    NodesConfig
 	Database DatabaseConfig
 }
 
