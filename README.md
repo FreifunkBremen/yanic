@@ -116,4 +116,4 @@ Respondd for servers:
 
 ## License
 
-This software is licensed under the terms of the [AGPL v3 License](LICENSE.md).
+This software is licensed under the terms of the [AGPL v3 License](LICENSE).
