@@ -54,7 +54,7 @@ func TestGlobalStats(t *testing.T) {
 }
 
 func createTestNodes() *Nodes {
-	nodes := NewNodes(&Config{})
+	nodes := NewNodes(&NodesConfig{})
 
 	nodeData := &Node{
 		Online: true,

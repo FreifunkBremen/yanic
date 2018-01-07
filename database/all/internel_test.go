@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"github.com/FreifunkBremen/yanic/lib/duration"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,8 +21,8 @@ func TestStart(t *testing.T) {
 	})
 	// Test for PruneNodes (by start)
 	assert.Nil(quit)
-	err := Start(runtime.DatabaseConfig{
-		DeleteInterval: runtime.Duration{Duration: time.Millisecond},
+	err := Start(database.Config{
+		DeleteInterval: duration.Duration{Duration: time.Millisecond},
 		Connection: map[string]interface{}{
 			"a": []map[string]interface{}{
 				map[string]interface{}{
@@ -54,6 +54,7 @@ func TestStart(t *testing.T) {
 	assert.NoError(err)
 	assert.NotNil(quit)
 
+	// connection type not found
 	_, err = Connect(map[string]interface{}{
 		"e": []map[string]interface{}{
 			map[string]interface{}{},
@@ -61,9 +62,14 @@ func TestStart(t *testing.T) {
 	})
 	assert.Error(err)
 
+	// test close
+	Close()
+
 	// wrong format
-	_, err = Connect(map[string]interface{}{
-		"e": true,
+	err = Start(database.Config{
+		Connection: map[string]interface{}{
+			"e": true,
+		},
 	})
 	assert.Error(err)
 }

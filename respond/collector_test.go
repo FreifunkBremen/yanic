@@ -12,7 +12,7 @@ import (
 const SITE_TEST = "ffxx"
 
 func TestCollector(t *testing.T) {
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
 	collector := NewCollector(nil, nodes, []string{SITE_TEST}, []string{}, 10001)
 	collector.Start(time.Millisecond)

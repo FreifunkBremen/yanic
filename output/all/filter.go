@@ -1,6 +1,8 @@
 package all
 
-import "github.com/FreifunkBremen/yanic/runtime"
+import (
+	"github.com/FreifunkBremen/yanic/runtime"
+)
 
 // Config Filter
 type filterConfig map[string]interface{}
@@ -13,7 +15,7 @@ func noFilter(node *runtime.Node) *runtime.Node {
 
 // Create Filter
 func (f filterConfig) filtering(nodesOrigin *runtime.Nodes) *runtime.Nodes {
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 	filterfuncs := []filterFunc{
 		f.HasLocation(),
 		f.Blacklist(),

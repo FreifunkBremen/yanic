@@ -177,7 +177,7 @@ func testPoints(nodes ...*runtime.Node) (points []*client.Point) {
 		panic(err)
 	}
 
-	nodesList := runtime.NewNodes(&runtime.Config{})
+	nodesList := runtime.NewNodes(&runtime.NodesConfig{})
 
 	// Create dummy connection
 	conn := &Connection{

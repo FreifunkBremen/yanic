@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/lib/jsontime"
 )
 
 // Node struct

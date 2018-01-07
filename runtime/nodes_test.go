@@ -9,15 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/lib/jsontime"
 )
 
 func TestExpire(t *testing.T) {
 	assert := assert.New(t)
-	config := &Config{}
-	config.Nodes.OfflineAfter.Duration = time.Minute * 10
+	config := &NodesConfig{}
+	config.OfflineAfter.Duration = time.Minute * 10
 	// to get default (100%) path of testing
-	// config.Nodes.PruneAfter.Duration = time.Hour * 24 * 6
+	// config.PruneAfter.Duration = time.Hour * 24 * 6
 	nodes := &Nodes{
 		config:        config,
 		List:          make(map[string]*Node),
@@ -51,22 +51,22 @@ func TestExpire(t *testing.T) {
 func TestLoadAndSave(t *testing.T) {
 	assert := assert.New(t)
 
-	config := &Config{}
+	config := &NodesConfig{}
 	// not autoload without StatePath
 	NewNodes(config)
 
 	// Test unmarshalable /dev/null - autolead with StatePath
-	config.Nodes.StatePath = "/dev/null"
+	config.StatePath = "/dev/null"
 	nodes := NewNodes(config)
 	// Test unopen able
-	config.Nodes.StatePath = "/root/nodes.json"
+	config.StatePath = "/root/nodes.json"
 	nodes.load()
 	// works ;)
-	config.Nodes.StatePath = "testdata/nodes.json"
+	config.StatePath = "testdata/nodes.json"
 	nodes.load()
 
 	tmpfile, _ := ioutil.TempFile("/tmp", "nodes")
-	config.Nodes.StatePath = tmpfile.Name()
+	config.StatePath = tmpfile.Name()
 	nodes.save()
 	os.Remove(tmpfile.Name())
 
@@ -113,8 +113,8 @@ func TestUpdateNodes(t *testing.T) {
 func TestSelectNodes(t *testing.T) {
 	assert := assert.New(t)
 
-	config := &Config{}
-	config.Nodes.StatePath = "testdata/nodes.json"
+	config := &NodesConfig{}
+	config.StatePath = "testdata/nodes.json"
 
 	nodes := NewNodes(config)
 
@@ -139,7 +139,7 @@ func TestSelectNodes(t *testing.T) {
 
 func TestAddNode(t *testing.T) {
 	assert := assert.New(t)
-	nodes := NewNodes(&Config{})
+	nodes := NewNodes(&NodesConfig{})
 
 	nodes.AddNode(&Node{})
 	assert.Len(nodes.List, 0)

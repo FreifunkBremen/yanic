@@ -1,4 +1,4 @@
-package runtime
+package config
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 func TestReadConfig(t *testing.T) {
 	assert := assert.New(t)
 
-	config, err := ReadConfigFile("../config_example.toml")
+	config, err := ReadConfigFile("../../config_example.toml")
 	assert.NoError(err, "no error during reading")
 	assert.NotNil(config)
 

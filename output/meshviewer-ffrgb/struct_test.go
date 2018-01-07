@@ -10,7 +10,7 @@ import (
 
 func TestRegister(t *testing.T) {
 	assert := assert.New(t)
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 	node := NewNode(nodes, &runtime.Node{
 		Nodeinfo: &data.NodeInfo{
 			Owner: &data.Owner{
@@ -21,7 +21,7 @@ func TestRegister(t *testing.T) {
 			},
 			Location: &data.Location{
 				Longitude: 13.3,
-				Latitude:   8.7,
+				Latitude:  8.7,
 			},
 		},
 		Statistics: &data.Statistics{

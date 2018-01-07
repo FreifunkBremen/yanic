@@ -8,26 +8,26 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/lib/jsontime"
 )
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
 	List          map[string]*Node  `json:"nodes"` // the current nodemap, indexed by node ID
 	ifaceToNodeID map[string]string // mapping from MAC address to NodeID
-	config        *Config
+	config        *NodesConfig
 	sync.RWMutex
 }
 
 // NewNodes create Nodes structs
-func NewNodes(config *Config) *Nodes {
+func NewNodes(config *NodesConfig) *Nodes {
 	nodes := &Nodes{
 		List:          make(map[string]*Node),
 		ifaceToNodeID: make(map[string]string),
 		config:        config,
 	}
 
-	if config.Nodes.StatePath != "" {
+	if config.StatePath != "" {
 		nodes.load()
 	}
 
@@ -130,7 +130,7 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 
 // Periodically saves the cached DB to json file
 func (nodes *Nodes) worker() {
-	c := time.Tick(nodes.config.Nodes.SaveInterval.Duration)
+	c := time.Tick(nodes.config.SaveInterval.Duration)
 
 	for range c {
 		nodes.expire()
@@ -143,14 +143,14 @@ func (nodes *Nodes) expire() {
 	now := jsontime.Now()
 
 	// Nodes last seen before expireAfter will be removed
-	prunePeriod := nodes.config.Nodes.PruneAfter.Duration
+	prunePeriod := nodes.config.PruneAfter.Duration
 	if prunePeriod == 0 {
 		prunePeriod = time.Hour * 24 * 7 // our default
 	}
 	pruneAfter := now.Add(-prunePeriod)
 
 	// Nodes last seen within OfflineAfter are changed to 'offline'
-	offlineAfter := now.Add(-nodes.config.Nodes.OfflineAfter.Duration)
+	offlineAfter := now.Add(-nodes.config.OfflineAfter.Duration)
 
 	// Locking foo
 	nodes.Lock()
@@ -194,7 +194,7 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 }
 
 func (nodes *Nodes) load() {
-	path := nodes.config.Nodes.StatePath
+	path := nodes.config.StatePath
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
@@ -222,7 +222,7 @@ func (nodes *Nodes) save() {
 	defer nodes.RUnlock()
 
 	// serialize nodes
-	SaveJSON(nodes, nodes.config.Nodes.StatePath)
+	SaveJSON(nodes, nodes.config.StatePath)
 }
 
 // SaveJSON to path

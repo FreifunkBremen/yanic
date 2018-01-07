@@ -29,7 +29,7 @@ var serveCmd = &cobra.Command{
 		}
 		defer allDatabase.Close()
 
-		nodes = runtime.NewNodes(config)
+		nodes = runtime.NewNodes(&config.Nodes)
 		nodes.Start()
 
 		err = allOutput.Start(nodes, config.Nodes)
