@@ -14,7 +14,7 @@ func TestFilter(t *testing.T) {
 	// filtered - do not run all
 	nodes := &runtime.Nodes{
 		List: map[string]*runtime.Node{
-			"a": &runtime.Node{
+			"a": {
 				Nodeinfo: &data.NodeInfo{NodeID: "a"},
 			},
 		},
@@ -28,7 +28,7 @@ func TestFilter(t *testing.T) {
 	// run to end
 	nodes = &runtime.Nodes{
 		List: map[string]*runtime.Node{
-			"a": &runtime.Node{
+			"a": {
 				Nodeinfo: &data.NodeInfo{NodeID: "a"},
 			},
 		},

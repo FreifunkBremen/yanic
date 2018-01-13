@@ -2,7 +2,7 @@ package runtime
 
 const (
 	DISABLED_AUTOUPDATER = "disabled"
-	GLOBAL_SITE = "global"
+	GLOBAL_SITE          = "global"
 )
 
 // CounterMap to manage multiple values

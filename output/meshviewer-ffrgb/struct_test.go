@@ -30,15 +30,15 @@ func TestRegister(t *testing.T) {
 				Total: 50,
 			},
 			Wireless: []*data.WirelessAirtime{
-				&data.WirelessAirtime{
+				{
 					ChanUtil:  0.3,
 					Frequency: 2512,
 				},
-				&data.WirelessAirtime{
+				{
 					ChanUtil:  0.4,
 					Frequency: 2612,
 				},
-				&data.WirelessAirtime{
+				{
 					ChanUtil:  0.5,
 					Frequency: 5200,
 				},

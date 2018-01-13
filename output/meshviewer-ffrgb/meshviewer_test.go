@@ -19,7 +19,7 @@ func TestTransform(t *testing.T) {
 			Network: data.Network{
 				Mac: "node:a:mac",
 				Mesh: map[string]*data.BatInterface{
-					"bat0": &data.BatInterface{
+					"bat0": {
 						Interfaces: struct {
 							Wireless []string `json:"wireless,omitempty"`
 							Other    []string `json:"other,omitempty"`
@@ -36,14 +36,14 @@ func TestTransform(t *testing.T) {
 		Neighbours: &data.Neighbours{
 			NodeID: "node_a",
 			Batadv: map[string]data.BatadvNeighbours{
-				"node:a:mac:wifi": data.BatadvNeighbours{
+				"node:a:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:wifi": data.BatmanLink{Tq: 153},
+						"node:b:mac:wifi": {Tq: 153},
 					},
 				},
-				"node:a:mac:lan": data.BatadvNeighbours{
+				"node:a:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:lan": data.BatmanLink{Tq: 51},
+						"node:b:mac:lan": {Tq: 51},
 					},
 				},
 			},
@@ -56,7 +56,7 @@ func TestTransform(t *testing.T) {
 			Network: data.Network{
 				Mac: "node:c:mac",
 				Mesh: map[string]*data.BatInterface{
-					"bat0": &data.BatInterface{
+					"bat0": {
 						Interfaces: struct {
 							Wireless []string `json:"wireless,omitempty"`
 							Other    []string `json:"other,omitempty"`
@@ -71,9 +71,9 @@ func TestTransform(t *testing.T) {
 		Neighbours: &data.Neighbours{
 			NodeID: "node_b",
 			Batadv: map[string]data.BatadvNeighbours{
-				"node:c:mac:lan": data.BatadvNeighbours{
+				"node:c:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:lan": data.BatmanLink{Tq: 102},
+						"node:b:mac:lan": {Tq: 102},
 					},
 				},
 			},
@@ -86,7 +86,7 @@ func TestTransform(t *testing.T) {
 			Network: data.Network{
 				Mac: "node:b:mac",
 				Mesh: map[string]*data.BatInterface{
-					"bat0": &data.BatInterface{
+					"bat0": {
 						Interfaces: struct {
 							Wireless []string `json:"wireless,omitempty"`
 							Other    []string `json:"other,omitempty"`
@@ -102,14 +102,14 @@ func TestTransform(t *testing.T) {
 		Neighbours: &data.Neighbours{
 			NodeID: "node_b",
 			Batadv: map[string]data.BatadvNeighbours{
-				"node:b:mac:lan": data.BatadvNeighbours{
+				"node:b:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:c:mac:lan": data.BatmanLink{Tq: 204},
+						"node:c:mac:lan": {Tq: 204},
 					},
 				},
-				"node:b:mac:wifi": data.BatadvNeighbours{
+				"node:b:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:a:mac:wifi": data.BatmanLink{Tq: 204},
+						"node:a:mac:wifi": {Tq: 204},
 					},
 				},
 			},
@@ -122,7 +122,7 @@ func TestTransform(t *testing.T) {
 			Network: data.Network{
 				Mac: "node:d:mac",
 				Mesh: map[string]*data.BatInterface{
-					"bat0": &data.BatInterface{
+					"bat0": {
 						Interfaces: struct {
 							Wireless []string `json:"wireless,omitempty"`
 							Other    []string `json:"other,omitempty"`
@@ -138,14 +138,14 @@ func TestTransform(t *testing.T) {
 		Neighbours: &data.Neighbours{
 			NodeID: "node_d",
 			Batadv: map[string]data.BatadvNeighbours{
-				"node:d:mac:lan": data.BatadvNeighbours{
+				"node:d:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:c:mac:lan": data.BatmanLink{Tq: 204},
+						"node:c:mac:lan": {Tq: 204},
 					},
 				},
-				"node:d:mac:wifi": data.BatadvNeighbours{
+				"node:d:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:a:mac:wifi": data.BatmanLink{Tq: 204},
+						"node:a:mac:wifi": {Tq: 204},
 					},
 				},
 			},

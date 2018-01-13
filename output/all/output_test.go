@@ -50,28 +50,28 @@ func TestStart(t *testing.T) {
 	})
 	allOutput, err := Register(map[string]interface{}{
 		"a": []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"enable": false,
 				"path":   "a1",
 			},
-			map[string]interface{}{
+			{
 				"path": "a2",
 			},
-			map[string]interface{}{
+			{
 				"enable": true,
 				"path":   "a3",
 			},
 		},
 		"b": nil,
 		"c": []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"path":   "c1",
 				"filter": map[string]interface{}{},
 			},
 		},
 		// fetch continue command in Connect
 		"d": []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"path": "d0",
 			},
 		},
@@ -84,7 +84,7 @@ func TestStart(t *testing.T) {
 
 	_, err = Register(map[string]interface{}{
 		"e": []map[string]interface{}{
-			map[string]interface{}{},
+			{},
 		},
 	})
 	assert.Error(err)

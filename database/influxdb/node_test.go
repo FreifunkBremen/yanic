@@ -35,12 +35,12 @@ func TestToInflux(t *testing.T) {
 			},
 			MeshVPN: &data.MeshVPN{
 				Groups: map[string]*data.MeshVPNPeerGroup{
-					"ffhb": &data.MeshVPNPeerGroup{
+					"ffhb": {
 						Peers: map[string]*data.MeshVPNPeerLink{
-							"vpn01": &data.MeshVPNPeerLink{Established: 3},
-							"vpn02": &data.MeshVPNPeerLink{},
+							"vpn01": {Established: 3},
+							"vpn02": {},
 							"trash": nil,
-							"vpn03": &data.MeshVPNPeerLink{Established: 0},
+							"vpn03": {Established: 0},
 						},
 					},
 				},
@@ -74,16 +74,16 @@ func TestToInflux(t *testing.T) {
 		Neighbours: &data.Neighbours{
 			NodeID: "deadbeef",
 			Batadv: map[string]data.BatadvNeighbours{
-				"a-interface": data.BatadvNeighbours{
+				"a-interface": {
 					Neighbours: map[string]data.BatmanLink{
-						"BAFF1E5": data.BatmanLink{
+						"BAFF1E5": {
 							Tq: 204,
 						},
 					},
 				},
 			},
 			LLDP: map[string]data.LLDPNeighbours{
-				"b-interface": data.LLDPNeighbours{},
+				"b-interface": {},
 			},
 		},
 	}

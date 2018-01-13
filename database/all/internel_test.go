@@ -25,27 +25,27 @@ func TestStart(t *testing.T) {
 		DeleteInterval: duration.Duration{Duration: time.Millisecond},
 		Connection: map[string]interface{}{
 			"a": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"enable": false,
 					"path":   "a1",
 				},
-				map[string]interface{}{
+				{
 					"path": "a2",
 				},
-				map[string]interface{}{
+				{
 					"enable": true,
 					"path":   "a3",
 				},
 			},
 			"b": nil,
 			"c": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"path": "c1",
 				},
 			},
 			// fetch continue command in Connect
 			"d": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"path": "d0",
 				},
 			},
@@ -57,7 +57,7 @@ func TestStart(t *testing.T) {
 	// connection type not found
 	_, err = Connect(map[string]interface{}{
 		"e": []map[string]interface{}{
-			map[string]interface{}{},
+			{},
 		},
 	})
 	assert.Error(err)
