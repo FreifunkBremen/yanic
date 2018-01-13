@@ -18,14 +18,8 @@ type Duration struct {
 }
 
 // UnmarshalTOML parses a duration string.
-func (d *Duration) UnmarshalTOML(dataInterface interface{}) error {
-	var data string
-	switch dataInterface.(type) {
-	case string:
-		data = dataInterface.(string)
-	default:
-		return fmt.Errorf("invalid duration: \"%s\"", dataInterface)
-	}
+func (d *Duration) UnmarshalText(data []byte) error {
+
 	// " + int + unit + "
 	if len(data) < 2 {
 		return fmt.Errorf("invalid duration: \"%s\"", data)

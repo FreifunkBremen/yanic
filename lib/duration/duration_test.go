@@ -16,6 +16,8 @@ func TestDuration(t *testing.T) {
 		duration time.Duration
 	}{
 		{"", "invalid duration: \"\"", 0},
+		{"3", "invalid duration: \"3\"", 0},
+		{"am", "unable to parse duration \"am\": strconv.Atoi: parsing \"a\": invalid syntax", 0},
 		{"1x", "invalid duration unit \"x\"", 0},
 		{"1s", "", time.Second},
 		{"73s", "", time.Second * 73},
@@ -34,7 +36,7 @@ func TestDuration(t *testing.T) {
 	for _, test := range tests {
 
 		d := Duration{}
-		err := d.UnmarshalTOML(test.input)
+		err := d.UnmarshalText([]byte(test.input))
 		duration := d.Duration
 
 		if test.err == "" {
@@ -44,13 +46,4 @@ func TestDuration(t *testing.T) {
 			assert.EqualError(err, test.err)
 		}
 	}
-
-	d := Duration{}
-	err := d.UnmarshalTOML(3)
-	assert.Error(err)
-	assert.Contains(err.Error(), "invalid duration")
-
-	err = d.UnmarshalTOML("am")
-	assert.Error(err)
-	assert.EqualError(err, "unable to parse duration \"am\": strconv.Atoi: parsing \"a\": invalid syntax")
 }
