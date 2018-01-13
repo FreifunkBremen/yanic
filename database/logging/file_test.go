@@ -25,6 +25,7 @@ func TestStart(t *testing.T) {
 	conn, err = Connect(map[string]interface{}{
 		"path": path,
 	})
+	assert.NoError(err)
 
 	dat, _ := ioutil.ReadFile(path)
 	assert.NotContains(string(dat), "InsertNode")
