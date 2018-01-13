@@ -8,21 +8,8 @@ if [ "$CI" == "circle-ci" ]; then
   cd ${GOPATH}/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}
 fi
 
-echo "mode: count" > profile.cov
-FAIL=0
-
-# Standard go tooling behavior is to ignore dirs with leading underscors
-for dir in $(find . -maxdepth 10 -not -path './.git*' -not -path '*/_*' -type d);
-do
-  if ls $dir/*.go &> /dev/null; then
-    go test -v -covermode=count -coverprofile=profile.tmp $dir || FAIL=$?
-    if [ -f profile.tmp ]
-    then
-      tail -n +2 < profile.tmp >> profile.cov
-      rm profile.tmp
-    fi
-  fi
-done
+go test -v -cover -race -coverprofile=profile.cov
+FAIL=$?
 
 # Failures have incomplete results, so don't send
 if [ "$FAIL" -eq 0 ]; then
