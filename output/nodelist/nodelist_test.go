@@ -17,7 +17,7 @@ func TestTransform(t *testing.T) {
 }
 
 func createTestNodes() *runtime.Nodes {
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
 	nodeData := &runtime.Node{
 		Statistics: &data.Statistics{
@@ -47,7 +47,7 @@ func createTestNodes() *runtime.Nodes {
 				Model: "TP-Link 841",
 			},
 			Location: &data.Location{
-				Latitude:   23,
+				Latitude:  23,
 				Longitude: 2,
 			},
 		},

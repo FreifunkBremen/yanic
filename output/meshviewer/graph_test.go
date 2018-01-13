@@ -33,7 +33,7 @@ func TestGenerateGraph(t *testing.T) {
 
 func testGetNodesByFile(files ...string) *runtime.Nodes {
 
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
 	for _, file := range files {
 		node := testGetNodeByFile(file)

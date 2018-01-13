@@ -3,8 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/database/all"
+	allDatabase "github.com/FreifunkBremen/yanic/database/all"
 	"github.com/FreifunkBremen/yanic/rrd"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/spf13/cobra"
@@ -21,12 +20,11 @@ var importCmd = &cobra.Command{
 		site := args[1]
 		config := loadConfig()
 
-		connections, err := all.Connect(config.Database.Connection)
+		err := allDatabase.Start(config.Database)
 		if err != nil {
 			panic(err)
 		}
-		database.Start(connections, config)
-		defer database.Close(connections)
+		defer allDatabase.Close()
 
 		log.Println("importing RRD from", path)
 

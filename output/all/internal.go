@@ -1,63 +1,45 @@
 package all
 
 import (
-	"log"
+	"sync"
+	"time"
 
 	"github.com/FreifunkBremen/yanic/output"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-type Output struct {
-	output.Output
-	list   map[int]output.Output
-	filter map[int]filterConfig
-}
+var quit chan struct{}
+var wg = sync.WaitGroup{}
+var outputA output.Output
 
-func Register(configuration map[string]interface{}) (output.Output, error) {
-	list := make(map[int]output.Output)
-	filter := make(map[int]filterConfig)
-	i := 1
-	allOutputs := configuration
-	for outputType, outputRegister := range output.Adapters {
-		configForOutput := allOutputs[outputType]
-		if configForOutput == nil {
-			log.Printf("the output type '%s' has no configuration\n", outputType)
-			continue
-		}
-		outputConfigs, ok := configForOutput.([]map[string]interface{})
-		if !ok {
-			log.Panicf("the output type '%s' has the wrong format\n", outputType)
-		}
-		for _, config := range outputConfigs {
-			if c, ok := config["enable"].(bool); ok && !c {
-				continue
-			}
-			output, err := outputRegister(config)
-			if err != nil {
-				return nil, err
-			}
-			if output == nil {
-				continue
-			}
-			list[i] = output
-			if c := config["filter"]; c != nil {
-				filter[i] = config["filter"].(map[string]interface{})
-			}
-			i++
-		}
+func Start(nodes *runtime.Nodes, config runtime.NodesConfig) (err error) {
+	outputA, err = Register(config.Output)
+	if err != nil {
+		return
 	}
-	return &Output{list: list, filter: filter}, nil
+	quit = make(chan struct{})
+	wg.Add(1)
+	go saveWorker(nodes, config.SaveInterval.Duration)
+	return
 }
 
-func (o *Output) Save(nodes *runtime.Nodes) {
-	for i, item := range o.list {
-		var filteredNodes *runtime.Nodes
-		if config := o.filter[i]; config != nil {
-			filteredNodes = config.filtering(nodes)
-		} else {
-			filteredNodes = filterConfig{}.filtering(nodes)
-		}
+func Close() {
+	close(quit)
+	wg.Wait()
+	quit = nil
+}
 
-		item.Save(filteredNodes)
+// save periodically to output
+func saveWorker(nodes *runtime.Nodes, saveInterval time.Duration) {
+	ticker := time.NewTicker(saveInterval)
+	for {
+		select {
+		case <-ticker.C:
+			outputA.Save(nodes)
+		case <-quit:
+			ticker.Stop()
+			wg.Done()
+			return
+		}
 	}
 }

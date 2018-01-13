@@ -11,7 +11,7 @@ import (
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/lib/jsontime"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
@@ -30,7 +30,7 @@ type Collector struct {
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db database.Connection, nodes *runtime.Nodes, sites []string , ifaces []string, port int) *Collector {
+func NewCollector(db database.Connection, nodes *runtime.Nodes, sites []string, ifaces []string, port int) *Collector {
 
 	coll := &Collector{
 		db:          db,

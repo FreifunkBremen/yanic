@@ -11,7 +11,7 @@ import (
 func TestTransform(t *testing.T) {
 	assert := assert.New(t)
 
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 	nodes.AddNode(&runtime.Node{
 		Online: true,
 		Nodeinfo: &data.NodeInfo{

@@ -23,7 +23,7 @@ func TestNodesV2(t *testing.T) {
 }
 
 func createTestNodes() *runtime.Nodes {
-	nodes := runtime.NewNodes(&runtime.Config{})
+	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
 	nodeData := &runtime.Node{
 		Statistics: &data.Statistics{

@@ -1,7 +1,7 @@
 package nodelist
 
 import (
-	"github.com/FreifunkBremen/yanic/jsontime"
+	"github.com/FreifunkBremen/yanic/lib/jsontime"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
