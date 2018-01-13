@@ -17,34 +17,25 @@ func TestReadConfig(t *testing.T) {
 	assert.True(config.Respondd.Enable)
 	assert.Equal([]string{"br-ffhb"}, config.Respondd.Interfaces)
 	assert.Equal(time.Minute, config.Respondd.CollectInterval.Duration)
-
 	assert.Equal(time.Hour*24*7, config.Nodes.PruneAfter.Duration)
-
 	assert.Equal(time.Hour*24*7, config.Database.DeleteAfter.Duration)
 
-	var meshviewer map[string]interface{}
-	var outputs []map[string]interface{}
-	outputs = config.Nodes.Output["meshviewer"].([]map[string]interface{})
-	assert.Len(outputs, 1, "more outputs are given")
-	meshviewer = outputs[0]
-	assert.Equal(int64(2), meshviewer["version"])
-	assert.Equal("/var/www/html/meshviewer/data/nodes.json", meshviewer["nodes_path"])
+	// Test output plugins
+	assert.Len(config.Nodes.Output, 3)
+	outputs := config.Nodes.Output["meshviewer"].([]interface{})
+	assert.Len(outputs, 1)
+	meshviewer := outputs[0]
 
-	var influxdb map[string]interface{}
-	dbs := config.Database.Connection["influxdb"].([]map[string]interface{})
-	assert.Len(dbs, 1, "more influxdb are given")
-	influxdb = dbs[0]
-	assert.Equal(influxdb["database"], "ffhb")
-
-	var graphitedb map[string]interface{}
-	dbs = config.Database.Connection["graphite"].([]map[string]interface{})
-	assert.Len(dbs, 1, "more graphitedb are given")
-	graphitedb = dbs[0]
-	assert.Equal(graphitedb["address"], "localhost:2003")
+	assert.EqualValues(map[string]interface{}{
+		"version":    int64(2),
+		"enable":     false,
+		"nodes_path": "/var/www/html/meshviewer/data/nodes.json",
+		"graph_path": "/var/www/html/meshviewer/data/graph.json",
+	}, meshviewer)
 
 	_, err = ReadConfigFile("testdata/config_invalid.toml")
 	assert.Error(err, "not unmarshalable")
-	assert.Contains(err.Error(), "Near line ")
+	assert.Contains(err.Error(), "invalid TOML syntax")
 
 	_, err = ReadConfigFile("testdata/adsa.toml")
 	assert.Error(err, "not found able")
