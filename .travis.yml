@@ -1,7 +1,7 @@
 language: go
 go:
   - 1.8.x
-  - master
+  - 1.9.x
 install:
   - go get -t github.com/FreifunkBremen/yanic/...
   - go get github.com/mattn/goveralls
