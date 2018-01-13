@@ -4,9 +4,11 @@ go:
   - 1.9.x
 install:
   - go get -t github.com/FreifunkBremen/yanic/...
+  - go get github.com/client9/misspell/cmd/misspell
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
 script:
   - ./.test-coverage travis-ci
   - ./.travis.gofmt.sh
+  - misspell -error .
   - go install github.com/FreifunkBremen/yanic
