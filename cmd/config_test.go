@@ -31,6 +31,9 @@ func TestReadConfig(t *testing.T) {
 		"enable":     false,
 		"nodes_path": "/var/www/html/meshviewer/data/nodes.json",
 		"graph_path": "/var/www/html/meshviewer/data/graph.json",
+		"filter": map[string]interface{}{
+			"no_owner": true,
+		},
 	}, meshviewer)
 
 	_, err = ReadConfigFile("testdata/config_invalid.toml")

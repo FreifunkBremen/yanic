@@ -82,16 +82,40 @@ func TestStart(t *testing.T) {
 	allOutput.Save(nodes)
 	assert.Equal(3, globalOutput.Get())
 
+	// wrong format - map
 	_, err = Register(map[string]interface{}{
-		"e": []map[string]interface{}{
-			{},
+		"e": []interface{}{
+			false,
 		},
 	})
 	assert.Error(err)
 
-	// wrong format
+	// wrong format - array
 	_, err = Register(map[string]interface{}{
 		"e": true,
+	})
+	assert.Error(err)
+
+	// output error
+	_, err = Register(map[string]interface{}{
+		"e": []interface{}{
+			map[string]interface{}{
+				"enable": true,
+			},
+		},
+	})
+	assert.Error(err)
+
+	// output error invalid config of filter
+	_, err = Register(map[string]interface{}{
+		"a": []interface{}{
+			map[string]interface{}{
+				"enable": true,
+				"filter": map[string]interface{}{
+					"blacklist": true,
+				},
+			},
+		},
 	})
 	assert.Error(err)
 }

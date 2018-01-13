@@ -1,44 +1,9 @@
 package all
 
 import (
-	"github.com/FreifunkBremen/yanic/runtime"
+	_ "github.com/FreifunkBremen/yanic/output/filter/blacklist"
+	_ "github.com/FreifunkBremen/yanic/output/filter/haslocation"
+	_ "github.com/FreifunkBremen/yanic/output/filter/inarea"
+	_ "github.com/FreifunkBremen/yanic/output/filter/noowner"
+	_ "github.com/FreifunkBremen/yanic/output/filter/site"
 )
-
-// Config Filter
-type filterConfig map[string]interface{}
-
-type filterFunc func(*runtime.Node) *runtime.Node
-
-func noFilter(node *runtime.Node) *runtime.Node {
-	return node
-}
-
-// Create Filter
-func (f filterConfig) filtering(nodesOrigin *runtime.Nodes) *runtime.Nodes {
-	nodes := runtime.NewNodes(&runtime.NodesConfig{})
-	filterfuncs := []filterFunc{
-		f.HasLocation(),
-		f.Blacklist(),
-		f.InArea(),
-		f.NoOwner(),
-	}
-
-	nodesOrigin.Lock()
-	defer nodesOrigin.Unlock()
-
-	for _, nodeOrigin := range nodesOrigin.List {
-		//maybe cloning of this object is better?
-		node := nodeOrigin
-		for _, f := range filterfuncs {
-			node = f(node)
-			if node == nil {
-				break
-			}
-		}
-
-		if node != nil {
-			nodes.AddNode(node)
-		}
-	}
-	return nodes
-}
