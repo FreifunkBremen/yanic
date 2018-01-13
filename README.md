@@ -100,9 +100,11 @@ Flags:
 ```
 
 
-### Live
-* [meshviewer](https://map.bremen.freifunk.net) **Freifunk Bremen** with a patch to show state-version of `nodes.json`
-* [grafana](https://grafana.bremen.freifunk.net)  **Freifunk Bremen** show data of InfluxDB
+## Communities using Yanic
+
+* **Freifunk Bremen** uses InfluxDB, [Grafana](https://grafana.bremen.freifunk.net), and [Meshviewer](https://map.bremen.freifunk.net) with a patch to show state-version of `nodes.json`. 
+
+Do you know someone else using Yanic? Create a [pull request](https://github.com/FreifunkBremen/yanic/issues/new?template=community.md&title=Mention+community+$name)!
 
 ## Related projects
 
