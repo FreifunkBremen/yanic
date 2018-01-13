@@ -1,4 +1,4 @@
-package all
+package filter
 
 import (
 	"testing"

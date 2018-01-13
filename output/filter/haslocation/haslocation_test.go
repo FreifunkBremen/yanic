@@ -1,16 +1,17 @@
-package all
+package haslocation
 
 import (
 	"testing"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/output/filter"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterHasLocation(t *testing.T) {
 	assert := assert.New(t)
-	var config filterConfig
+	var config filter.Config
 
 	config = map[string]interface{}{}
 
