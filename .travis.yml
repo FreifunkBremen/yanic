@@ -8,4 +8,5 @@ install:
   - go get golang.org/x/tools/cmd/cover
 script:
   - ./.test-coverage travis-ci
+  - ./.travis.gofmt.sh
   - go install github.com/FreifunkBremen/yanic
