@@ -88,7 +88,7 @@ func TestToInflux(t *testing.T) {
 		},
 	}
 
-	neigbour := &runtime.Node{
+	neighbour := &runtime.Node{
 		Nodeinfo: &data.NodeInfo{
 			NodeID: "foobar",
 			Network: data.Network{
@@ -119,7 +119,7 @@ func TestToInflux(t *testing.T) {
 		Statistics: &data.Statistics{},
 	}
 
-	points := testPoints(node, neigbour, droppednode)
+	points := testPoints(node, neighbour, droppednode)
 	var fields map[string]interface{}
 	var tags map[string]string
 

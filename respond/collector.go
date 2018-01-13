@@ -183,7 +183,7 @@ func (coll *Collector) sendPacket(conn *net.UDPConn, destination net.IP) {
 	}
 }
 
-// send packets continously
+// send packets continuously
 func (coll *Collector) sender() {
 	ticker := time.NewTicker(coll.interval)
 	for {

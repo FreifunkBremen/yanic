@@ -21,7 +21,7 @@ type Flags struct {
 	Gateway bool `json:"gateway"`
 }
 
-// Statistics a meshviewer spezifisch struct, diffrent from respondd
+// Statistics a meshviewer spezifisch struct, different from respondd
 type Statistics struct {
 	NodeID      string   `json:"node_id"`
 	Clients     uint32   `json:"clients"`

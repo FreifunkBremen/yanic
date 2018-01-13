@@ -364,7 +364,7 @@ graph_path = "/var/www/html/meshviewer/data/graph.json"
 ## [[nodes.output.nodelist]]
 {% method %}
 The nodelist output is a minimal output with current state of collected data.
-Should be prefered to use it on the [ffapi](https://freifunk.net/api-generator/) for the [freifunk-karte.de](https://freifunk-karte.de)
+Should be preferred to use it on the [ffapi](https://freifunk.net/api-generator/) for the [freifunk-karte.de](https://freifunk-karte.de)
 {% sample lang="toml" %}
 ```toml
 [[nodes.output.nodelist]]
@@ -510,14 +510,14 @@ password = ""
 ### [database.connection.influxdb.tags]
 {% method %}
 You could set manuelle tags with inserting into a influxdb.
-Usefull if you want to identify the yanic instance when you use multiple own on the same influxdb (e.g. multisites).
+Useful if you want to identify the yanic instance when you use multiple own on the same influxdb (e.g. multisites).
 
 Warning:
 Tags used by Yanic would override the tags from this config (e.g. `nodeid`, `hostname`, `owner`, `model`, `firmware_base`, `firmware_release`, `frequency11g`, `frequency11a`).
 {% sample lang="toml" %}
 ```toml
 tagname1 = "tagvalue 1s"
-# some usefull e.g.:
+# some useful e.g.:
 system   = "productive"
 site     = "ffhb"
 ```

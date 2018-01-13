@@ -33,7 +33,7 @@ cp /opt/go/src/github.com/FreifunkBremen/yanic/contrib/init/linux-systemd/yanic.
 systemctl daemon-reload
 ```
 
-Before start, you should configurate yanic by the file `/etc/yanic.conf`:
+Before start, you should configure yanic by the file `/etc/yanic.conf`:
 
 ```
 systemctl start yanic
