@@ -1,4 +1,4 @@
-package config
+package cmd
 
 import (
 	"testing"
@@ -10,8 +10,8 @@ import (
 func TestReadConfig(t *testing.T) {
 	assert := assert.New(t)
 
-	config, err := ReadConfigFile("../../config_example.toml")
-	assert.NoError(err, "no error during reading")
+	config, err := ReadConfigFile("../config_example.toml")
+	assert.NoError(err)
 	assert.NotNil(config)
 
 	assert.True(config.Respondd.Enable)
@@ -42,7 +42,7 @@ func TestReadConfig(t *testing.T) {
 	graphitedb = dbs[0]
 	assert.Equal(graphitedb["address"], "localhost:2003")
 
-	_, err = ReadConfigFile("testdata/config_failed.toml")
+	_, err = ReadConfigFile("testdata/config_invalid.toml")
 	assert.Error(err, "not unmarshalable")
 	assert.Contains(err.Error(), "Near line ")
 
