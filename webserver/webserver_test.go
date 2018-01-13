@@ -10,7 +10,7 @@ import (
 func TestWebserver(t *testing.T) {
 	assert := assert.New(t)
 
-	srv := New(":8080", "/tmp")
+	srv := New(":12345", "/tmp")
 	assert.NotNil(srv)
 
 	go Start(srv)
