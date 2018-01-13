@@ -36,7 +36,7 @@ do
   if [ "$(ls $dir/*_test.go 2> /dev/null | wc -l)" -eq "0" ]; then
    echo -n "no test files for $dir";
    case $dir in
-    '.' | './cmd' | './database/graphite')
+    '.' | './database/graphite')
       echo " - but ignored";
       continue
     ;;
