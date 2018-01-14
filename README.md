@@ -103,8 +103,8 @@ Flags:
 ## Communities using Yanic
 
 * **Freifunk Bremen** uses InfluxDB, [Grafana](https://grafana.bremen.freifunk.net), and [Meshviewer](https://map.bremen.freifunk.net) with a patch to show state-version of `nodes.json`. 
-* **Freifunk Nord** https://mesh.freifunknord.de/
-* **Freifunk Kiel** https://map.freifunk.in-kiel.de/
+* **Freifunk Nord** uses [hopglass](https://github.com/hopglass/hopglass) (commit 587740a) as frontend:  https://mesh.freifunknord.de/
+* **Freifunk Kiel** uses [Meshviewer](https://github.com/ffrgb/meshviewer/) as frontend: https://map.freifunk.in-kiel.de/
 
 Do you know someone else using Yanic? Create a [pull request](https://github.com/FreifunkBremen/yanic/issues/new?template=community.md&title=Mention+community+$name)!
 
