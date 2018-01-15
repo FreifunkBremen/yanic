@@ -20,6 +20,7 @@ func (f filterConfig) filtering(nodesOrigin *runtime.Nodes) *runtime.Nodes {
 		f.HasLocation(),
 		f.Blacklist(),
 		f.InArea(),
+		f.Sites(),
 		f.NoOwner(),
 	}
 
