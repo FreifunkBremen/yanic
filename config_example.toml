@@ -163,6 +163,16 @@ address  = "localhost:2003"
 # probably wont care much about "polluting" the namespace.
 prefix   = "freifunk"
 
+# respondd (yanic)
+# forward collected respondd package to a address
+# (e.g. to another respondd collector like a central yanic instance or hopglass)
+[[database.connection.respondd]]
+enable   = false
+# type of network to create a connection
+type     = "udp6"
+# destination address to connect/send respondd package
+address  = "stats.bremen.freifunk.net:11001"
+
 # Logging
 [[database.connection.logging]]
 enable   = false

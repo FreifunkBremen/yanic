@@ -579,13 +579,49 @@ prefix = "freifunk"
 
 
 
+## [[database.connection.respondd]]
+{% method %}
+Forward collected respondd package to a address
+(e.g. to another respondd collector like a central yanic instance or hopglass)
+{% sample lang="toml" %}
+```toml
+enable   = false
+type     = "udp6"
+address  = "stats.bremen.freifunk.net:11001"
+```
+{% endmethod %}
+
+
+### type
+{% method %}
+Type of network to create a connection.
+
+Known networks are "tcp", "tcp4" (IPv4-only), "tcp6" (IPv6-only), "udp", "udp4" (IPv4-only), "udp6" (IPv6-only), "ip", "ip4" (IPv4-only), "ip6" (IPv6-only), "unix", "unixgram" and "unixpacket".
+{% sample lang="toml" %}
+```toml
+type     = "udp6"
+```
+{% endmethod %}
+
+
+### address
+{% method %}
+Destination address to connect/send respondd package.
+{% sample lang="toml" %}
+```toml
+address  = "stats.bremen.freifunk.net:11001"
+```
+{% endmethod %}
+
+
+
 ## [[database.connection.logging]]
 {% method %}
 This database type is just for, debugging without a real database connection.
 A example for other developers for new database types.
 {% sample lang="toml" %}
 ```toml
-enable = false
+enable   = false
 path     = "/var/log/yanic.log"
 ```
 {% endmethod %}
