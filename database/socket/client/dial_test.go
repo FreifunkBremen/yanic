@@ -53,7 +53,7 @@ func TestReceiveMessages(t *testing.T) {
 	d.LinkHandler = func(link *runtime.Link) {
 		executed.Set(true)
 	}
-	d.GlobalsHandler = func(stats *runtime.GlobalStats) {
+	d.GlobalsHandler = func(stats *runtime.GlobalStats, site string) {
 		executed.Set(true)
 	}
 	d.PruneNodesHandler = func() {
@@ -73,7 +73,7 @@ func TestReceiveMessages(t *testing.T) {
 	assert.True(executed.Get(), "link not inserted")
 
 	executed.Set(false)
-	server.InsertGlobals(nil, time.Now())
+	server.InsertGlobals(nil, time.Now(), "global")
 	time.Sleep(5 * time.Millisecond)
 	assert.True(executed.Get(), "global stats not inserted")
 

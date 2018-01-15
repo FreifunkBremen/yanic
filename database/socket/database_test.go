@@ -60,7 +60,7 @@ func TestClient(t *testing.T) {
 	assert.NoError(err)
 	assert.Equal("insert_node", msg.Event)
 
-	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now())
+	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now(), "global")
 	err = decoder.Decode(&msg)
 	assert.NoError(err)
 	assert.Equal("insert_globals", msg.Event)

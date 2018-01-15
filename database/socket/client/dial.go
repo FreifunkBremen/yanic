@@ -18,7 +18,7 @@ type Dialer struct {
 	quit              chan struct{}
 	NodeHandler       func(*runtime.Node)
 	LinkHandler       func(*runtime.Link)
-	GlobalsHandler    func(*runtime.GlobalStats)
+	GlobalsHandler    func(*runtime.GlobalStats, string)
 	PruneNodesHandler func()
 }
 
@@ -104,7 +104,7 @@ func (d *Dialer) parser() {
 				obj, _ := json.Marshal(msg.Body)
 				json.Unmarshal(obj, &globals)
 
-				d.GlobalsHandler(&globals)
+				d.GlobalsHandler(&globals, msg.Site)
 			}
 		case socket.MessageEventPruneNodes:
 			if d.PruneNodesHandler != nil {

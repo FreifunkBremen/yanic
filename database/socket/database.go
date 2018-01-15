@@ -30,9 +30,7 @@ func init() {
 	database.RegisterAdapter("socket", Connect)
 }
 
-func Connect(configuration interface{}) (database.Connection, error) {
-	config := configuration.(map[string]interface{})
-
+func Connect(config map[string]interface{}) (database.Connection, error) {
 	ln, err := net.Listen(config["type"].(string), config["address"].(string))
 	if err != nil {
 		return nil, err
@@ -58,8 +56,8 @@ func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
 	conn.sendJSON(&Message{Event: MessageEventInsertLink, Body: link})
 }
 
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time) {
-	conn.sendJSON(&Message{Event: MessageEventInsertGlobals, Body: stats})
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
+	conn.sendJSON(&Message{Event: MessageEventInsertGlobals, Body: stats, Site: site})
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {

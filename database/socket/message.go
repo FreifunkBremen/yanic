@@ -3,6 +3,7 @@ package socket
 type Message struct {
 	Event string      `json:"event"`
 	Body  interface{} `json:"body,omitempty"`
+	Site  string      `json:"site"`
 }
 
 const (
