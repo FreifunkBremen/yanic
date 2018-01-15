@@ -1,6 +1,7 @@
 package yanic
 
 import (
+	"log"
 	"sync"
 	"testing"
 	"time"
@@ -17,23 +18,6 @@ func TestConnectError(t *testing.T) {
 	}, "could connect")
 }
 
-type SafeBoolean struct {
-	value bool
-	sync.Mutex
-}
-
-func (s *SafeBoolean) Set(value bool) {
-	s.Lock()
-	s.value = value
-	s.Unlock()
-}
-
-func (s *SafeBoolean) Get() bool {
-	s.Lock()
-	defer s.Unlock()
-	return s.value
-}
-
 func TestReceiveMessages(t *testing.T) {
 	assert := assert.New(t)
 	server, err := socket.Connect(map[string]interface{}{
@@ -41,60 +25,63 @@ func TestReceiveMessages(t *testing.T) {
 		"address": "127.0.0.1:10339",
 	})
 	assert.NoError(err)
+	if err != nil {
+		return
+	}
+
+	wg := sync.WaitGroup{}
 
 	// test for drop queue
 	queueMaxSize = 1
 
 	d := Dial("tcp4", "127.0.0.1:10339")
-	executed := SafeBoolean{value: false}
 	d.NodeHandler = func(node *runtime.Node) {
-		executed.Set(true)
+		wg.Done()
 	}
 	d.LinkHandler = func(link *runtime.Link) {
-		executed.Set(true)
+		wg.Done()
 	}
 	d.GlobalsHandler = func(stats *runtime.GlobalStats, site string) {
-		executed.Set(true)
+		wg.Done()
 	}
 	d.PruneNodesHandler = func() {
-		executed.Set(true)
+		wg.Done()
 	}
 	assert.NotNil(d)
 	go d.Start()
 	time.Sleep(5 * time.Millisecond)
 
-	server.InsertNode(nil)
-	time.Sleep(5 * time.Millisecond)
-	assert.True(executed.Get(), "node not inserted")
+	wg.Add(1)
+	server.InsertNode(&runtime.Node{})
+	log.Print("[run] wait for insert node")
+	wg.Wait()
+	log.Print("[result] node inserted")
 
-	executed.Set(false)
+	wg.Add(1)
 	server.InsertLink(nil, time.Now())
-	time.Sleep(5 * time.Millisecond)
-	assert.True(executed.Get(), "link not inserted")
+	log.Print("[run] wait for insert link")
+	wg.Wait()
+	log.Print("[result] link inserted")
 
-	executed.Set(false)
+	wg.Add(1)
 	server.InsertGlobals(nil, time.Now(), "global")
-	time.Sleep(5 * time.Millisecond)
-	assert.True(executed.Get(), "global stats not inserted")
+	log.Print("[run] wait for insert globals")
+	wg.Wait()
+	log.Print("[result] global stats inserted")
 
-	executed.Set(false)
+	wg.Add(1)
 	server.PruneNodes(time.Hour * 24 * 7)
-	time.Sleep(5 * time.Millisecond)
-	assert.True(executed.Get(), "node not pruned")
+	log.Print("[run] wait for prune node")
+	wg.Wait()
+	log.Print("[result] node pruned")
 
-	// test for drop queue (only visible at test coverage)
-	server.InsertNode(&runtime.Node{})
-	server.InsertNode(&runtime.Node{})
-	server.InsertNode(&runtime.Node{})
-	time.Sleep(5 * time.Millisecond)
+	//TODO test query overload
 
 	d.Close()
+	log.Print("closed connection")
 
-	time.Sleep(5 * time.Millisecond)
-	executed.Set(false)
 	server.InsertNode(&runtime.Node{})
-	time.Sleep(5 * time.Millisecond)
-	assert.False(executed.Get(), "message re")
+	log.Print("handle closed client")
 
 	server.Close()
 }

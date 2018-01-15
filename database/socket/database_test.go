@@ -2,6 +2,7 @@ package socket
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -52,39 +53,39 @@ func TestClient(t *testing.T) {
 	assert.NotNil(client)
 	time.Sleep(time.Duration(3) * time.Microsecond)
 
-	decoder := json.NewDecoder(client)
 	var msg Message
 
+	fmt.Println("[run] insert node")
 	conn.InsertNode(&runtime.Node{})
-	err = decoder.Decode(&msg)
+	err = json.NewDecoder(client).Decode(&msg)
+	fmt.Println("[result] insert node")
 	assert.NoError(err)
-	assert.Equal("insert_node", msg.Event)
+	assert.Equal(MessageEventInsertNode, msg.Event)
 
-	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now(), "global")
-	err = decoder.Decode(&msg)
+	fmt.Println("[run] insert globals")
+	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now(), runtime.GLOBAL_SITE)
+	err = json.NewDecoder(client).Decode(&msg)
+	fmt.Println("[result] insert globals")
 	assert.NoError(err)
-	assert.Equal("insert_globals", msg.Event)
+	assert.Equal(MessageEventInsertGlobals, msg.Event)
 
+	fmt.Println("[run] insert link")
 	conn.InsertLink(&runtime.Link{}, time.Now())
-	err = decoder.Decode(&msg)
+	err = json.NewDecoder(client).Decode(&msg)
+	fmt.Println("[result] insert link")
 	assert.NoError(err)
-	assert.Equal("insert_link", msg.Event)
+	assert.Equal(MessageEventInsertLink, msg.Event)
 
+	fmt.Println("[run] prune nodes")
 	conn.PruneNodes(time.Hour * 24 * 7)
-	err = decoder.Decode(&msg)
+	err = json.NewDecoder(client).Decode(&msg)
+	fmt.Println("[result] prune nodes")
 	assert.NoError(err)
-	assert.Equal("prune_nodes", msg.Event)
+	assert.Equal(MessageEventPruneNodes, msg.Event)
 
-	// test for drop queue (only visible at test coverage)
-	conn.InsertNode(&runtime.Node{})
-	conn.InsertNode(&runtime.Node{})
-	conn.InsertNode(&runtime.Node{})
+	//TODO test for drop queue (only visible at test coverage)
 
 	// to reach in sendJSON removing of disconnection
 	conn.Close()
-
-	conn.InsertNode(&runtime.Node{})
-	err = decoder.Decode(&msg)
-	assert.Error(err)
 
 }

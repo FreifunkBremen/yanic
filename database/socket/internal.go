@@ -8,11 +8,14 @@ import (
 )
 
 func (conn *Connection) handleSocketConnection(ln net.Listener) {
+	conn.running.Add(1)
+	defer conn.running.Done()
 	for {
 		c, err := ln.Accept()
 		if err != nil {
 			if strings.Contains(err.Error(), "use of closed network connection") {
 				log.Println("[socket-database] connection already closed, no new client")
+				close(conn.queue)
 				return
 			}
 			log.Println("[socket-database] error during connection of a client", err)
@@ -25,6 +28,8 @@ func (conn *Connection) handleSocketConnection(ln net.Listener) {
 }
 
 func (conn *Connection) writer() {
+	conn.running.Add(1)
+	defer conn.running.Done()
 	for msg := range conn.queue {
 		conn.clientMux.Lock()
 		for addr, c := range conn.clients {

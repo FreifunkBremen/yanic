@@ -24,6 +24,7 @@ type Connection struct {
 	clients   map[net.Addr]net.Conn
 	clientMux sync.Mutex
 	queue     chan *Message
+	running   sync.WaitGroup
 }
 
 func init() {
@@ -71,4 +72,5 @@ func (conn *Connection) Close() {
 	}
 	conn.clientMux.Unlock()
 	conn.listener.Close()
+	conn.running.Wait()
 }

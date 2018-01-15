@@ -2,9 +2,10 @@ package yanic
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net"
+	"strings"
+	"sync"
 
 	"github.com/FreifunkBremen/yanic/database/socket"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -15,7 +16,7 @@ var queueMaxSize = 1024
 type Dialer struct {
 	conn              net.Conn
 	queue             chan socket.Message
-	quit              chan struct{}
+	wg                sync.WaitGroup
 	NodeHandler       func(*runtime.Node)
 	LinkHandler       func(*runtime.Link)
 	GlobalsHandler    func(*runtime.GlobalStats, string)
@@ -30,49 +31,41 @@ func Dial(ctype, addr string) *Dialer {
 	dialer := &Dialer{
 		conn:  conn,
 		queue: make(chan socket.Message, queueMaxSize),
-		quit:  make(chan struct{}),
 	}
 
 	return dialer
 }
 
 func (d *Dialer) Start() {
-	go d.receiver()
-	d.parser()
+	d.wg.Add(1)
+	go d.parser()
+	d.receiver()
+	d.wg.Done()
 }
 func (d *Dialer) Close() {
 	d.conn.Close()
-	close(d.quit)
+	d.wg.Wait()
 }
 
 func (d *Dialer) receiver() {
-	decoder := json.NewDecoder(d.conn)
 	var msg socket.Message
-
 	for {
+		err := json.NewDecoder(d.conn).Decode(&msg)
+		if err != nil {
+			if strings.Contains(err.Error(), "use of closed network connection") {
+				log.Printf("[yanic-client] connection closed: %s", err)
+				close(d.queue)
+				return
+			}
+			log.Printf("[yanic-client] could not decode message: %s", err)
+			continue
+		}
 		select {
-		case <-d.quit:
-			close(d.queue)
-			return
+		case d.queue <- msg:
 		default:
-			err := decoder.Decode(&msg)
-			if err != nil {
-				if err == io.EOF {
-					log.Printf("[yanic-client] connection closed: %s", err)
-					d.conn.Close()
-					close(d.quit)
-					close(d.queue)
-					return
-				}
-				log.Printf("[yanic-client] could not decode message: %s", err)
-				continue
-			}
-			select {
-			case d.queue <- msg:
-			default:
-				log.Println("[yanic-client] full queue, drop latest entry")
-				<-d.queue
-			}
+			log.Println("[yanic-client] full queue, drop latest entry")
+			<-d.queue
+			d.queue <- msg
 		}
 	}
 }
@@ -84,16 +77,21 @@ func (d *Dialer) parser() {
 			if d.NodeHandler != nil {
 				var node runtime.Node
 
-				obj, _ := json.Marshal(msg.Body)
-				json.Unmarshal(obj, &node)
+				err := remashal(msg.Body, &node)
+				if err != nil {
+					break
+				}
+
 				d.NodeHandler(&node)
 			}
 		case socket.MessageEventInsertLink:
 			if d.GlobalsHandler != nil {
 				var link runtime.Link
 
-				obj, _ := json.Marshal(msg.Body)
-				json.Unmarshal(obj, &link)
+				err := remashal(msg.Body, &link)
+				if err != nil {
+					break
+				}
 
 				d.LinkHandler(&link)
 			}
@@ -101,8 +99,10 @@ func (d *Dialer) parser() {
 			if d.GlobalsHandler != nil {
 				var globals runtime.GlobalStats
 
-				obj, _ := json.Marshal(msg.Body)
-				json.Unmarshal(obj, &globals)
+				err := remashal(msg.Body, &globals)
+				if err != nil {
+					break
+				}
 
 				d.GlobalsHandler(&globals, msg.Site)
 			}
@@ -110,6 +110,19 @@ func (d *Dialer) parser() {
 			if d.PruneNodesHandler != nil {
 				d.PruneNodesHandler()
 			}
+
+		default:
+			log.Printf("[yanic-client] unknown message: %s", msg.Event)
 		}
 	}
+	log.Println("[yanic-client] close")
+}
+
+func remashal(in, out interface{}) (err error) {
+	obj, err := json.Marshal(in)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(obj, out)
+	return err
 }
