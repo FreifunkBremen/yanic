@@ -25,11 +25,15 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 			log.Printf("the output type '%s' has no configuration\n", outputType)
 			continue
 		}
-		outputConfigs, ok := configForOutput.([]map[string]interface{})
+		outputConfigs, ok := configForOutput.([]interface{})
 		if !ok {
 			return nil, fmt.Errorf("the output type '%s' has the wrong format", outputType)
 		}
-		for _, config := range outputConfigs {
+		for _, outputConfig := range outputConfigs {
+			config, ok := outputConfig.(map[string]interface{})
+			if !ok {
+				return nil, fmt.Errorf("the output type '%s' has the wrong format", outputType)
+			}
 			if c, ok := config["enable"].(bool); ok && !c {
 				continue
 			}

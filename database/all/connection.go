@@ -22,12 +22,16 @@ func Connect(allConnection map[string]interface{}) (database.Connection, error) 
 			log.Printf("the output type '%s' has no configuration", dbType)
 			continue
 		}
-		dbConfigs, ok := configForType.([]map[string]interface{})
+		dbConfigs, ok := configForType.([]interface{})
 		if !ok {
-			return nil, fmt.Errorf("the output type '%s' has the wrong format", dbType)
+			return nil, fmt.Errorf("the database type '%s' has the wrong format", dbType)
 		}
 
-		for _, config := range dbConfigs {
+		for _, dbConfig := range dbConfigs {
+			config, ok := dbConfig.(map[string]interface{})
+			if !ok {
+				return nil, fmt.Errorf("the database type '%s' has the wrong format", dbType)
+			}
 			if c, ok := config["enable"].(bool); ok && !c {
 				continue
 			}
