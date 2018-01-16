@@ -1,4 +1,4 @@
-package blacklist
+package site
 
 import (
 	"errors"
@@ -7,10 +7,10 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-type blacklist map[string]interface{}
+type sites map[string]interface{}
 
 func init() {
-	filter.Register("blacklist", build)
+	filter.Register("sites", build)
 }
 
 func build(config interface{}) (filter.Filter, error) {
@@ -22,18 +22,18 @@ func build(config interface{}) (filter.Filter, error) {
 		return nil, errors.New("invalid configuration for blacklist filter")
 	}
 
-	list := make(blacklist)
+	list := make(sites)
 	for _, nodeid := range values {
 		list[nodeid] = struct{}{}
 	}
 	return &list, nil
 }
 
-func (list blacklist) Apply(node *runtime.Node) *runtime.Node {
+func (list sites) Apply(node *runtime.Node) *runtime.Node {
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-		if _, ok := list[nodeinfo.NodeID]; ok {
-			return nil
+		if _, ok := list[nodeinfo.System.SiteCode]; ok {
+			return node
 		}
 	}
-	return node
+	return nil
 }

@@ -30,18 +30,22 @@ func Register(name string, f factory) {
 
 // New returns initializes a set of filters
 func New(configs map[string]interface{}) (set Set, errs []error) {
-	for name, config := range configs {
-		f := filters[name]
-		if f == nil {
+	for name := range configs {
+		if _, ok := filters[name]; !ok {
 			errs = append(errs, fmt.Errorf("unknown filter: %s", name))
-			continue
 		}
+	}
+	for name, f := range filters {
+		config := configs[name]
 		filter, err := f(config)
 		if err != nil {
 			errs = append(errs, errors.Wrapf(err, "unable to initialize filter %s", name))
 			continue
 		}
-		set = append(set, filter)
+		if filter != nil {
+			set = append(set, filter)
+		}
+
 	}
 	return
 }

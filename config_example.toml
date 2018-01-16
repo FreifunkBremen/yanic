@@ -52,6 +52,9 @@ offline_after = "10m"
 # List of nodeids of nodes that should be filtered out, so they won't appear in output
 #blacklist = ["00112233445566", "1337f0badead"]
 #
+# List of site_codes of nodes that should be included in the output
+#sites = ["ffhb"]
+#
 # set has_location to true if you want to include only nodes that have geo-coordinates set
 # (setting this to false has no sensible effect, unless you'd want to hide nodes that have coordinates)
 #has_location = true
@@ -72,6 +75,7 @@ path = "/var/www/html/meshviewer/data/meshviewer.json"
 #[nodes.output.meshviewer-ffrgb.filter]
 #no_owner = false
 #blacklist = ["00112233445566", "1337f0badead"]
+#sites = ["ffhb"]
 #has_location = true
 
 #[nodes.output.meshviewer-ffrgb.filter.in_area]

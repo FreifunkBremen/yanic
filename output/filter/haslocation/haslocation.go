@@ -1,6 +1,8 @@
 package haslocation
 
 import (
+	"errors"
+
 	"github.com/FreifunkBremen/yanic/output/filter"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
@@ -10,13 +12,17 @@ type haslocation struct {
 }
 
 func init() {
-	filter.Register("haslocation", build)
+	filter.Register("has_location", build)
 }
 
-func build(config interface{}) (filter.Filter, error) {
-	return &haslocation{
-		has: config.(bool),
-	}, nil
+func build(v interface{}) (filter.Filter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	if config, ok := v.(bool); ok {
+		return &haslocation{has: config}, nil
+	}
+	return nil, errors.New("invalid configuration for haslocation filter")
 }
 
 func (h *haslocation) Apply(node *runtime.Node) *runtime.Node {

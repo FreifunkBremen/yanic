@@ -1,23 +1,31 @@
 package noowner
 
 import (
+	"errors"
+
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/output/filter"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-type noowner struct{}
+type noowner struct{ has bool }
 
 func init() {
 	filter.Register("noowner", build)
 }
 
-func build(_ interface{}) (filter.Filter, error) {
-	return &noowner{}, nil
+func build(v interface{}) (filter.Filter, error) {
+	if v == nil {
+		return &noowner{has: true}, nil
+	}
+	if config, ok := v.(bool); ok {
+		return &noowner{has: config}, nil
+	}
+	return nil, errors.New("invalid configuration for noowner filter")
 }
 
 func (no *noowner) Apply(node *runtime.Node) *runtime.Node {
-	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+	if nodeinfo := node.Nodeinfo; nodeinfo != nil && no.has {
 		node = &runtime.Node{
 			Address:    node.Address,
 			Firstseen:  node.Firstseen,

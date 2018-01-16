@@ -5,18 +5,19 @@ import (
 	"log"
 
 	"github.com/FreifunkBremen/yanic/output"
+	"github.com/FreifunkBremen/yanic/output/filter"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 type Output struct {
 	output.Output
-	list   map[int]output.Output
-	filter map[int]filterConfig
+	list         map[int]output.Output
+	outputFilter map[int]filter.Set
 }
 
 func Register(configuration map[string]interface{}) (output.Output, error) {
 	list := make(map[int]output.Output)
-	filter := make(map[int]filterConfig)
+	outputFilter := make(map[int]filter.Set)
 	i := 1
 	allOutputs := configuration
 	for outputType, outputRegister := range output.Adapters {
@@ -44,24 +45,32 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 			if output == nil {
 				continue
 			}
-			list[i] = output
+			var errs []error
+			var filterSet filter.Set
 			if c := config["filter"]; c != nil {
-				filter[i] = config["filter"].(map[string]interface{})
+				if filterConf, ok := c.(map[string]interface{}); ok {
+					filterSet, errs = filter.New(filterConf)
+				}
 			}
+			if filterSet == nil {
+				filterSet, errs = filter.New(map[string]interface{}{})
+			}
+			if len(errs) > 0 {
+				return nil, fmt.Errorf("filter configuration errors: %v", errs)
+			}
+			list[i] = output
+			outputFilter[i] = filterSet
 			i++
 		}
 	}
-	return &Output{list: list, filter: filter}, nil
+	return &Output{list: list, outputFilter: outputFilter}, nil
 }
 
 func (o *Output) Save(nodes *runtime.Nodes) {
 	for i, item := range o.list {
 		var filteredNodes *runtime.Nodes
-		if config := o.filter[i]; config != nil {
-			filteredNodes = config.filtering(nodes)
-		} else {
-			filteredNodes = filterConfig{}.filtering(nodes)
-		}
+
+		filteredNodes = o.outputFilter[i].Apply(nodes)
 
 		item.Save(filteredNodes)
 	}

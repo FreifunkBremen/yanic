@@ -15,11 +15,13 @@ type area struct {
 }
 
 func init() {
-	filter.Register("inarea", build)
+	filter.Register("in_area", build)
 }
 
 func build(config interface{}) (filter.Filter, error) {
-
+	if config == nil {
+		return nil, nil
+	}
 	m, ok := config.(map[string]interface{})
 	if !ok {
 		return nil, errors.New("invalid configuration for inarea filter")
@@ -37,6 +39,13 @@ func build(config interface{}) (filter.Filter, error) {
 	}
 	if v, ok := m["longitude_max"]; ok {
 		a.longitudeMax = v.(float64)
+	}
+
+	if a.latitudeMin >= a.latitudeMax {
+		return nil, errors.New("invalid latitude: max is bigger then min")
+	}
+	if a.longitudeMin >= a.longitudeMax {
+		return nil, errors.New("invalid longitude: max is bigger then min")
 	}
 
 	// TODO bessere Fehlerbehandlung!

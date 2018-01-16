@@ -57,4 +57,7 @@ func TestFilterInArea(t *testing.T) {
 		Location: &data.Location{Latitude: 1.0, Longitude: 2.0},
 	}})
 	assert.Nil(n)
+
+	_, err := build(true)
+	assert.Error(err)
 }
