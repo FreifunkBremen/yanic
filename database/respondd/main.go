@@ -85,7 +85,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
 }
 
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string, domain string) {
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {

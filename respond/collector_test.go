@@ -9,12 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const SITE_TEST = "ffxx"
+const (
+	SITE_TEST   = "ffhb"
+	DOMAIN_TEST = "city"
+)
 
 func TestCollector(t *testing.T) {
 	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
-	collector := NewCollector(nil, nodes, []string{SITE_TEST}, []string{}, 10001)
+	collector := NewCollector(nil, nodes, map[string][]string{SITE_TEST: {DOMAIN_TEST}}, []string{}, 10001)
 	collector.Start(time.Millisecond)
 	time.Sleep(time.Millisecond * 10)
 	collector.Close()

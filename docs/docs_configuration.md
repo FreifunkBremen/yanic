@@ -15,8 +15,9 @@ enable           = true
 # synchronize    = "1m"
 collect_interval = "1m"
 interfaces       = ["br-ffhb"]
-sites            = ["ffhb"]
 #port            = 10001
+#[respondd.sites.example]
+#domains            = ["city"]
 ```
 {% endmethod %}
 
@@ -64,16 +65,6 @@ interfaces       = ["br-ffhb"]
 {% endmethod %}
 
 
-### sites
-{% method %}
-List of sites to save stats for (empty for global only)
-{% sample lang="toml" %}
-```toml
-sites            = ["ffhb"]
-```
-{% endmethod %}
-
-
 ### port
 {% method %}
 Define a port to listen and send the respondd packages.
@@ -81,6 +72,25 @@ If not set or set to 0 the kernel will use a random free port at its own.
 {% sample lang="toml" %}
 ```toml
 port              = 10001
+```
+{% endmethod %}
+
+### [respondd.sites.example]
+{% method %}
+Tables of sites to save stats for (not exists for global only).
+Here is the site _ffhb_.
+{% sample lang="toml" %}
+```toml
+[respondd.sites.ffhb]
+domains            = ["city"]
+```
+{% endmethod %}
+#### domains
+{% method %}
+list of domains on this site to save stats for (empty for global only)
+{% sample lang="toml" %}
+```toml
+domains            = ["city"]
 ```
 {% endmethod %}
 
@@ -197,6 +207,8 @@ enable = true
 no_owner  = true
 blacklist = ["00112233445566", "1337f0badead"]
 sites = ["ffhb"]
+domain_as_site = true
+domain_append_site = true
 has_location = true
 [nodes.output.example.filter.in_area]
 latitude_min  = 34.30
@@ -257,6 +269,35 @@ blacklist = ["00112233445566", "1337f0badead"]
 ```
 {% endmethod %}
 
+
+### sites
+{% method %}
+List of site_codes of nodes that should be included in output
+{% sample lang="toml" %}
+```toml
+sites = ["ffhb"]
+```
+{% endmethod %}
+
+### domain_as_site
+{% method %}
+Replace the `site_code` with the `domain_code` in this output.
+e.g. `site_code='ffhb',domain_code='city'` becomes `site_code='city', domain_code=''`
+{% sample lang="toml" %}
+```toml
+domain_as_site = true
+```
+{% endmethod %}
+
+### domain_append_site
+{% method %}
+Append on the `site_code` the `domain_code` with a `.` in this output.
+e.g. `site_code='ffhb',domain_code='city'` becomes `site_code='ffhb.city', domain_code=''`
+{% sample lang="toml" %}
+```toml
+domain_append_site = true
+```
+{% endmethod %}
 
 ### sites
 {% method %}

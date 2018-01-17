@@ -50,8 +50,8 @@ func (conn *Connection) InsertLink(link *runtime.Link, time time.Time) {
 	conn.log("InsertLink: ", link)
 }
 
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
-	conn.log("InsertGlobals: [", time.String(), "] site: ", site, ", nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string, domain string) {
+	conn.log("InsertGlobals: [", time.String(), "] site: ", site, " domain: ", domain, ", nodes: ", stats.Nodes, ", clients: ", stats.Clients, " models: ", len(stats.Models))
 }
 
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {

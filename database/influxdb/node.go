@@ -52,6 +52,9 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		if nodeinfo.System.SiteCode != "" {
 			tags.SetString("site", nodeinfo.System.SiteCode)
 		}
+		if nodeinfo.System.DomainCode != "" {
+			tags.SetString("domain", nodeinfo.System.DomainCode)
+		}
 		if owner := nodeinfo.Owner; owner != nil {
 			tags.SetString("owner", owner.Contact)
 		}
