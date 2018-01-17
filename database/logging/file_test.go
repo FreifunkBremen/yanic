@@ -43,7 +43,7 @@ func TestStart(t *testing.T) {
 	assert.Contains(string(dat), "InsertLink")
 
 	assert.NotContains(string(dat), "InsertGlobals")
-	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now(), runtime.GLOBAL_SITE)
+	conn.InsertGlobals(&runtime.GlobalStats{}, time.Now(), runtime.GLOBAL_SITE, runtime.GLOBAL_DOMAIN)
 	dat, _ = ioutil.ReadFile(path)
 	assert.Contains(string(dat), "InsertGlobals")
 

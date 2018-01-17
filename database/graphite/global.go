@@ -7,7 +7,7 @@ import (
 	"github.com/fgrosse/graphigo"
 )
 
-func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
+func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string, domain string) {
 	measurementGlobal := MeasurementGlobal
 	counterMeasurementModel := CounterMeasurementModel
 	counterMeasurementFirmware := CounterMeasurementFirmware
@@ -18,6 +18,13 @@ func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, s
 		counterMeasurementModel += "_" + site
 		counterMeasurementFirmware += "_" + site
 		counterMeasurementAutoupdater += "_" + site
+	}
+
+	if domain != runtime.GLOBAL_DOMAIN {
+		measurementGlobal += "_" + domain
+		counterMeasurementModel += "_" + domain
+		counterMeasurementFirmware += "_" + domain
+		counterMeasurementAutoupdater += "_" + domain
 	}
 
 	c.addPoint(GlobalStatsFields(measurementGlobal, stats))

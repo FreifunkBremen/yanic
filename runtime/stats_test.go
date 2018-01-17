@@ -8,49 +8,70 @@ import (
 	"github.com/FreifunkBremen/yanic/data"
 )
 
-const TEST_SITE = "ffxx"
+const (
+	TEST_SITE   = "ffhb"
+	TEST_DOMAIN = "city"
+)
 
 func TestGlobalStats(t *testing.T) {
-	stats := NewGlobalStats(createTestNodes(), []string{TEST_SITE})
+	stats := NewGlobalStats(createTestNodes(), map[string][]string{TEST_SITE: {TEST_DOMAIN}})
 
 	assert := assert.New(t)
 	assert.Len(stats, 2)
 
 	//check GLOBAL_SITE stats
-	assert.EqualValues(1, stats[GLOBAL_SITE].Gateways)
-	assert.EqualValues(3, stats[GLOBAL_SITE].Nodes)
-	assert.EqualValues(25, stats[GLOBAL_SITE].Clients)
+	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Gateways)
+	assert.EqualValues(3, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Nodes)
+	assert.EqualValues(25, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Clients)
 
 	// check models
-	assert.Len(stats[GLOBAL_SITE].Models, 2)
-	assert.EqualValues(2, stats[GLOBAL_SITE].Models["TP-Link 841"])
-	assert.EqualValues(1, stats[GLOBAL_SITE].Models["Xeon Multi-Core"])
+	assert.Len(stats[GLOBAL_SITE][GLOBAL_DOMAIN].Models, 2)
+	assert.EqualValues(2, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Models["TP-Link 841"])
+	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Models["Xeon Multi-Core"])
 
 	// check firmwares
-	assert.Len(stats[GLOBAL_SITE].Firmwares, 1)
-	assert.EqualValues(1, stats[GLOBAL_SITE].Firmwares["2016.1.6+entenhausen1"])
+	assert.Len(stats[GLOBAL_SITE][GLOBAL_DOMAIN].Firmwares, 1)
+	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Firmwares["2016.1.6+entenhausen1"])
 
 	// check autoupdater
-	assert.Len(stats[GLOBAL_SITE].Autoupdater, 2)
-	assert.EqualValues(1, stats[GLOBAL_SITE].Autoupdater["stable"])
+	assert.Len(stats[GLOBAL_SITE][GLOBAL_DOMAIN].Autoupdater, 2)
+	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Autoupdater["stable"])
 
 	// check TEST_SITE stats
-	assert.EqualValues(1, stats[TEST_SITE].Gateways)
-	assert.EqualValues(2, stats[TEST_SITE].Nodes)
-	assert.EqualValues(23, stats[TEST_SITE].Clients)
+	assert.EqualValues(1, stats[TEST_SITE][GLOBAL_DOMAIN].Gateways)
+	assert.EqualValues(2, stats[TEST_SITE][GLOBAL_DOMAIN].Nodes)
+	assert.EqualValues(23, stats[TEST_SITE][GLOBAL_DOMAIN].Clients)
 
 	// check models
-	assert.Len(stats[TEST_SITE].Models, 2)
-	assert.EqualValues(1, stats[TEST_SITE].Models["TP-Link 841"])
-	assert.EqualValues(1, stats[TEST_SITE].Models["Xeon Multi-Core"])
+	assert.Len(stats[TEST_SITE][GLOBAL_DOMAIN].Models, 2)
+	assert.EqualValues(1, stats[TEST_SITE][GLOBAL_DOMAIN].Models["TP-Link 841"])
+	assert.EqualValues(1, stats[TEST_SITE][GLOBAL_DOMAIN].Models["Xeon Multi-Core"])
 
 	// check firmwares
-	assert.Len(stats[TEST_SITE].Firmwares, 1)
-	assert.EqualValues(1, stats[TEST_SITE].Firmwares["2016.1.6+entenhausen1"])
+	assert.Len(stats[TEST_SITE][GLOBAL_DOMAIN].Firmwares, 1)
+	assert.EqualValues(1, stats[TEST_SITE][GLOBAL_DOMAIN].Firmwares["2016.1.6+entenhausen1"])
 
 	// check autoupdater
-	assert.Len(stats[TEST_SITE].Autoupdater, 1)
-	assert.EqualValues(0, stats[TEST_SITE].Autoupdater["stable"])
+	assert.Len(stats[TEST_SITE][GLOBAL_DOMAIN].Autoupdater, 1)
+	assert.EqualValues(0, stats[TEST_SITE][GLOBAL_DOMAIN].Autoupdater["stable"])
+
+	// check TEST_DOMAIN stats
+	assert.EqualValues(1, stats[TEST_SITE][TEST_DOMAIN].Gateways)
+	assert.EqualValues(1, stats[TEST_SITE][TEST_DOMAIN].Nodes)
+	assert.EqualValues(0, stats[TEST_SITE][TEST_DOMAIN].Clients)
+
+	// check models
+	assert.Len(stats[TEST_SITE][TEST_DOMAIN].Models, 1)
+	assert.EqualValues(0, stats[TEST_SITE][TEST_DOMAIN].Models["TP-Link 841"])
+	assert.EqualValues(1, stats[TEST_SITE][TEST_DOMAIN].Models["Xeon Multi-Core"])
+
+	// check firmwares
+	assert.Len(stats[TEST_SITE][TEST_DOMAIN].Firmwares, 0)
+	assert.EqualValues(0, stats[TEST_SITE][TEST_DOMAIN].Firmwares["2016.1.6+entenhausen1"])
+
+	// check autoupdater
+	assert.Len(stats[TEST_SITE][TEST_DOMAIN].Autoupdater, 1)
+	assert.EqualValues(0, stats[TEST_SITE][TEST_DOMAIN].Autoupdater["stable"])
 }
 
 func createTestNodes() *Nodes {
@@ -109,7 +130,8 @@ func createTestNodes() *Nodes {
 				Model: "Xeon Multi-Core",
 			},
 			System: data.System{
-				SiteCode: TEST_SITE,
+				SiteCode:   TEST_SITE,
+				DomainCode: TEST_DOMAIN,
 			},
 		},
 	})

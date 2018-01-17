@@ -12,18 +12,24 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-const TEST_SITE = "ffxx"
+const (
+	TEST_SITE   = "ffhb"
+	TEST_DOMAIN = "city"
+)
 
 func TestGlobalStats(t *testing.T) {
-	stats := runtime.NewGlobalStats(createTestNodes(), []string{TEST_SITE})
+	stats := runtime.NewGlobalStats(createTestNodes(), map[string][]string{TEST_SITE: {TEST_DOMAIN}})
 
 	assert := assert.New(t)
 
 	// check SITE_GLOBAL fields
-	fields := GlobalStatsFields(stats[runtime.GLOBAL_SITE])
+	fields := GlobalStatsFields(stats[runtime.GLOBAL_SITE][runtime.GLOBAL_DOMAIN])
 	assert.EqualValues(3, fields["nodes"])
 
-	fields = GlobalStatsFields(stats[TEST_SITE])
+	fields = GlobalStatsFields(stats[TEST_SITE][runtime.GLOBAL_DOMAIN])
+	assert.EqualValues(2, fields["nodes"])
+	fields = GlobalStatsFields(stats[TEST_SITE][TEST_DOMAIN])
+
 	assert.EqualValues(1, fields["nodes"])
 
 	conn := &Connection{
@@ -32,59 +38,80 @@ func TestGlobalStats(t *testing.T) {
 
 	global := 0
 	globalSite := 0
+	globalDomain := 0
+
 	model := 0
 	modelSite := 0
+	modelDomain := 0
+
 	firmware := 0
 	firmwareSite := 0
+	firmwareDomain := 0
+
 	autoupdater := 0
 	autoupdaterSite := 0
+	autoupdaterDomain := 0
+
 	wg := sync.WaitGroup{}
-	wg.Add(9)
+	wg.Add(15)
 	go func() {
 		for p := range conn.points {
 			switch p.Name() {
 			case MeasurementGlobal:
 				global++
-				break
 			case "global_site":
 				globalSite++
-				break
+			case "global_site_domain":
+				globalDomain++
+
 			case CounterMeasurementModel:
 				model++
-				break
 			case "model_site":
 				modelSite++
-				break
+			case "model_site_domain":
+				modelDomain++
+
 			case CounterMeasurementFirmware:
 				firmware++
-				break
 			case "firmware_site":
 				firmwareSite++
-				break
+			case "firmware_site_domain":
+				firmwareDomain++
+
 			case CounterMeasurementAutoupdater:
 				autoupdater++
-				break
 			case "autoupdater_site":
 				autoupdaterSite++
-				break
+			case "autoupdater_site_domain":
+				autoupdaterDomain++
+
 			default:
 				assert.Equal("invalid p.Name found", p.Name())
 			}
 			wg.Done()
 		}
 	}()
-	for site, stat := range stats {
-		conn.InsertGlobals(stat, time.Now(), site)
+	for site, domains := range stats {
+		for domain, stat := range domains {
+			conn.InsertGlobals(stat, time.Now(), site, domain)
+		}
 	}
 	wg.Wait()
 	assert.Equal(1, global)
 	assert.Equal(1, globalSite)
+	assert.Equal(1, globalDomain)
+
 	assert.Equal(2, model)
-	assert.Equal(1, modelSite)
+	assert.Equal(2, modelSite)
+	assert.Equal(1, modelDomain)
+
 	assert.Equal(1, firmware)
-	assert.Equal(0, firmwareSite)
+	assert.Equal(1, firmwareSite)
+	assert.Equal(0, firmwareDomain)
+
 	assert.Equal(2, autoupdater)
-	assert.Equal(1, autoupdaterSite)
+	assert.Equal(2, autoupdaterSite)
+	assert.Equal(1, autoupdaterDomain)
 }
 
 func createTestNodes() *runtime.Nodes {
@@ -102,7 +129,9 @@ func createTestNodes() *runtime.Nodes {
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
 			},
-			System: data.System{},
+			System: data.System{
+				SiteCode: TEST_SITE,
+			},
 		},
 	}
 	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
@@ -134,7 +163,8 @@ func createTestNodes() *runtime.Nodes {
 				Model: "Xeon Multi-Core",
 			},
 			System: data.System{
-				SiteCode: TEST_SITE,
+				SiteCode:   TEST_SITE,
+				DomainCode: TEST_DOMAIN,
 			},
 		},
 	})

@@ -3,6 +3,7 @@ package runtime
 const (
 	DISABLED_AUTOUPDATER = "disabled"
 	GLOBAL_SITE          = "global"
+	GLOBAL_DOMAIN        = "global"
 )
 
 // CounterMap to manage multiple values
@@ -23,32 +24,45 @@ type GlobalStats struct {
 }
 
 //NewGlobalStats returns global statistics for InfluxDB
-func NewGlobalStats(nodes *Nodes, sites []string) (result map[string]*GlobalStats) {
-	result = make(map[string]*GlobalStats)
+func NewGlobalStats(nodes *Nodes, sitesDomains map[string][]string) (result map[string]map[string]*GlobalStats) {
+	result = make(map[string]map[string]*GlobalStats)
 
-	result[GLOBAL_SITE] = &GlobalStats{
+	result[GLOBAL_SITE] = make(map[string]*GlobalStats)
+	result[GLOBAL_SITE][GLOBAL_DOMAIN] = &GlobalStats{
 		Firmwares:   make(CounterMap),
 		Models:      make(CounterMap),
 		Autoupdater: make(CounterMap),
 	}
 
-	for _, site := range sites {
-		result[site] = &GlobalStats{
+	for site, domains := range sitesDomains {
+		result[site] = make(map[string]*GlobalStats)
+		result[site][GLOBAL_DOMAIN] = &GlobalStats{
 			Firmwares:   make(CounterMap),
 			Models:      make(CounterMap),
 			Autoupdater: make(CounterMap),
+		}
+		for _, domain := range domains {
+			result[site][domain] = &GlobalStats{
+				Firmwares:   make(CounterMap),
+				Models:      make(CounterMap),
+				Autoupdater: make(CounterMap),
+			}
 		}
 	}
 
 	nodes.RLock()
 	for _, node := range nodes.List {
 		if node.Online {
-			result[GLOBAL_SITE].Add(node)
+			result[GLOBAL_SITE][GLOBAL_DOMAIN].Add(node)
 
 			if info := node.Nodeinfo; info != nil {
 				site := info.System.SiteCode
-				if _, exist := result[site]; exist {
-					result[site].Add(node)
+				domain := info.System.DomainCode
+				if _, ok := result[site]; ok {
+					result[site][GLOBAL_DOMAIN].Add(node)
+					if _, ok := result[site][domain]; ok {
+						result[site][domain].Add(node)
+					}
 				}
 			}
 		}

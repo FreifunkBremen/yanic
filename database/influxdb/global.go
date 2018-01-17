@@ -8,8 +8,8 @@ import (
 )
 
 // InsertGlobals implementation of database
-func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string) {
-	var tags models.Tags
+func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string, domain string) {
+	tags := models.Tags{}
 
 	measurementGlobal := MeasurementGlobal
 	counterMeasurementModel := CounterMeasurementModel
@@ -17,20 +17,26 @@ func (conn *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time
 	counterMeasurementAutoupdater := CounterMeasurementAutoupdater
 
 	if site != runtime.GLOBAL_SITE {
-		tags = models.Tags{
-			models.Tag{Key: []byte("site"), Value: []byte(site)},
-		}
+		tags.Set([]byte("site"), []byte(site))
 
 		measurementGlobal += "_site"
 		counterMeasurementModel += "_site"
 		counterMeasurementFirmware += "_site"
 		counterMeasurementAutoupdater += "_site"
 	}
+	if domain != runtime.GLOBAL_DOMAIN {
+		tags.Set([]byte("domain"), []byte(domain))
+
+		measurementGlobal += "_domain"
+		counterMeasurementModel += "_domain"
+		counterMeasurementFirmware += "_domain"
+		counterMeasurementAutoupdater += "_domain"
+	}
 
 	conn.addPoint(measurementGlobal, tags, GlobalStatsFields(stats), time)
-	conn.addCounterMap(counterMeasurementModel, stats.Models, time, site)
-	conn.addCounterMap(counterMeasurementFirmware, stats.Firmwares, time, site)
-	conn.addCounterMap(counterMeasurementAutoupdater, stats.Autoupdater, time, site)
+	conn.addCounterMap(counterMeasurementModel, stats.Models, time, site, domain)
+	conn.addCounterMap(counterMeasurementFirmware, stats.Firmwares, time, site, domain)
+	conn.addCounterMap(counterMeasurementAutoupdater, stats.Autoupdater, time, site, domain)
 }
 
 // GlobalStatsFields returns fields for InfluxDB
@@ -48,13 +54,14 @@ func GlobalStatsFields(stats *runtime.GlobalStats) map[string]interface{} {
 // Saves the values of a CounterMap in the database.
 // The key are used as 'value' tag.
 // The value is used as 'counter' field.
-func (conn *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time, site string) {
+func (conn *Connection) addCounterMap(name string, m runtime.CounterMap, t time.Time, site string, domain string) {
 	for key, count := range m {
 		conn.addPoint(
 			name,
 			models.Tags{
 				models.Tag{Key: []byte("value"), Value: []byte(key)},
 				models.Tag{Key: []byte("site"), Value: []byte(site)},
+				models.Tag{Key: []byte("domain"), Value: []byte(domain)},
 			},
 			models.Fields{"count": count},
 			t,
