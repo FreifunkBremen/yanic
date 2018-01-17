@@ -15,7 +15,7 @@ type Connection interface {
 	InsertLink(*runtime.Link, time.Time)
 
 	// InsertGlobals stores global statistics
-	InsertGlobals(*runtime.GlobalStats, time.Time, string)
+	InsertGlobals(*runtime.GlobalStats, time.Time, string, string)
 
 	// PruneNodes prunes historical per-node data
 	PruneNodes(deleteAfter time.Duration)

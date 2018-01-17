@@ -20,6 +20,10 @@ func TestReadConfig(t *testing.T) {
 	assert.Equal(time.Hour*24*7, config.Nodes.PruneAfter.Duration)
 	assert.Equal(time.Hour*24*7, config.Database.DeleteAfter.Duration)
 
+	assert.Len(config.Respondd.Sites, 1)
+	assert.Contains(config.Respondd.Sites, "ffhb")
+	assert.Contains(config.Respondd.Sites["ffhb"].Domains, "city")
+
 	// Test output plugins
 	assert.Len(config.Nodes.Output, 3)
 	outputs := config.Nodes.Output["meshviewer"].([]interface{})

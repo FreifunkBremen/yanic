@@ -33,6 +33,7 @@ type Node struct {
 	MAC            string        `json:"mac"`
 	Addresses      []string      `json:"addresses"`
 	SiteCode       string        `json:"site_code,omitempty"`
+	DomainCode     string        `json:"-"`
 	Hostname       string        `json:"hostname"`
 	Owner          string        `json:"owner,omitempty"`
 	Location       *Location     `json:"location,omitempty"`
@@ -85,6 +86,7 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		node.MAC = nodeinfo.Network.Mac
 		node.Addresses = nodeinfo.Network.Addresses
 		node.SiteCode = nodeinfo.System.SiteCode
+		node.DomainCode = nodeinfo.System.DomainCode
 		node.Hostname = nodeinfo.Hostname
 		if owner := nodeinfo.Owner; owner != nil {
 			node.Owner = owner.Contact

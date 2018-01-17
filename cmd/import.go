@@ -11,13 +11,14 @@ import (
 
 // importCmd represents the import command
 var importCmd = &cobra.Command{
-	Use:     "import <file.rrd> <site>",
+	Use:     "import <file.rrd> <site> <domain>",
 	Short:   "Imports global statistics from the given RRD files, requires InfluxDB",
-	Example: "yanic import --config /etc/yanic.toml olddata.rrd global",
-	Args:    cobra.ExactArgs(2),
+	Example: "yanic import --config /etc/yanic.toml olddata.rrd global global",
+	Args:    cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		path := args[0]
 		site := args[1]
+		domain := args[2]
 		config := loadConfig()
 
 		err := allDatabase.Start(config.Database)
@@ -36,6 +37,7 @@ var importCmd = &cobra.Command{
 				},
 				ds.Time,
 				site,
+				domain,
 			)
 		}
 	},

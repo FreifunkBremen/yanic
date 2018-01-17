@@ -11,12 +11,17 @@ synchronize      = "1m"
 collect_interval = "1m"
 # interface that has an IP in your mesh network
 interfaces       = ["br-ffhb"]
-# list of sites to save stats for (empty for global only)
-sites            = []
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
 #port = 10001
 
+# table of a site to save stats for (not exists for global only)
+#[respondd.sites.example]
+## list of domains on this site to save stats for (empty for global only)
+#domains = []
+## example
+[respondd.sites.ffhb]
+domains            = ["city"]
 
 # A little build-in webserver, which statically serves a directory.
 # This is useful for testing purposes or for a little standalone installation.
@@ -55,6 +60,14 @@ offline_after = "10m"
 #
 # List of site_codes of nodes that should be included in the output
 #sites = ["ffhb"]
+#
+# replace the site_code with the domain_code in this output
+# e.g. site_code='ffhb',domain_code='city' => site_code='city', domain_code=''
+#domain_as_site = true
+#
+# append on the site_code the domain_code with a '.' in this output
+# e.g. site_code='ffhb',domain_code='city' => site_code='ffhb.city', domain_code=''
+#domain_append_site = true
 #
 # set has_location to true if you want to include only nodes that have geo-coordinates set
 # (setting this to false has no sensible effect, unless you'd want to hide nodes that have coordinates)

@@ -21,25 +21,25 @@ type Collector struct {
 	ifaceToConn map[string]*net.UDPConn // map from interface name to UDP socket
 	port        int
 
-	queue    chan *Response // received responses
-	db       database.Connection
-	nodes    *runtime.Nodes
-	sites    []string
-	interval time.Duration // Interval for multicast packets
-	stop     chan interface{}
+	queue        chan *Response // received responses
+	db           database.Connection
+	nodes        *runtime.Nodes
+	sitesDomains map[string][]string
+	interval     time.Duration // Interval for multicast packets
+	stop         chan interface{}
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db database.Connection, nodes *runtime.Nodes, sites []string, ifaces []string, port int) *Collector {
+func NewCollector(db database.Connection, nodes *runtime.Nodes, sitesDomains map[string][]string, ifaces []string, port int) *Collector {
 
 	coll := &Collector{
-		db:          db,
-		nodes:       nodes,
-		sites:       sites,
-		port:        port,
-		queue:       make(chan *Response, 400),
-		stop:        make(chan interface{}),
-		ifaceToConn: make(map[string]*net.UDPConn),
+		db:           db,
+		nodes:        nodes,
+		sitesDomains: sitesDomains,
+		port:         port,
+		queue:        make(chan *Response, 400),
+		stop:         make(chan interface{}),
+		ifaceToConn:  make(map[string]*net.UDPConn),
 	}
 
 	for _, iface := range ifaces {
@@ -302,9 +302,11 @@ func (coll *Collector) globalStatsWorker() {
 
 // saves global statistics
 func (coll *Collector) saveGlobalStats() {
-	stats := runtime.NewGlobalStats(coll.nodes, coll.sites)
+	stats := runtime.NewGlobalStats(coll.nodes, coll.sitesDomains)
 
-	for site, stat := range stats {
-		coll.db.InsertGlobals(stat, time.Now(), site)
+	for site, domains := range stats {
+		for domain, stat := range domains {
+			coll.db.InsertGlobals(stat, time.Now(), site, domain)
+		}
 	}
 }
