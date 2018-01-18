@@ -11,20 +11,9 @@ import (
 func TestFilter(t *testing.T) {
 	assert := assert.New(t)
 
-	// delete owner without configuration
-	filter, _ := build(nil)
-	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
-		Owner: &data.Owner{
-			Contact: "blub",
-		},
-	}})
-
-	assert.NotNil(n)
-	assert.Nil(n.Nodeinfo.Owner)
-
 	// delete owner by configuration
-	filter, _ = build(true)
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	filter, _ := build(true)
+	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
 		Owner: &data.Owner{
 			Contact: "blub",
 		},

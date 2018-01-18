@@ -15,13 +15,10 @@ func init() {
 }
 
 func build(v interface{}) (filter.Filter, error) {
-	if v == nil {
-		return &noowner{has: true}, nil
-	}
 	if config, ok := v.(bool); ok {
 		return &noowner{has: config}, nil
 	}
-	return nil, errors.New("invalid configuration for noowner filter")
+	return nil, errors.New("invalid configuration, boolean expected")
 }
 
 func (no *noowner) Apply(node *runtime.Node) *runtime.Node {

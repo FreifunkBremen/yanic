@@ -7,7 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// factory function for a filter
+// factory function for building a filter
+// may return nil if the filter never applies
 type factory func(interface{}) (Filter, error)
 
 // Filter is a filter instance
@@ -28,24 +29,21 @@ func Register(name string, f factory) {
 	filters[name] = f
 }
 
-// New returns initializes a set of filters
+// New returns and initializes a set of filters
 func New(configs map[string]interface{}) (set Set, errs []error) {
-	for name := range configs {
-		if _, ok := filters[name]; !ok {
-			errs = append(errs, fmt.Errorf("unknown filter: %s", name))
-		}
-	}
-	for name, f := range filters {
-		config := configs[name]
-		filter, err := f(config)
-		if err != nil {
-			errs = append(errs, errors.Wrapf(err, "unable to initialize filter %s", name))
-			continue
-		}
-		if filter != nil {
-			set = append(set, filter)
+	for name, config := range configs {
+		if config == nil {
+			return
 		}
 
+		f, _ := filters[name]
+		if f == nil {
+			errs = append(errs, fmt.Errorf("unknown filter: %s", name))
+		} else if filter, err := f(config); err != nil {
+			errs = append(errs, errors.Wrapf(err, "unable to initialize filter %s", name))
+		} else if filter != nil {
+			set = append(set, filter)
+		}
 	}
 	return
 }

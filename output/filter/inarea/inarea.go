@@ -19,12 +19,9 @@ func init() {
 }
 
 func build(config interface{}) (filter.Filter, error) {
-	if config == nil {
-		return nil, nil
-	}
 	m, ok := config.(map[string]interface{})
 	if !ok {
-		return nil, errors.New("invalid configuration for inarea filter")
+		return nil, errors.New("invalid configuration, map expected")
 	}
 
 	a := area{}

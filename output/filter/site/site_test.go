@@ -11,11 +11,7 @@ import (
 func TestFilterSite(t *testing.T) {
 	assert := assert.New(t)
 
-	filter, err := build(nil)
-	assert.NoError(err)
-	assert.Nil(filter)
-
-	filter, err = build([]string{"ffhb"})
+	filter, err := build([]string{"ffhb"})
 	assert.NoError(err)
 
 	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{System: data.System{SiteCode: "ffxx"}}})

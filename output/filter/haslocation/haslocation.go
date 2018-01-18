@@ -16,13 +16,10 @@ func init() {
 }
 
 func build(v interface{}) (filter.Filter, error) {
-	if v == nil {
-		return nil, nil
-	}
 	if config, ok := v.(bool); ok {
 		return &haslocation{has: config}, nil
 	}
-	return nil, errors.New("invalid configuration for haslocation filter")
+	return nil, errors.New("invalid configuration, bool expected")
 }
 
 func (h *haslocation) Apply(node *runtime.Node) *runtime.Node {

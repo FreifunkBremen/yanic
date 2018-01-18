@@ -118,5 +118,4 @@ func TestStart(t *testing.T) {
 		},
 	})
 	assert.Error(err)
-
 }

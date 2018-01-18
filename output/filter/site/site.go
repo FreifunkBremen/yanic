@@ -14,12 +14,9 @@ func init() {
 }
 
 func build(config interface{}) (filter.Filter, error) {
-	if config == nil {
-		return nil, nil
-	}
 	values, ok := config.([]string)
 	if !ok {
-		return nil, errors.New("invalid configuration for blacklist filter")
+		return nil, errors.New("invalid configuration, array of strings expected")
 	}
 
 	list := make(sites)

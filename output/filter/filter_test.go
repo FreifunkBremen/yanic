@@ -55,7 +55,7 @@ func TestFilter(t *testing.T) {
 		"test_nil": 3,
 	})
 	assert.Len(err, 0)
-	assert.Nil(filter)
+	assert.Len(filter, 0)
 
 	// filter error
 	filter, err = New(map[string]interface{}{
