@@ -21,10 +21,9 @@ type Config struct {
 }
 
 var (
-	configPath  string
-	collector   *respond.Collector
-	connections database.Connection
-	nodes       *runtime.Nodes
+	configPath string
+	collector  *respond.Collector
+	nodes      *runtime.Nodes
 )
 
 func loadConfig() *Config {

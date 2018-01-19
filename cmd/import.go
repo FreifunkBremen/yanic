@@ -29,7 +29,7 @@ var importCmd = &cobra.Command{
 		log.Println("importing RRD from", path)
 
 		for ds := range rrd.Read(path) {
-			connections.InsertGlobals(
+			allDatabase.Conn.InsertGlobals(
 				&runtime.GlobalStats{
 					Nodes:   uint32(ds.Nodes),
 					Clients: uint32(ds.Clients),

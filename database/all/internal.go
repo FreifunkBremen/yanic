@@ -7,12 +7,12 @@ import (
 	"github.com/FreifunkBremen/yanic/database"
 )
 
-var conn database.Connection
+var Conn database.Connection
 var wg = sync.WaitGroup{}
 var quit chan struct{}
 
 func Start(config database.Config) (err error) {
-	conn, err = Connect(config.Connection)
+	Conn, err = Connect(config.Connection)
 	if err != nil {
 		return
 	}
@@ -25,7 +25,7 @@ func Start(config database.Config) (err error) {
 func Close() {
 	close(quit)
 	wg.Wait()
-	conn.Close()
+	Conn.Close()
 	quit = nil
 }
 
@@ -35,7 +35,7 @@ func deleteWorker(deleteInterval time.Duration, deleteAfter time.Duration) {
 	for {
 		select {
 		case <-ticker.C:
-			conn.PruneNodes(deleteAfter)
+			Conn.PruneNodes(deleteAfter)
 		case <-quit:
 			ticker.Stop()
 			wg.Done()
