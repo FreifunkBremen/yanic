@@ -18,7 +18,7 @@ const (
 	CounterMeasurementFirmware    = "firmware"    // Measurement for firmware statistics
 	CounterMeasurementModel       = "model"       // Measurement for model statistics
 	CounterMeasurementAutoupdater = "autoupdater" // Measurement for autoupdater
-	batchMaxSize                  = 500
+	batchMaxSize                  = 1000
 	batchTimeout                  = 5 * time.Second
 )
 
@@ -69,10 +69,15 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 		return nil, err
 	}
 
+	_, _, err = c.Ping(time.Millisecond * 50)
+	if err != nil {
+		return nil, err
+	}
+
 	db := &Connection{
 		config: config,
 		client: c,
-		points: make(chan *client.Point, 1000),
+		points: make(chan *client.Point, batchMaxSize),
 	}
 
 	db.wg.Add(1)

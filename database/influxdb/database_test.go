@@ -1,6 +1,8 @@
 package influxdb
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -27,6 +29,21 @@ func TestConnect(t *testing.T) {
 		"username": "",
 		"password": "",
 	})
+	assert.Nil(conn)
+	assert.Error(err)
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+
+	conn, err = Connect(map[string]interface{}{
+		"address":  srv.URL,
+		"database": "",
+		"username": "",
+		"password": "",
+	})
+
 	assert.NotNil(conn)
 	assert.NoError(err)
 }
