@@ -106,7 +106,7 @@ func TestStart(t *testing.T) {
 	})
 	assert.Error(err)
 
-	// output error
+	// output error invalid config of filter
 	_, err = Register(map[string]interface{}{
 		"a": []interface{}{
 			map[string]interface{}{

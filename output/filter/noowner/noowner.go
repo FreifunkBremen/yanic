@@ -14,9 +14,9 @@ func init() {
 	filter.Register("noowner", build)
 }
 
-func build(v interface{}) (filter.Filter, error) {
-	if config, ok := v.(bool); ok {
-		return &noowner{has: config}, nil
+func build(config interface{}) (filter.Filter, error) {
+	if value, ok := config.(bool); ok {
+		return &noowner{has: value}, nil
 	}
 	return nil, errors.New("invalid configuration, boolean expected")
 }

@@ -46,7 +46,8 @@ offline_after = "10m"
 # For each output format there can be set different filters
 #[nodes.output.example.filter]
 #
-# Set to false, if you want the json files to contain the owner information
+# WARNING: if it is not set, it will publish contact information of other persons
+# Set to true, if you did not want the json files to contain the owner information
 #no_owner = true
 #
 # List of nodeids of nodes that should be filtered out, so they won't appear in output
@@ -72,8 +73,9 @@ offline_after = "10m"
 enable   = true
 path = "/var/www/html/meshviewer/data/meshviewer.json"
 
-#[nodes.output.meshviewer-ffrgb.filter]
-#no_owner = false
+[nodes.output.meshviewer-ffrgb.filter]
+# WARNING: if it is not set, it will publish contact information of other persons
+no_owner = false
 #blacklist = ["00112233445566", "1337f0badead"]
 #sites = ["ffhb"]
 #has_location = true
@@ -100,8 +102,9 @@ nodes_path = "/var/www/html/meshviewer/data/nodes.json"
 # path where to store graph.json
 graph_path = "/var/www/html/meshviewer/data/graph.json"
 
-#[nodes.output.meshviewer.filter]
-#no_owner = false
+[nodes.output.meshviewer.filter]
+# WARNING: if it is not set, it will publish contact information of other persons
+no_owner = true
 
 
 # definition for nodelist.json
@@ -109,8 +112,9 @@ graph_path = "/var/www/html/meshviewer/data/graph.json"
 enable   = true
 path = "/var/www/html/meshviewer/data/nodelist.json"
 
-#[nodes.output.nodelist.filter]
-#no_owner = false
+[nodes.output.nodelist.filter]
+# WARNING: if it is not set, it will publish contact information of other persons
+no_owner = true
 
 
 

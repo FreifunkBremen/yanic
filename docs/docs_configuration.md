@@ -237,6 +237,10 @@ longitude_max = 39.72
 ### no_owner
 {% method %}
 Set to false, if you want the json files to contain the owner information
+
+
+**WARNING: if it is not set, it will publish contact information of other persons.**
+
 {% sample lang="toml" %}
 ```toml
 no_owner = true

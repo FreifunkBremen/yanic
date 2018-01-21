@@ -19,22 +19,22 @@ func init() {
 }
 
 func build(config interface{}) (filter.Filter, error) {
-	m, ok := config.(map[string]interface{})
+	values, ok := config.(map[string]interface{})
 	if !ok {
 		return nil, errors.New("invalid configuration, map expected")
 	}
 
 	a := area{}
-	if v, ok := m["latitude_min"]; ok {
+	if v, ok := values["latitude_min"]; ok {
 		a.latitudeMin = v.(float64)
 	}
-	if v, ok := m["latitude_max"]; ok {
+	if v, ok := values["latitude_max"]; ok {
 		a.latitudeMax = v.(float64)
 	}
-	if v, ok := m["longitude_min"]; ok {
+	if v, ok := values["longitude_min"]; ok {
 		a.longitudeMin = v.(float64)
 	}
-	if v, ok := m["longitude_max"]; ok {
+	if v, ok := values["longitude_max"]; ok {
 		a.longitudeMax = v.(float64)
 	}
 
@@ -59,6 +59,7 @@ func (a *area) Apply(node *runtime.Node) *runtime.Node {
 		if location.Latitude >= a.latitudeMin && location.Latitude <= a.latitudeMax && location.Longitude >= a.longitudeMin && location.Longitude <= a.longitudeMax {
 			return node
 		}
+		return nil
 	}
-	return nil
+	return node
 }

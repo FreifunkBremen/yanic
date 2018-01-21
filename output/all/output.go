@@ -51,15 +51,12 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 				if filterConf, ok := c.(map[string]interface{}); ok {
 					filterSet, errs = filter.New(filterConf)
 				}
-			}
-			if filterSet == nil {
-				filterSet, errs = filter.New(map[string]interface{}{})
-			}
-			if len(errs) > 0 {
-				return nil, fmt.Errorf("filter configuration errors: %v", errs)
+				if len(errs) > 0 {
+					return nil, fmt.Errorf("filter configuration errors: %v", errs)
+				}
+				outputFilter[i] = filterSet
 			}
 			list[i] = output
-			outputFilter[i] = filterSet
 			i++
 		}
 	}
@@ -68,10 +65,6 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 
 func (o *Output) Save(nodes *runtime.Nodes) {
 	for i, item := range o.list {
-		var filteredNodes *runtime.Nodes
-
-		filteredNodes = o.outputFilter[i].Apply(nodes)
-
-		item.Save(filteredNodes)
+		item.Save(o.outputFilter[i].Apply(nodes))
 	}
 }
