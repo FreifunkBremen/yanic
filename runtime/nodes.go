@@ -184,6 +184,9 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 	}
 
 	for _, mac := range addresses {
+		if mac == "" {
+			continue
+		}
 		if oldNodeID, _ := nodes.ifaceToNodeID[mac]; oldNodeID != nodeID {
 			if oldNodeID != "" {
 				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, mac)
