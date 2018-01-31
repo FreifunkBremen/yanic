@@ -66,10 +66,10 @@ type Clients struct {
 
 // Memory struct
 type Memory struct {
-	Cached  uint32 `json:"cached"`
-	Total   uint32 `json:"total"`
-	Buffers uint32 `json:"buffers"`
-	Free    uint32 `json:"free"`
+	Cached  int64 `json:"cached"`
+	Total   int64 `json:"total"`
+	Buffers int64 `json:"buffers"`
+	Free    int64 `json:"free"`
 }
 
 // SwitchPort struct
