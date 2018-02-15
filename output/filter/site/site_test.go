@@ -15,7 +15,10 @@ func TestFilterSite(t *testing.T) {
 	filter, err := build("ffhb")
 	assert.Error(err)
 
-	filter, err = build([]string{"ffhb"})
+	filter, err = build([]interface{}{3, "ffhb"})
+	assert.Error(err)
+
+	filter, err = build([]interface{}{"ffhb"})
 	assert.NoError(err)
 
 	// wronge node

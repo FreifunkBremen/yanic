@@ -15,15 +15,20 @@ func TestFilterBlacklist(t *testing.T) {
 	filter, err := build(3)
 	assert.Error(err)
 
+	filter, err = build([]interface{}{2, "a"})
+	assert.Error(err)
+
 	// tests with empty list
-	filter, err = build([]string{})
+	filter, err = build([]interface{}{})
+	assert.NoError(err)
 
 	// keep node without nodeid
 	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
 	assert.NotNil(n)
 
 	// tests with blacklist
-	filter, _ = build([]string{"a", "c"})
+	filter, err = build([]interface{}{"a", "c"})
+	assert.NoError(err)
 
 	// blacklist contains node with nodeid -> drop it
 	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{NodeID: "a"}})
