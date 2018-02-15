@@ -11,7 +11,7 @@ import (
 type noowner struct{ has bool }
 
 func init() {
-	filter.Register("noowner", build)
+	filter.Register("no_owner", build)
 }
 
 func build(config interface{}) (filter.Filter, error) {

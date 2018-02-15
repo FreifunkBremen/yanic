@@ -14,14 +14,18 @@ func init() {
 }
 
 func build(config interface{}) (filter.Filter, error) {
-	values, ok := config.([]string)
+	values, ok := config.([]interface{})
 	if !ok {
-		return nil, errors.New("invalid configuration, array of strings expected")
+		return nil, errors.New("invalid configuration, array (of strings) expected")
 	}
 
 	list := make(sites)
-	for _, nodeid := range values {
-		list[nodeid] = struct{}{}
+	for _, value := range values {
+		if nodeid, ok := value.(string); ok {
+			list[nodeid] = struct{}{}
+		} else {
+			return nil, errors.New("invalid configuration, array of strings expected")
+		}
 	}
 	return &list, nil
 }
