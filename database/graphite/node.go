@@ -92,6 +92,7 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 	}
 
 	addField("load", stats.LoadAverage)
+	addField("nproc", nodeinfo.Hardware.Nproc)
 	addField("time.up", int64(stats.Uptime))
 	addField("time.idle", int64(stats.Idletime))
 	addField("proc.running", stats.Processes.Running)
