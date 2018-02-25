@@ -61,6 +61,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		}
 		// Hardware
 		tags.SetString("model", nodeinfo.Hardware.Model)
+		fields["nproc"] = nodeinfo.Hardware.Nproc
 		tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
 		tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
 		if nodeinfo.Software.Autoupdater.Enabled {
