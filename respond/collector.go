@@ -18,7 +18,6 @@ import (
 // Collector for a specificle respond messages
 type Collector struct {
 	connections []multicastConn // UDP sockets
-	port        int
 
 	queue        chan *Response // received responses
 	db           database.Connection
@@ -30,6 +29,7 @@ type Collector struct {
 
 type multicastConn struct {
 	Conn             *net.UDPConn
+	SendRequest      bool
 	MulticastAddress net.IP
 }
 
@@ -89,6 +89,7 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 
 	coll.connections = append(coll.connections, multicastConn{
 		Conn:             conn,
+		SendRequest:      !iface.SendNoRequest,
 		MulticastAddress: net.ParseIP(multicastAddress),
 	})
 
@@ -163,7 +164,9 @@ func (coll *Collector) sendOnce() {
 func (coll *Collector) sendMulticast() {
 	log.Println("sending multicasts")
 	for _, conn := range coll.connections {
-		coll.sendPacket(conn.Conn, conn.MulticastAddress)
+		if conn.SendRequest {
+			coll.sendPacket(conn.Conn, conn.MulticastAddress)
+		}
 	}
 }
 
