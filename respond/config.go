@@ -25,6 +25,7 @@ type SiteConfig struct {
 type InterfaceConfig struct {
 	InterfaceName    string `toml:"ifname"`
 	IPAddress        string `toml:"ip_address"`
+	SendNoRequest    bool   `toml:"send_no_request"`
 	MulticastAddress string `toml:"multicast_address"`
 	Port             int    `toml:"port"`
 }

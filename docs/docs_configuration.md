@@ -21,6 +21,7 @@ collect_interval = "1m"
 [[respondd.interfaces]]
 ifname             = "br-ffhb"
 #ip_address        = "fe80::..."
+#send_no_request   = false
 #multicast_address = "ff02::2:1001"
 #port              = 10001
 ```
@@ -100,6 +101,7 @@ It is possible to have multiple interfaces, just add this group again with new p
 [[respondd.interfaces]]
 ifname             = "br-ffhb"
 #ip_address        = "fe80::..."
+#send_no_request   = false
 #multicast_address = "ff02::2:1001"
 #port              = 10001
 ```
@@ -121,6 +123,16 @@ If not set or set with empty string it will take an address of ifname.
 {% sample lang="toml" %}
 ```toml
 ip_address          = "fe80::..."
+```
+{% endmethod %}
+
+### send_no_request
+{% method %}
+Disable sending multicast respondd request.
+For receiving only respondd packages e.g. database respondd.
+{% sample lang="toml" %}
+```toml
+send_no_request     = true
 ```
 {% endmethod %}
 
