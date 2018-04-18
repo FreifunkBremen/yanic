@@ -1,0 +1,27 @@
+workspace:
+  base: /go
+  path: src/github.com/FreifunkBremen/yanic
+
+pipeline:
+  build:
+    image: golang:latest
+    commands:
+      - go get ./...
+      - go build
+  codestyle:
+    image: golang:latest
+    commands:
+      - go get github.com/client9/misspell/cmd/misspell
+      - misspell -error .
+      - if [ -n "$(gofmt -s -l .)" ]; then echo "Go code is not formatted, run 'gofmt -s -w .'" >&2; exit 1; fi
+  test:
+    image: golang:latest
+    commands:
+      - go get github.com/stretchr/testify/assert
+      - go test ./... -v -cover
+  test-race:
+    image: golang:latest
+    commands:
+      - go get github.com/stretchr/testify/assert
+      - go test ./... -v -race
+
