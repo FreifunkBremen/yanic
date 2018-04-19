@@ -14,6 +14,7 @@ import (
 const (
 	MeasurementLink               = "link"        // Measurement for per-link statistics
 	MeasurementNode               = "node"        // Measurement for per-node statistics
+	MeasurementDHCP               = "dhcp"        // Measurement for DHCP server statistics
 	MeasurementGlobal             = "global"      // Measurement for summarized global statistics
 	CounterMeasurementFirmware    = "firmware"    // Measurement for firmware statistics
 	CounterMeasurementModel       = "model"       // Measurement for model statistics
