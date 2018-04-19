@@ -9,6 +9,7 @@ package data
 type Statistics struct {
 	NodeID         string  `json:"node_id"`
 	Clients        Clients `json:"clients"`
+	DHCP           *DHCP   `json:"dhcp"`
 	RootFsUsage    float64 `json:"rootfs_usage,omitempty"`
 	LoadAverage    float64 `json:"loadavg,omitempty"`
 	Memory         Memory  `json:"memory,omitempty"`
@@ -62,6 +63,22 @@ type Clients struct {
 	Wifi24 uint32 `json:"wifi24"`
 	Wifi5  uint32 `json:"wifi5"`
 	Total  uint32 `json:"total"`
+}
+
+// DHCP struct
+type DHCP struct {
+	// Packet counters
+	Decline  uint32 `json:"dhcp_decline"`
+	Offer    uint32 `json:"dhcp_offer"`
+	Ack      uint32 `json:"dhcp_ack"`
+	Nak      uint32 `json:"dhcp_nak"`
+	Request  uint32 `json:"dhcp_request"`
+	Discover uint32 `json:"dhcp_discover"`
+	Inform   uint32 `json:"dhcp_inform"`
+	Release  uint32 `json:"dhcp_release"`
+
+	LeasesAllocated uint32 `json:"leases_allocated_4"`
+	LeasesPruned    uint32 `json:"leases_pruned_4"`
 }
 
 // Memory struct

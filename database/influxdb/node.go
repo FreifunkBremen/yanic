@@ -141,5 +141,30 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 	conn.addPoint(MeasurementNode, tags, fields, time)
 
+	// Add DHCP statistics
+	if dhcp := stats.DHCP; dhcp != nil {
+		fields := models.Fields{
+			"decline":  dhcp.Decline,
+			"offer":    dhcp.Offer,
+			"ack":      dhcp.Ack,
+			"nak":      dhcp.Nak,
+			"request":  dhcp.Request,
+			"discover": dhcp.Discover,
+			"inform":   dhcp.Inform,
+			"release":  dhcp.Release,
+
+			"leases.allocated": dhcp.LeasesAllocated,
+			"leases.pruned":    dhcp.LeasesPruned,
+		}
+
+		// Tags
+		tags.SetString("nodeid", stats.NodeID)
+		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+			tags.SetString("hostname", nodeinfo.Hostname)
+		}
+
+		conn.addPoint(MeasurementDHCP, tags, fields, time)
+	}
+
 	return
 }
