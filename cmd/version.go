@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VERSION is set at build time
 var VERSION string
 
 // versionCMD to print version
