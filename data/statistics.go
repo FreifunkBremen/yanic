@@ -30,8 +30,23 @@ type Statistics struct {
 		MgmtTx  *Traffic `json:"mgmt_tx"`
 		MgmtRx  *Traffic `json:"mgmt_rx"`
 	} `json:"traffic,omitempty"`
-	Switch   map[string]*SwitchPort `json:"switch,omitempty"`
-	Wireless WirelessStatistics     `json:"wireless,omitempty"`
+	Switch    map[string]*SwitchPort `json:"switch,omitempty"`
+	Wireless  WirelessStatistics     `json:"wireless,omitempty"`
+	ProcStats *struct {
+		CPU struct {
+			User    uint64 `json:"user"`
+			Nice    uint64 `json:"nice"`
+			System  uint64 `json:"system"`
+			Idle    uint64 `json:"idle"`
+			IOWait  uint64 `json:"iowait"`
+			IRQ     uint64 `json:"irq"`
+			SoftIRQ uint64 `json:"softirq"`
+		} `json:"cpu"`
+		Intr      uint64 `json:"intr"`
+		CTXT      uint64 `json:"ctxt"`
+		SoftIRQ   uint64 `json:"softirq"`
+		Processes uint64 `json:"processes"`
+	} `json:"stat,omitempty"`
 }
 
 // MeshVPNPeerLink struct

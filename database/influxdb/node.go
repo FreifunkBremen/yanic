@@ -106,6 +106,19 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		// total is the sum of all protocols
 		fields["neighbours.total"] = batadv + lldp
 	}
+	if procstat := stats.ProcStats; procstat != nil {
+		fields["stat.cpu.user"] = procstat.CPU.User
+		fields["stat.cpu.nice"] = procstat.CPU.Nice
+		fields["stat.cpu.system"] = procstat.CPU.System
+		fields["stat.cpu.idle"] = procstat.CPU.Idle
+		fields["stat.cpu.iowait"] = procstat.CPU.IOWait
+		fields["stat.cpu.irq"] = procstat.CPU.IRQ
+		fields["stat.cpu.softirq"] = procstat.CPU.SoftIRQ
+		fields["stat.intr"] = procstat.Intr
+		fields["stat.ctxt"] = procstat.CTXT
+		fields["stat.softirq"] = procstat.SoftIRQ
+		fields["stat.processes"] = procstat.Processes
+	}
 
 	if t := stats.Traffic.Rx; t != nil {
 		fields["traffic.rx.bytes"] = int64(t.Bytes)
