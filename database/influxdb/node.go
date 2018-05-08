@@ -115,7 +115,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		fields["stat.cpu.irq"] = procstat.CPU.IRQ
 		fields["stat.cpu.softirq"] = procstat.CPU.SoftIRQ
 		fields["stat.intr"] = procstat.Intr
-		fields["stat.ctxt"] = procstat.CTXT
+		fields["stat.ctxt"] = procstat.ContextSwitches
 		fields["stat.softirq"] = procstat.SoftIRQ
 		fields["stat.processes"] = procstat.Processes
 	}

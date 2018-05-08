@@ -17,6 +17,12 @@ func TestToInflux(t *testing.T) {
 		Statistics: &data.Statistics{
 			NodeID:      "deadbeef",
 			LoadAverage: 0.5,
+			ProcStats: &data.ProcStats{
+				CPU: data.ProcStatsCPU{
+					User: 1,
+				},
+				ContextSwitches: 3,
+			},
 			Wireless: data.WirelessStatistics{
 				&data.WirelessAirtime{Frequency: 5500},
 			},
