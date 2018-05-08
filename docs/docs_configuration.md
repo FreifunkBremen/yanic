@@ -120,6 +120,7 @@ ifname              = "br-ffhb"
 {% method %}
 ip address is the own address which is used for sending.
 If not set or set with empty string it will take an address of ifname.
+(If `multicast_address` is not set the link local address otherwise a global unicast address)
 {% sample lang="toml" %}
 ```toml
 ip_address          = "fe80::..."
