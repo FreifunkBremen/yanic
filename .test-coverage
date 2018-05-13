@@ -25,30 +25,7 @@ do
 done
 
 # Failures have incomplete results, so don't send
-if [ "$FAIL" -eq 0 ]; then
-  goveralls -service=$CI -v -coverprofile=profile.cov
-  bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f profile.cov
-fi
+[ "$FAIL" -ne 0 ] && exit 1
 
-# Test if every package has testfiles
-for dir in $(find . -name "*.go" -printf '%h\0'| sort -zu | sed -z 's/$/\n/');
-do
-  # ignore ./vendor/ completely
-  [[ $dir == ./vendor/* ]] && continue
-
-  if [ "$(ls $dir/*_test.go 2> /dev/null | wc -l)" -eq "0" ]; then
-   echo -n "no test files for $dir";
-   case $dir in
-    '.' | './database/graphite')
-      echo " - but ignored";
-      continue
-    ;;
-    *)
-      echo "";
-      FAIL=1;
-      ;;
-   esac
-  fi
-done
-
-exit $FAIL
+goveralls -service=$CI -v -coverprofile=profile.cov
+bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f profile.cov

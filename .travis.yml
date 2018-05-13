@@ -10,6 +10,7 @@ install:
   - go get golang.org/x/tools/cmd/cover
 script:
   - ./.test-coverage travis-ci
+  - ./.test-testfiles
   - ./.travis.gofmt.sh
   - find . -type f -name '*.go' | grep -v '^./vendor/' | xargs misspell -error
   - go install github.com/FreifunkBremen/yanic
