@@ -6,7 +6,8 @@ jobs:
     working_directory: /go/src/github.com/FreifunkBremen/yanic
     steps:
       - checkout
-      - run: go get -t -d -v ./...
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run: dep ensure
       - run: go install -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=`git -C $GOPATH/src/github.com/FreifunkBremen/yanic rev-parse HEAD`" github.com/FreifunkBremen/yanic
       - store_artifacts:
           path: /go/bin/
@@ -17,7 +18,8 @@ jobs:
     working_directory: /go/src/github.com/FreifunkBremen/yanic
     steps:
       - checkout
-      - run: go get -t -d -v ./...
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run: dep ensure
       - run: go get github.com/mattn/goveralls
       - run: go get golang.org/x/tools/cmd/cover
       - run: ./.test-coverage circle-ci
@@ -30,7 +32,8 @@ jobs:
     working_directory: /go/src/github.com/FreifunkBremen/yanic
     steps:
       - checkout
-      - run: go get -t -d -v ./...
+      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run: dep ensure
       - run: go test -race ./...
 workflows:
   version: 2

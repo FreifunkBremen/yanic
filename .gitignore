@@ -24,3 +24,4 @@ _testmain.go
 *.prof
 webroot
 /config.toml
+/vendor
