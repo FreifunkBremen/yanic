@@ -12,7 +12,7 @@ echo "mode: count" > profile.cov
 FAIL=0
 
 # Standard go tooling behavior is to ignore dirs with leading underscors
-for dir in $(find . -maxdepth 10 -not -path './.git*' -not -path '*/_*' -type d);
+for dir in $(find . -maxdepth 10 -not -path './.git*' -not -path '*/_*' -type d | grep -v '^./vendor/');
 do
   if ls $dir/*.go &> /dev/null; then
     go test -v -covermode=count -coverprofile=profile.tmp $dir || FAIL=$?
@@ -33,6 +33,9 @@ fi
 # Test if every package has testfiles
 for dir in $(find . -name "*.go" -printf '%h\0'| sort -zu | sed -z 's/$/\n/');
 do
+  # ignore ./vendor/ completely
+  [[ $dir == ./vendor/* ]] && continue
+
   if [ "$(ls $dir/*_test.go 2> /dev/null | wc -l)" -eq "0" ]; then
    echo -n "no test files for $dir";
    case $dir in
