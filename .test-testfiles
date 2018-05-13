@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+# checks if every desired package has test files
+
+import os
+import re
+import sys
+
+source_re = re.compile(".*\.go")
+test_re   = re.compile(".*_test\.go")
+missing   = False
+
+for root, dirs, files in os.walk("."):
+  # ignore some paths
+  if root == "." or root == "./database/graphite" or root.startswith("./vendor") or root.startswith("./."):
+    continue
+
+  # source files but not test files?
+  if len(filter(source_re.match, files)) > 0 and len(filter(test_re.match, files)) == 0:
+    print("no test files for {}".format(root))
+    missing = True
+
+if missing:
+  sys.exit(1)
+else:
+  print("every package has test files")
