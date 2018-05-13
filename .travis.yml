@@ -11,5 +11,5 @@ install:
 script:
   - ./.test-coverage travis-ci
   - ./.travis.gofmt.sh
-  - misspell -error .
+  - find . -type f -name '*.go' | grep -v '^./vendor/' | xargs misspell -error
   - go install github.com/FreifunkBremen/yanic
