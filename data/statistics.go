@@ -98,19 +98,19 @@ type SwitchPort struct {
 // ProcStats struct
 type ProcStats struct {
 	CPU             ProcStatsCPU `json:"cpu"`
-	Intr            uint64       `json:"intr"`
-	ContextSwitches uint64       `json:"ctxt"`
-	SoftIRQ         uint64       `json:"softirq"`
-	Processes       uint64       `json:"processes"`
+	Intr            int64        `json:"intr"`
+	ContextSwitches int64        `json:"ctxt"`
+	SoftIRQ         int64        `json:"softirq"`
+	Processes       int64        `json:"processes"`
 }
 
 // ProcStatsCPU struct
 type ProcStatsCPU struct {
-	User    uint64 `json:"user"`
-	Nice    uint64 `json:"nice"`
-	System  uint64 `json:"system"`
-	Idle    uint64 `json:"idle"`
-	IOWait  uint64 `json:"iowait"`
-	IRQ     uint64 `json:"irq"`
-	SoftIRQ uint64 `json:"softirq"`
+	User    int64 `json:"user"`
+	Nice    int64 `json:"nice"`
+	System  int64 `json:"system"`
+	Idle    int64 `json:"idle"`
+	IOWait  int64 `json:"iowait"`
+	IRQ     int64 `json:"irq"`
+	SoftIRQ int64 `json:"softirq"`
 }
