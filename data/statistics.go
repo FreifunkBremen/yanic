@@ -32,6 +32,7 @@ type Statistics struct {
 	} `json:"traffic,omitempty"`
 	Switch    map[string]*SwitchPort `json:"switch,omitempty"`
 	Wireless  WirelessStatistics     `json:"wireless,omitempty"`
+	Wifictld  *WifiCTLDStatistics    `json:"wifictld,omitempty"`
 	ProcStats *ProcStats             `json:"stat,omitempty"`
 }
 

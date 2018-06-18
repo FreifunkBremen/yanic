@@ -2,16 +2,17 @@ package data
 
 // Nodeinfo struct
 type Nodeinfo struct {
-	NodeID   string    `json:"node_id"`
-	Network  Network   `json:"network"`
-	Owner    *Owner    `json:"owner"`
-	System   System    `json:"system"`
-	Hostname string    `json:"hostname"`
-	Location *Location `json:"location,omitempty"`
-	Software Software  `json:"software"`
-	Hardware Hardware  `json:"hardware"`
-	VPN      bool      `json:"vpn"`
-	Wireless *Wireless `json:"wireless,omitempty"`
+	NodeID   string            `json:"node_id"`
+	Network  Network           `json:"network"`
+	Owner    *Owner            `json:"owner"`
+	System   System            `json:"system"`
+	Hostname string            `json:"hostname"`
+	Location *Location         `json:"location,omitempty"`
+	Software Software          `json:"software"`
+	Hardware Hardware          `json:"hardware"`
+	VPN      bool              `json:"vpn"`
+	Wireless *Wireless         `json:"wireless,omitempty"`
+	Wifictld *WifiCTLDNodeinfo `json:"wifictld,omitempty"`
 }
 
 // NetworkInterface struct

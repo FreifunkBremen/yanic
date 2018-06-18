@@ -153,6 +153,17 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
 
+	// Add Wifictld statistics
+	if wifictld := stats.Wifictld; wifictld != nil {
+		fields["wifictld.total"] = wifictld.Total
+		fields["wifictld.client24"] = wifictld.Client24
+		fields["wifictld.client5"] = wifictld.Client5
+		fields["wifictld.authed"] = wifictld.Authed
+		fields["wifictld.connected"] = wifictld.Connected
+		fields["wifictld.highest_try_probe"] = wifictld.HighestTryProbe
+		fields["wifictld.highest_try_auth"] = wifictld.HighestTryAuth
+	}
+
 	conn.addPoint(MeasurementNode, tags, fields, time)
 
 	// Add DHCP statistics
