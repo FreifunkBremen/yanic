@@ -22,10 +22,12 @@ jobs:
       - run: dep ensure
       - run: go get github.com/mattn/goveralls
       - run: go get golang.org/x/tools/cmd/cover
-      - run: ./.test-coverage circle-ci
+      - run: ./.circleci/check-coverage
       - store_test_results:
           path: ./
           destination: profile.cov
+      - run: ./.circleci/check-gofmt
+      - run: ./.circleci/check-testfiles
   test_race:
     docker:
       - image: circleci/golang:latest
