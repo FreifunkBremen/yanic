@@ -23,7 +23,7 @@ type WirelessAirtime struct {
 	BusyTime   uint64 `json:"busy"`
 	RxTime     uint64 `json:"rx"`
 	TxTime     uint64 `json:"tx"`
-	Noise      uint32 `json:"noise"`
+	Noise      int32  `json:"noise"`
 	Frequency  uint32 `json:"frequency"`
 }
 
