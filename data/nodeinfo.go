@@ -69,8 +69,9 @@ type Software struct {
 		Version string `json:"version,omitempty"`
 	} `json:"babeld,omitempty"`
 	Fastd struct {
-		Enabled bool   `json:"enabled,omitempty"`
-		Version string `json:"version,omitempty"`
+		Enabled   bool   `json:"enabled,omitempty"`
+		Version   string `json:"version,omitempty"`
+		PublicKey string `json:"public_key,omitempty"`
 	} `json:"fastd,omitempty"`
 	Firmware struct {
 		Base    string `json:"base,omitempty"`
