@@ -61,16 +61,6 @@ collect_interval = "1m"
 {% endmethod %}
 
 
-### sites
-{% method %}
-List of sites to save stats for (empty for global only)
-{% sample lang="toml" %}
-```toml
-sites            = ["ffhb"]
-```
-{% endmethod %}
-
-
 ### [respondd.sites.example]
 {% method %}
 Tables of sites to save stats for (not exists for global only).
