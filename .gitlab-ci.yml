@@ -1,0 +1,31 @@
+image: golang:latest
+stages:
+  - build
+  - test
+
+before_script:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - mkdir -p /go/src/github.com/FreifunkBremen/
+  - cp -R /builds/FreifunkBremen/yanic /go/src/github.com/FreifunkBremen/yanic
+  - cd /go/src/github.com/FreifunkBremen/yanic
+  - dep ensure
+
+build-my-project:
+  stage: build
+  script:
+    - go install -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=`git -C $GOPATH/src/github.com/FreifunkBremen/yanic rev-parse HEAD`" github.com/FreifunkBremen/yanic
+  artifacts:
+    paths:
+      - /go/bin/yanic
+
+test-my-project:
+  stage: test
+  script:
+    - ./.circleci/check-gofmt
+    - ./.circleci/check-testfiles
+    - go test $(go list ./... | grep -v /vendor/) -v -coverprofile .testCoverage.txt
+
+test-race-my-project:
+  stage: test
+  script:
+    - go test -race ./...
