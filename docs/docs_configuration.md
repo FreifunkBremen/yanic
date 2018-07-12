@@ -569,6 +569,7 @@ address  = "http://localhost:8086"
 database = "ffhb"
 username = ""
 password = ""
+insecure_skip_verify = false
 [database.connection.influxdb.tags]
 tagname1 = "tagvalue 1"
 system   = "productive"
@@ -613,6 +614,15 @@ Password to authenticate on InfluxDB.
 {% sample lang="toml" %}
 ```toml
 password = ""
+```
+{% endmethod %}
+
+### insecure_skip_verify
+{% method %}
+Skip insecure verify for self-signed certificates.
+{% sample lang="toml" %}
+```toml
+insecure_skip_verify = true
 ```
 {% endmethod %}
 

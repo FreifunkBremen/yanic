@@ -45,6 +45,12 @@ func (c Config) Username() string {
 func (c Config) Password() string {
 	return c["password"].(string)
 }
+func (c Config) InsecureSkipVerify() bool {
+	if d, ok := c["insecure_skip_verify"]; ok {
+		return d.(bool)
+	}
+	return false
+}
 func (c Config) Tags() map[string]interface{} {
 	if c["tags"] != nil {
 		return c["tags"].(map[string]interface{})
@@ -61,9 +67,10 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 
 	// Make client
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     config.Address(),
-		Username: config.Username(),
-		Password: config.Password(),
+		Addr:               config.Address(),
+		Username:           config.Username(),
+		Password:           config.Password(),
+		InsecureSkipVerify: config.InsecureSkipVerify(),
 	})
 
 	if err != nil {

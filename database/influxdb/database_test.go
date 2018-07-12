@@ -16,9 +16,10 @@ func TestConnect(t *testing.T) {
 	assert := assert.New(t)
 
 	conn, err := Connect(map[string]interface{}{
-		"address":  "",
-		"username": "",
-		"password": "",
+		"address":              "",
+		"username":             "",
+		"password":             "",
+		"insecure_skip_verify": true,
 	})
 	assert.Nil(conn)
 	assert.Error(err)
