@@ -182,7 +182,7 @@ func (coll *Collector) sendUnicasts(seenBefore jsontime.Time) {
 	for _, node := range nodes {
 		send := 0
 		for _, conn := range coll.connections {
-			if node.Address.Zone != "" && conn.Conn.LocalAddr().(*net.UDPAddr).Zone != node.Address.Zone {
+			if node.Address.Zone != "" && conn.Conn.LocalAddr().(*net.UDPAddr).Zone != node.Address.Zone && conn.SendRequest {
 				continue
 			}
 			coll.sendPacket(conn.Conn, node.Address.IP)
