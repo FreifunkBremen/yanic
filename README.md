@@ -113,7 +113,7 @@ Collecting data from respondd:
 * [HopGlass Server](https://github.com/plumpudding/hopglass-server) written in Node.js
 
 Respondd for servers:
-* [ffnord-alfred-announce](https://github.com/ffnord/ffnord-alfred-announce) from FreiFunkNord
+* [mesh-announce](https://github.com/ffnord/mesh-announce) from ffnord
 * [respondd](https://github.com/Sunz3r/ext-respondd) from Sunz3r
 
 
