@@ -71,10 +71,16 @@ func NewStatistics(stats *data.Statistics, isOnline bool) *Statistics {
 	/* The Meshviewer could not handle absolute memory output
 	 * calc the used memory as a float which 100% equal 1.0
 	 * calc is coppied from node statuspage (look discussion:
-	 * https://github.com/FreifunkBremen/yanic/issues/35)
+	 * https://github.com/FreifunkBremen/yanic/issues/35 and
+	 * https://github.com/freifunk-gluon/gluon/pull/1517)
 	 */
 	if stats.Memory.Total > 0 {
-		usage := 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
+		usage := 0.0
+		if stats.Memory.Available > 0 {
+			usage = 1 - float64(stats.Memory.Available)/float64(stats.Memory.Total)
+		} else {
+			usage = 1 - (float64(stats.Memory.Free)+float64(stats.Memory.Buffers)+float64(stats.Memory.Cached))/float64(stats.Memory.Total)
+		}
 		output.MemoryUsage = &usage
 	}
 

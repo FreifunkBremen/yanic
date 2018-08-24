@@ -104,6 +104,7 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 	addField("memory.cached", stats.Memory.Cached)
 	addField("memory.free", stats.Memory.Free)
 	addField("memory.total", stats.Memory.Total)
+	addField("memory.available", stats.Memory.Available)
 
 	c.addPoint(fields)
 }

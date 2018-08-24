@@ -33,18 +33,19 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 	tags.SetString("nodeid", stats.NodeID)
 
 	fields := models.Fields{
-		"load":           stats.LoadAverage,
-		"time.up":        int64(stats.Uptime),
-		"time.idle":      int64(stats.Idletime),
-		"proc.running":   stats.Processes.Running,
-		"clients.wifi":   stats.Clients.Wifi,
-		"clients.wifi24": stats.Clients.Wifi24,
-		"clients.wifi5":  stats.Clients.Wifi5,
-		"clients.total":  stats.Clients.Total,
-		"memory.buffers": stats.Memory.Buffers,
-		"memory.cached":  stats.Memory.Cached,
-		"memory.free":    stats.Memory.Free,
-		"memory.total":   stats.Memory.Total,
+		"load":             stats.LoadAverage,
+		"time.up":          int64(stats.Uptime),
+		"time.idle":        int64(stats.Idletime),
+		"proc.running":     stats.Processes.Running,
+		"clients.wifi":     stats.Clients.Wifi,
+		"clients.wifi24":   stats.Clients.Wifi24,
+		"clients.wifi5":    stats.Clients.Wifi5,
+		"clients.total":    stats.Clients.Total,
+		"memory.buffers":   stats.Memory.Buffers,
+		"memory.cached":    stats.Memory.Cached,
+		"memory.free":      stats.Memory.Free,
+		"memory.total":     stats.Memory.Total,
+		"memory.available": stats.Memory.Available,
 	}
 
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {

@@ -84,10 +84,11 @@ type DHCP struct {
 
 // Memory struct
 type Memory struct {
-	Cached  int64 `json:"cached"`
-	Total   int64 `json:"total"`
-	Buffers int64 `json:"buffers"`
-	Free    int64 `json:"free"`
+	Cached    int64 `json:"cached"`
+	Total     int64 `json:"total"`
+	Buffers   int64 `json:"buffers"`
+	Free      int64 `json:"free,omitempty"`
+	Available int64 `json:"available,omitempty"`
 }
 
 // SwitchPort struct

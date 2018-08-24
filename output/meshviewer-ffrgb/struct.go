@@ -126,10 +126,16 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		/* The Meshviewer could not handle absolute memory output
 		 * calc the used memory as a float which 100% equal 1.0
 		 * calc is coppied from node statuspage (look discussion:
-		 * https://github.com/FreifunkBremen/yanic/issues/35)
+		 * https://github.com/FreifunkBremen/yanic/issues/35 and
+		 * https://github.com/freifunk-gluon/gluon/pull/1517)
 		 */
 		if statistic.Memory.Total > 0 {
-			usage := 1 - (float64(statistic.Memory.Free)+float64(statistic.Memory.Buffers)+float64(statistic.Memory.Cached))/float64(statistic.Memory.Total)
+			usage := 0.0
+			if statistic.Memory.Available > 0 {
+				usage = 1 - float64(statistic.Memory.Available)/float64(statistic.Memory.Total)
+			} else {
+				usage = 1 - (float64(statistic.Memory.Free)+float64(statistic.Memory.Buffers)+float64(statistic.Memory.Cached))/float64(statistic.Memory.Total)
+			}
 			node.MemoryUsage = &usage
 		}
 
