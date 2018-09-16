@@ -32,8 +32,8 @@ type Node struct {
 	NodeID         string        `json:"node_id"`
 	MAC            string        `json:"mac"`
 	Addresses      []string      `json:"addresses"`
-	SiteCode       string        `json:"site_code,omitempty"`
-	DomainCode     string        `json:"-"`
+	SiteCode       string        `json:"-"`
+	DomainCode     string        `json:"domain"`
 	Hostname       string        `json:"hostname"`
 	Owner          string        `json:"owner,omitempty"`
 	Location       *Location     `json:"location,omitempty"`
@@ -152,6 +152,11 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		if node.GatewayIPv6 == "" {
 			node.GatewayIPv6 = statistic.GatewayIPv6
 		}
+	}
+
+	// fix site to domain - if empty
+	if node.DomainCode == "" {
+		node.DomainCode = node.SiteCode
 	}
 
 	return node
