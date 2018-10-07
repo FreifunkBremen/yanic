@@ -93,7 +93,7 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 				Target:        linkOrigin.TargetID,
 				TargetAddress: linkOrigin.TargetAddress,
 				SourceTQ:      linkOrigin.TQ,
-				TargetTQ:      linkOrigin.TQ,
+				TargetTQ:      0,
 			}
 
 			linkType, linkTypeFound := typeList[linkOrigin.SourceAddress]
@@ -102,8 +102,10 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 			}
 
 			if switchSourceTarget {
+				link.SourceTQ = 0
 				link.Source = linkOrigin.TargetID
 				link.SourceAddress = linkOrigin.TargetAddress
+				link.TargetTQ = linkOrigin.TQ
 				link.Target = linkOrigin.SourceID
 				link.TargetAddress = linkOrigin.SourceAddress
 

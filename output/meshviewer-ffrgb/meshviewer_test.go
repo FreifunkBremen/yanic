@@ -164,7 +164,7 @@ func TestTransform(t *testing.T) {
 			assert.Equal("other", link.Type)
 			assert.Equal("node:b:mac:lan", link.TargetAddress)
 			assert.Equal(float32(0.2), link.SourceTQ)
-			assert.Equal(float32(0.2), link.TargetTQ)
+			assert.Equal(float32(0), link.TargetTQ)
 			break
 
 		case "node:a:mac:wifi":
