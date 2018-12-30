@@ -41,7 +41,6 @@ type Node struct {
 	Autoupdater    Autoupdater   `json:"autoupdater"`
 	Nproc          int           `json:"nproc"`
 	Model          string        `json:"model,omitempty"`
-	VPN            bool          `json:"vpn"`
 }
 
 // Firmware out of software
@@ -104,7 +103,6 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		}
 		node.Nproc = nodeinfo.Hardware.Nproc
 		node.Model = nodeinfo.Hardware.Model
-		node.VPN = nodeinfo.VPN
 	}
 	if statistic := n.Statistics; statistic != nil {
 		if n.Online {
