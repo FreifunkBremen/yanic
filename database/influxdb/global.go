@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/yanic/runtime"
-	"github.com/influxdata/influxdb/models"
+	"github.com/influxdata/influxdb1-client/models"
 )
 
 // InsertGlobals implementation of database

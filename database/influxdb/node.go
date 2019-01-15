@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	client "github.com/influxdata/influxdb/client/v2"
-	models "github.com/influxdata/influxdb/models"
+	models "github.com/influxdata/influxdb1-client/models"
+	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/FreifunkBremen/yanic/runtime"
 )

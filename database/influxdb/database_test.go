@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/influxdata/influxdb/client/v2"
-	"github.com/influxdata/influxdb/models"
+	"github.com/influxdata/influxdb1-client/models"
+	"github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/stretchr/testify/assert"
 )

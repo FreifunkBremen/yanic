@@ -2,87 +2,138 @@
 
 
 [[projects]]
+  digest = "1:0803645e1f57fb5271a6edc7570b9ea59bac2e5de67957075a43f3d74c8dbd97"
   name = "github.com/NYTimes/gziphandler"
   packages = ["."]
+  pruneopts = "UT"
   revision = "2600fb119af974220d3916a5916d6e31176aac1b"
   version = "v1.0.1"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
 
 [[projects]]
+  digest = "1:6bea4bd16434bc6699590ed025152b690d08f552eeabfdc3258bd3aff738958c"
   name = "github.com/fgrosse/graphigo"
   packages = ["."]
+  pruneopts = "UT"
   revision = "55a0a92a703041a55ad5ee2c2647f9577a87fdc1"
   version = "v2"
 
 [[projects]]
+  digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
+  pruneopts = "UT"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
 
 [[projects]]
+  digest = "1:e0123d1a40d588fb2d5f98188927826ed5ddfa1d50e759596a6c774f71b81358"
   name = "github.com/influxdata/influxdb"
-  packages = [
-    "client/v2",
-    "models",
-    "pkg/escape"
-  ]
-  revision = "02d7d4f043b34ecb4e9b2dbec298c6f9450c2a32"
-  version = "v1.5.2"
+  packages = ["pkg/escape"]
+  pruneopts = "UT"
+  revision = "698dbc789aff13c2678357a6b93ff73dd7136571"
+  version = "v1.7.3"
 
 [[projects]]
+  branch = "master"
+  digest = "1:22a9593272bc74ef4c513e176608eeed2dee7e8bd7542bae40369cb62d907a3b"
+  name = "github.com/influxdata/influxdb1-client"
+  packages = [
+    "models",
+    "v2",
+  ]
+  pruneopts = "UT"
+  revision = "e237d47d0fc87c8ba2b7c98c349cdceca9c37e27"
+
+[[projects]]
+  branch = "master"
+  digest = "1:ac6b73796941a7ab33ec69fc32f9886a6e7506998f822e3d5205377aee77284a"
+  name = "github.com/influxdata/platform"
+  packages = [
+    "models",
+    "pkg/escape",
+  ]
+  pruneopts = "UT"
+  revision = "98469bf07613ffae6f025893761c1e7a5e96e4aa"
+
+[[projects]]
+  digest = "1:b56c589214f01a5601e0821387db484617392d0042f26234bf2da853a2f498a1"
   name = "github.com/naoina/go-stringutil"
   packages = ["."]
+  pruneopts = "UT"
   revision = "6b638e95a32d0c1131db0e7fe83775cbea4a0d0b"
   version = "v0.1.0"
 
 [[projects]]
+  digest = "1:f58c3d0e46b64878d00652fedba24ee879725191ab919dca7b62586859281c04"
   name = "github.com/naoina/toml"
   packages = [
     ".",
-    "ast"
+    "ast",
   ]
+  pruneopts = "UT"
   revision = "e6f5723bf2a66af014955e0888881314cf294129"
   version = "v0.1.1"
 
 [[projects]]
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
+  pruneopts = "UT"
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "a1f051bc3eba734da4772d60e2d677f47cf93ef4"
-  version = "v0.0.2"
+  pruneopts = "UT"
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
 
 [[projects]]
+  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
-  version = "v1.0.1"
+  pruneopts = "UT"
+  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
+  version = "v1.0.3"
 
 [[projects]]
+  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
+  pruneopts = "UT"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fdc5af68ea0267bb24f1826cbc35358e22fc67f2eec5c7ebf91cb6392836a064"
+  input-imports = [
+    "github.com/NYTimes/gziphandler",
+    "github.com/fgrosse/graphigo",
+    "github.com/influxdata/influxdb1-client/models",
+    "github.com/influxdata/influxdb1-client/v2",
+    "github.com/naoina/toml",
+    "github.com/pkg/errors",
+    "github.com/spf13/cobra",
+    "github.com/stretchr/testify/assert",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

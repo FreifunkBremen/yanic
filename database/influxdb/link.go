@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/FreifunkBremen/yanic/runtime"
-	models "github.com/influxdata/influxdb/models"
+	models "github.com/influxdata/influxdb1-client/models"
 )
 
 // InsertLink adds a link data point

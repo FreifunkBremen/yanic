@@ -3,7 +3,7 @@ package influxdb
 import (
 	"testing"
 
-	"github.com/influxdata/influxdb/client/v2"
+	"github.com/influxdata/influxdb1-client/v2"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FreifunkBremen/yanic/data"
