@@ -78,15 +78,18 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		Lastseen:  n.Lastseen,
 		IsOnline:  n.Online,
 		IsGateway: n.IsGateway(),
+		Addresses: []string{},
 	}
 
 	if nodeinfo := n.Nodeinfo; nodeinfo != nil {
 		node.NodeID = nodeinfo.NodeID
 		node.MAC = nodeinfo.Network.Mac
-		node.Addresses = nodeinfo.Network.Addresses
 		node.SiteCode = nodeinfo.System.SiteCode
 		node.DomainCode = nodeinfo.System.DomainCode
 		node.Hostname = nodeinfo.Hostname
+		if addresses := nodeinfo.Network.Addresses; addresses != nil {
+			node.Addresses = nodeinfo.Network.Addresses
+		}
 		if owner := nodeinfo.Owner; owner != nil {
 			node.Owner = owner.Contact
 		}
