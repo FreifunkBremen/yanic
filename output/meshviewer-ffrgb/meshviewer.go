@@ -2,8 +2,9 @@ package meshviewerFFRGB
 
 import (
 	"fmt"
-	"log"
 	"strings"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/lib/jsontime"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -81,7 +82,13 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 					if link.Type == LINK_TYPE_FALLBACK {
 						link.Type = linkType
 					} else {
-						log.Printf("different linktypes for '%s' - '%s' prev: '%s' new: '%s' source: '%s' target: '%s'", linkOrigin.SourceAddress, linkOrigin.TargetAddress, link.Type, linkType, typeList[linkOrigin.SourceAddress], typeList[linkOrigin.TargetAddress])
+						log.WithFields(map[string]interface{}{
+							"link":   fmt.Sprintf("%s-%s", linkOrigin.SourceAddress, linkOrigin.TargetAddress),
+							"prev":   link.Type,
+							"new":    linkType,
+							"source": typeList[linkOrigin.SourceAddress],
+							"target": typeList[linkOrigin.TargetAddress],
+						}).Warn("different linktypes")
 					}
 				}
 

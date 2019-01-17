@@ -2,7 +2,8 @@ package all
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/output"
 	"github.com/FreifunkBremen/yanic/output/filter"
@@ -23,7 +24,7 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 	for outputType, outputRegister := range output.Adapters {
 		configForOutput := allOutputs[outputType]
 		if configForOutput == nil {
-			log.Printf("the output type '%s' has no configuration\n", outputType)
+			log.WithField("output", outputType).Infof("no configuration found")
 			continue
 		}
 		outputConfigs, ok := configForOutput.([]interface{})

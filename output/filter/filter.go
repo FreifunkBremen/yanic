@@ -3,8 +3,10 @@ package filter
 import (
 	"fmt"
 
-	"github.com/FreifunkBremen/yanic/runtime"
+	"github.com/bdlm/log"
 	"github.com/pkg/errors"
+
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 // factory function for building a filter
@@ -24,7 +26,7 @@ var filters = make(map[string]factory)
 // Register registers a new filter
 func Register(name string, f factory) {
 	if _, ok := filters[name]; ok {
-		panic("already registered: " + name)
+		log.WithField("filter", name).Panic("filter already registered")
 	}
 	filters[name] = f
 }

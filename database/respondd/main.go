@@ -7,9 +7,10 @@ import (
 	"bufio"
 	"compress/flate"
 	"encoding/json"
-	"log"
 	"net"
 	"time"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/database"
@@ -59,7 +60,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 	flater, err := flate.NewWriter(writer, flate.BestCompression)
 	if err != nil {
-		log.Printf("[database-yanic] could not create flater: %s", err)
+		log.Errorf("[database-yanic] could not create flater: %s", err)
 		return
 	}
 	defer flater.Close()
@@ -69,16 +70,16 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		if node.Nodeinfo != nil && node.Nodeinfo.NodeID != "" {
 			nodeid = node.Nodeinfo.NodeID
 		}
-		log.Printf("[database-yanic] could not encode %s node: %s", nodeid, err)
+		log.WithField("node_id", nodeid).Errorf("[database-yanic] could not encode node: %s", err)
 		return
 	}
 	err = flater.Flush()
 	if err != nil {
-		log.Printf("[database-yanic] could not compress: %s", err)
+		log.Errorf("[database-yanic] could not compress: %s", err)
 	}
 	err = writer.Flush()
 	if err != nil {
-		log.Printf("[database-yanic] could not send: %s", err)
+		log.Errorf("[database-yanic] could not send: %s", err)
 	}
 }
 

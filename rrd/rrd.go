@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bdlm/log"
 )
 
 var linePattern = regexp.MustCompile("^<!-- ....-..-.. ..:..:.. [A-Z]+ / (\\d+) --> <row><v>([^<]+)</v><v>([^<]+)</v></row>")
@@ -27,10 +29,10 @@ func Read(rrdFile string) chan Dataset {
 	stdout, err := cmd.StdoutPipe()
 
 	if err != nil {
-		panic(err)
+		log.Panicf("error on get stdout: %s", err)
 	}
 	if err := cmd.Start(); err != nil {
-		panic(err)
+		log.Panicf("error on start rrdtool: %s", err)
 	}
 
 	r := bufio.NewReader(stdout)

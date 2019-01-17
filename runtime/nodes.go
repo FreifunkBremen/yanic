@@ -2,10 +2,11 @@ package runtime
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/lib/jsontime"
@@ -186,7 +187,7 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 	network := nodeinfo.Network
 
 	if nodeID == "" {
-		log.Println("nodeID missing in nodeinfo")
+		log.Warn("nodeID missing in nodeinfo")
 		return
 	}
 
@@ -202,7 +203,7 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
 		}
 		if oldNodeID, _ := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
 			if oldNodeID != "" {
-				log.Printf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
+				log.Warnf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
 			}
 			nodes.ifaceToNodeID[addr] = nodeID
 		}
@@ -214,7 +215,7 @@ func (nodes *Nodes) load() {
 
 	if f, err := os.Open(path); err == nil { // transform data to legacy meshviewer
 		if err = json.NewDecoder(f).Decode(nodes); err == nil {
-			log.Println("loaded", len(nodes.List), "nodes")
+			log.Infof("loaded %d nodes", len(nodes.List))
 
 			nodes.Lock()
 			for _, node := range nodes.List {
@@ -225,10 +226,10 @@ func (nodes *Nodes) load() {
 			nodes.Unlock()
 
 		} else {
-			log.Println("failed to unmarshal nodes:", err)
+			log.Errorf("failed to unmarshal nodes: %s", err)
 		}
 	} else {
-		log.Println("failed to load cached nodes:", err)
+		log.Errorf("failed to load cached nodes: %s", err)
 	}
 }
 

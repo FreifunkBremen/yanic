@@ -2,14 +2,16 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/bdlm/log"
+	"github.com/bdlm/std/logger"
 	"github.com/spf13/cobra"
 )
 
 var (
 	timestamps bool
+	loglevel   uint32
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -35,12 +37,12 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	RootCmd.PersistentFlags().BoolVar(&timestamps, "timestamps", false, "Enables timestamps for log output")
+	RootCmd.PersistentFlags().Uint32Var(&loglevel, "loglevel", 40, "Show log message starting at level")
 }
 
 func initConfig() {
-	if timestamps {
-		log.SetFlags(log.Lshortfile)
-	} else {
-		log.SetFlags(log.LstdFlags | log.Lshortfile)
-	}
+	log.SetLevel(logger.Level(loglevel))
+	log.SetFormatter(&log.TextFormatter{
+		DisableTimestamp: timestamps,
+	})
 }

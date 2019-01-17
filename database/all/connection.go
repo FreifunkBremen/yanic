@@ -2,8 +2,9 @@ package all
 
 import (
 	"fmt"
-	"log"
 	"time"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -19,7 +20,7 @@ func Connect(allConnection map[string]interface{}) (database.Connection, error) 
 	for dbType, conn := range database.Adapters {
 		configForType := allConnection[dbType]
 		if configForType == nil {
-			log.Printf("the output type '%s' has no configuration", dbType)
+			log.WithField("database", dbType).Infof("no configuration found")
 			continue
 		}
 		dbConfigs, ok := configForType.([]interface{})

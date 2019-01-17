@@ -2,14 +2,16 @@ package cmd
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net"
 	"strings"
 	"time"
 
+	"github.com/bdlm/log"
+	"github.com/spf13/cobra"
+
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -28,7 +30,10 @@ var queryCmd = &cobra.Command{
 		ifaces := strings.Split(args[0], ",")
 		dstAddress := net.ParseIP(args[1])
 
-		log.Printf("Sending request address=%s ifaces=%s", dstAddress, ifaces)
+		log.WithFields(map[string]interface{}{
+			"address": dstAddress,
+			"ifaces":  ifaces,
+		}).Info("sending request")
 
 		var ifacesConfigs []respond.InterfaceConfig
 		for _, iface := range ifaces {
@@ -52,13 +57,13 @@ var queryCmd = &cobra.Command{
 		for id, data := range nodes.List {
 			jq, err := json.Marshal(data)
 			if err != nil {
-				log.Printf("%s: %+v", id, data)
+				fmt.Printf("%s: %+v", id, data)
 			} else {
 				jqNeighbours, err := json.Marshal(data.Neighbours)
 				if err != nil {
-					log.Printf("%s: %s neighbours: %+v", id, string(jq), data.Neighbours)
+					fmt.Printf("%s: %s neighbours: %+v", id, string(jq), data.Neighbours)
 				} else {
-					log.Printf("%s: %s neighbours: %s", id, string(jq), string(jqNeighbours))
+					fmt.Printf("%s: %s neighbours: %s", id, string(jq), string(jqNeighbours))
 				}
 			}
 		}

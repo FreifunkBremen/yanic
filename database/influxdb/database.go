@@ -1,10 +1,10 @@
 package influxdb
 
 import (
-	"log"
 	"sync"
 	"time"
 
+	"github.com/bdlm/log"
 	"github.com/influxdata/influxdb1-client/models"
 	"github.com/influxdata/influxdb1-client/v2"
 
@@ -100,13 +100,16 @@ func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fi
 			if value, ok := valueInterface.(string); ok && tags.Get([]byte(tag)) == nil {
 				tags.SetString(tag, value)
 			} else {
-				log.Println(name, "could not saved configured value of tag", tag)
+				log.WithFields(map[string]interface{}{
+					"name": name,
+					"tag":  tag,
+				}).Warnf("count not save tag configuration on point")
 			}
 		}
 	}
 	point, err := client.NewPoint(name, tags.Map(), fields, t...)
 	if err != nil {
-		panic(err)
+		log.Panicf("count not save points: %s", err)
 	}
 	conn.points <- point
 }
@@ -156,10 +159,10 @@ func (conn *Connection) addWorker() {
 
 		// write batch now?
 		if bp != nil && (writeNow || closed || len(bp.Points()) >= batchMaxSize) {
-			log.Println("saving", len(bp.Points()), "points")
+			log.WithField("count", len(bp.Points())).Info("saving points")
 
 			if err = conn.client.Write(bp); err != nil {
-				log.Print(err)
+				log.Error(err)
 			}
 			writeNow = false
 			bp = nil
