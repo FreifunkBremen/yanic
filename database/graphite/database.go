@@ -1,11 +1,12 @@
 package graphite
 
 import (
-	"log"
 	"sync"
 
-	"github.com/FreifunkBremen/yanic/database"
+	"github.com/bdlm/log"
 	"github.com/fgrosse/graphigo"
+
+	"github.com/FreifunkBremen/yanic/database"
 )
 
 const (
@@ -69,7 +70,7 @@ func (c *Connection) addWorker() {
 	for point := range c.points {
 		err := c.client.SendAll(point)
 		if err != nil {
-			log.Fatal(err)
+			log.WithField("database", "graphite").Fatal(err)
 			return
 		}
 	}

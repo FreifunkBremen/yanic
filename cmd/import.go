@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"log"
+	"github.com/bdlm/log"
+	"github.com/spf13/cobra"
 
 	allDatabase "github.com/FreifunkBremen/yanic/database/all"
 	"github.com/FreifunkBremen/yanic/rrd"
 	"github.com/FreifunkBremen/yanic/runtime"
-	"github.com/spf13/cobra"
 )
 
 // importCmd represents the import command
@@ -23,11 +23,11 @@ var importCmd = &cobra.Command{
 
 		err := allDatabase.Start(config.Database)
 		if err != nil {
-			panic(err)
+			log.Panicf("could not connect to database: %s", err)
 		}
 		defer allDatabase.Close()
 
-		log.Println("importing RRD from", path)
+		log.Infof("importing RRD from %s", path)
 
 		for ds := range rrd.Read(path) {
 			allDatabase.Conn.InsertGlobals(

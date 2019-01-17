@@ -2,7 +2,8 @@ package meshviewer
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/output"
 	"github.com/FreifunkBremen/yanic/runtime"

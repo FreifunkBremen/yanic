@@ -5,11 +5,12 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/naoina/toml"
+
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/FreifunkBremen/yanic/webserver"
-	"github.com/naoina/toml"
 )
 
 // Config represents the whole configuration

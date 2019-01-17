@@ -7,7 +7,6 @@ package logging
  */
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -64,6 +63,6 @@ func (conn *Connection) Close() {
 }
 
 func (conn *Connection) log(v ...interface{}) {
-	log.Println(v...)
+	fmt.Println(v...)
 	conn.file.WriteString(fmt.Sprintln("[", time.Now().String(), "]", v))
 }
