@@ -25,6 +25,12 @@ As root:
 go get -v -u github.com/FreifunkBremen/yanic
 ```
 
+### allow to ping
+only needed if config has `nodes.ping_count` > 0
+```sh
+sudo setcap cap_net_raw=+ep  /opt/go/bin/yanic
+```
+
 #### Work with other databases
 If you like to use another database solution than influxdb, Pull Requests are
 welcome. Just fork this project and create another subpackage within the folder

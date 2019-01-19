@@ -80,9 +80,10 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	// Update fields
 	node.Lastseen = now
 	node.Online = true
-	node.Neighbours = res.Neighbours
 	node.Nodeinfo = res.Nodeinfo
 	node.Statistics = res.Statistics
+	node.Neighbours = res.Neighbours
+	node.NoRespondd = res.Statistics == nil && res.Neighbours == nil
 
 	return node
 }
@@ -170,24 +171,32 @@ func (nodes *Nodes) expire() {
 	nodes.Lock()
 	defer nodes.Unlock()
 
+	wg := sync.WaitGroup{}
+
 	for id, node := range nodes.List {
 		if node.Lastseen.Before(pruneAfter) {
 			// expire
 			delete(nodes.List, id)
 		} else if node.Lastseen.Before(offlineAfter) {
 			// set to offline
-			if nodes.config.PingCount > 0 && nodes.ping(node) {
-				node.Online = true
-				node.NoRespondd = true
+			wg.Add(1)
+			go func(node *Node) {
+				defer wg.Done()
+				if nodes.config.PingCount > 0 && nodes.ping(node) {
+					node.Online = true
+					node.NoRespondd = true
 
-				node.Statistics = nil
-				node.Neighbours = nil
-			} else {
-				node.Online = false
-				node.NoRespondd = false
-			}
+					node.Statistics = nil
+					node.Neighbours = nil
+				} else {
+					node.Online = false
+					node.NoRespondd = false
+				}
+			}(node)
 		}
 	}
+	wg.Wait()
+	log.WithField("nodes", "expire").Debug("end")
 }
 
 // adds the nodes interface addresses to the internal map
@@ -249,6 +258,7 @@ func (nodes *Nodes) save() {
 
 	// serialize nodes
 	SaveJSON(nodes, nodes.config.StatePath)
+	log.WithField("nodes", "save").Debug("end")
 }
 
 // SaveJSON to path

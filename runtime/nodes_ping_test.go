@@ -27,7 +27,13 @@ func TestPing(t *testing.T) {
 		ifaceToNodeID: make(map[string]string),
 	}
 
-	node := nodes.Update("expire", &data.ResponseData{NodeInfo: &data.NodeInfo{NodeID: "nodeID-Lola"}})
+	node := nodes.Update("expire", &data.ResponseData{NodeInfo: &data.NodeInfo{
+		NodeID:  "nodeID-Lola",
+		Network: data.Network{Addresses: []string{"fe80::1", "fd2f::1"}},
+	}})
+	// get fallback
+	assert.False(nodes.ping(node))
+
 	node.Address = &net.UDPAddr{Zone: "bat0"}
 	// error during ping
 	assert.False(nodes.ping(node))
