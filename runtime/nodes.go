@@ -176,7 +176,16 @@ func (nodes *Nodes) expire() {
 			delete(nodes.List, id)
 		} else if node.Lastseen.Before(offlineAfter) {
 			// set to offline
-			node.Online = false
+			if nodes.config.PingCount > 0 && nodes.ping(node) {
+				node.Online = true
+				node.NoRespondd = true
+
+				node.Statistics = nil
+				node.Neighbours = nil
+			} else {
+				node.Online = false
+				node.NoRespondd = false
+			}
 		}
 	}
 }

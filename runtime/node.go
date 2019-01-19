@@ -13,6 +13,7 @@ type Node struct {
 	Firstseen  jsontime.Time    `json:"firstseen"`
 	Lastseen   jsontime.Time    `json:"lastseen"`
 	Online     bool             `json:"online"`
+	NoRespondd bool             `json:"-"`
 	Statistics *data.Statistics `json:"statistics"`
 	Nodeinfo   *data.Nodeinfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"-"`

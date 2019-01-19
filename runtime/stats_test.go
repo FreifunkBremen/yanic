@@ -22,6 +22,7 @@ func TestGlobalStats(t *testing.T) {
 	//check GLOBAL_SITE stats
 	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Gateways)
 	assert.EqualValues(3, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Nodes)
+	assert.EqualValues(1, stats[GLOBAL_SITE][GLOBAL_DOMAIN].NodesNoRespondd)
 	assert.EqualValues(25, stats[GLOBAL_SITE][GLOBAL_DOMAIN].Clients)
 
 	// check models
@@ -98,7 +99,8 @@ func createTestNodes() *Nodes {
 	nodes.AddNode(nodeData)
 
 	nodes.AddNode(&Node{
-		Online: true,
+		Online:     true,
+		NoRespondd: true,
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
 				Total: 2,

@@ -11,12 +11,13 @@ type CounterMap map[string]uint32
 
 // GlobalStats struct
 type GlobalStats struct {
-	Clients       uint32
-	ClientsWifi   uint32
-	ClientsWifi24 uint32
-	ClientsWifi5  uint32
-	Gateways      uint32
-	Nodes         uint32
+	Clients         uint32
+	ClientsWifi     uint32
+	ClientsWifi24   uint32
+	ClientsWifi5    uint32
+	Gateways        uint32
+	Nodes           uint32
+	NodesNoRespondd uint32
 
 	Firmwares   CounterMap
 	Models      CounterMap
@@ -80,6 +81,9 @@ func (s *GlobalStats) Add(node *Node) {
 		s.ClientsWifi24 += stats.Clients.Wifi24
 		s.ClientsWifi5 += stats.Clients.Wifi5
 		s.ClientsWifi += stats.Clients.Wifi
+	}
+	if node.NoRespondd {
+		s.NodesNoRespondd++
 	}
 	if node.IsGateway() {
 		s.Gateways++

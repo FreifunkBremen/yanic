@@ -36,6 +36,7 @@ func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, s
 func GlobalStatsFields(name string, stats *runtime.GlobalStats) []graphigo.Metric {
 	return []graphigo.Metric{
 		{Name: name + ".nodes", Value: stats.Nodes},
+		{Name: name + ".nodes.no_respondd", Value: stats.NodesNoRespondd},
 		{Name: name + ".gateways", Value: stats.Gateways},
 		{Name: name + ".clients.total", Value: stats.Clients},
 		{Name: name + ".clients.wifi", Value: stats.ClientsWifi},

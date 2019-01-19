@@ -55,6 +55,12 @@ save_interval = "5s"
 # Set node to offline if not seen within this period
 offline_after = "10m"
 
+## Verify if node is really down by ping last seen address of node
+# send x pings to verify if node is offline (for disable set count < 1)
+ping_count = 3
+# timeout of sending ping to a node
+ping_timeout = "1s"
+
 
 ## [[nodes.output.example]]
 # Each output format has its own config block and needs to be enabled by adding:

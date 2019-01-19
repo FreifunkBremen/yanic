@@ -203,6 +203,8 @@ state_path     = "/var/lib/yanic/state.json"
 prune_after    = "7d"
 save_interval  = "5s"
 offline_after  = "10m"
+ping_count = 3
+ping_timeout = "1s"
 ```
 {% endmethod %}
 
@@ -243,6 +245,26 @@ Set node to offline if not seen within this period.
 {% sample lang="toml" %}
 ```toml
 offline_after = "10m"
+```
+{% endmethod %}
+
+### ping_count
+{% method %}
+Verify if node is really down by ping last seen address of node
+send x pings to verify if node is offline (for disable set count < 1)
+{% sample lang="toml" %}
+```toml
+ping_count = 3
+```
+{% endmethod %}
+
+
+### ping_timeout
+{% method %}
+Timeout of sending ping to a node
+{% sample lang="toml" %}
+```toml
+ping_timeout = "1s"
 ```
 {% endmethod %}
 
