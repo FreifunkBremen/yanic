@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/bdlm/log"
+	ping "github.com/digineo/go-ping"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/lib/jsontime"
@@ -17,6 +18,7 @@ type Nodes struct {
 	List          map[string]*Node  `json:"nodes"` // the current nodemap, indexed by node ID
 	ifaceToNodeID map[string]string // mapping from MAC address to NodeID
 	config        *NodesConfig
+	pinger          *ping.Pinger
 	sync.RWMutex
 }
 
@@ -27,6 +29,11 @@ func NewNodes(config *NodesConfig) *Nodes {
 		ifaceToNodeID: make(map[string]string),
 		config:        config,
 	}
+	p, err := ping.New("", "::")
+	if err != nil {
+		log.Warnf("ping bind failed: %s", err)
+	}
+	nodes.pinger = p
 
 	if config.StatePath != "" {
 		nodes.load()
@@ -83,7 +90,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Nodeinfo = res.Nodeinfo
 	node.Statistics = res.Statistics
 	node.Neighbours = res.Neighbours
-	node.NoRespondd = res.Statistics == nil && res.Neighbours == nil
+	node.NoRespondd = false
 
 	return node
 }
@@ -185,9 +192,6 @@ func (nodes *Nodes) expire() {
 				if nodes.config.PingCount > 0 && nodes.ping(node) {
 					node.Online = true
 					node.NoRespondd = true
-
-					node.Statistics = nil
-					node.Neighbours = nil
 				} else {
 					node.Online = false
 					node.NoRespondd = false
@@ -196,7 +200,7 @@ func (nodes *Nodes) expire() {
 		}
 	}
 	wg.Wait()
-	log.WithField("nodes", "expire").Debug("end")
+	log.WithField("nodes", "expire").Info("end")
 }
 
 // adds the nodes interface addresses to the internal map
@@ -258,7 +262,7 @@ func (nodes *Nodes) save() {
 
 	// serialize nodes
 	SaveJSON(nodes, nodes.config.StatePath)
-	log.WithField("nodes", "save").Debug("end")
+	log.WithField("nodes", "save").Info("end")
 }
 
 // SaveJSON to path

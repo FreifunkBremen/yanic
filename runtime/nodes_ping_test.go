@@ -27,7 +27,7 @@ func TestPing(t *testing.T) {
 		ifaceToNodeID: make(map[string]string),
 	}
 
-	node := nodes.Update("expire", &data.ResponseData{NodeInfo: &data.NodeInfo{
+	node := nodes.Update("expire", &data.ResponseData{Nodeinfo: &data.Nodeinfo{
 		NodeID:  "nodeID-Lola",
 		Network: data.Network{Addresses: []string{"fe80::1", "fd2f::1"}},
 	}})
