@@ -12,7 +12,7 @@ import (
 )
 
 type TestNode struct {
-	Nodeinfo   *data.NodeInfo   `json:"nodeinfo"`
+	Nodeinfo   *data.Nodeinfo   `json:"nodeinfo"`
 	Neighbours *data.Neighbours `json:"neighbours"`
 }
 
@@ -38,7 +38,7 @@ func testGetNodesByFile(files ...string) *runtime.Nodes {
 	for _, file := range files {
 		node := testGetNodeByFile(file)
 		nodes.Update(file, &data.ResponseData{
-			NodeInfo:   node.Nodeinfo,
+			Nodeinfo:   node.Nodeinfo,
 			Neighbours: node.Neighbours,
 		})
 	}

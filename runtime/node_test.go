@@ -13,7 +13,7 @@ func TestNode(t *testing.T) {
 	node := &Node{}
 	assert.False(node.IsGateway())
 
-	node.Nodeinfo = &data.NodeInfo{}
+	node.Nodeinfo = &data.Nodeinfo{}
 	assert.False(node.IsGateway())
 
 	node.Nodeinfo.VPN = true

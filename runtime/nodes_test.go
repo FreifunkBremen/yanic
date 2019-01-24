@@ -102,7 +102,7 @@ func TestUpdateNodes(t *testing.T) {
 				&data.WirelessAirtime{},
 			},
 		},
-		NodeInfo: &data.NodeInfo{},
+		Nodeinfo: &data.Nodeinfo{},
 	}
 	nodes.Update("abcdef012345", res)
 
@@ -146,10 +146,10 @@ func TestAddNode(t *testing.T) {
 	nodes.AddNode(&Node{})
 	assert.Len(nodes.List, 0)
 
-	nodes.AddNode(&Node{Nodeinfo: &data.NodeInfo{}})
+	nodes.AddNode(&Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.Len(nodes.List, 0)
 
-	nodes.AddNode(&Node{Nodeinfo: &data.NodeInfo{NodeID: "blub"}})
+	nodes.AddNode(&Node{Nodeinfo: &data.Nodeinfo{NodeID: "blub"}})
 	assert.Len(nodes.List, 1)
 }
 
@@ -163,7 +163,7 @@ func TestLinksNodes(t *testing.T) {
 	assert.Len(nodes.List, 0)
 
 	nodes.Update("f4f26dd7a30a", &data.ResponseData{
-		NodeInfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "f4f26dd7a30a",
 			Network: data.Network{
 				Mac: "f4:f2:6d:d7:a3:0a",
@@ -172,7 +172,7 @@ func TestLinksNodes(t *testing.T) {
 	})
 
 	nodes.Update("f4f26dd7a30b", &data.ResponseData{
-		NodeInfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "f4f26dd7a30b",
 		},
 		Neighbours: &data.Neighbours{

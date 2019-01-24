@@ -64,8 +64,8 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 		}
 		nodes.List[nodeID] = node
 	}
-	if res.NodeInfo != nil {
-		nodes.readIfaces(res.NodeInfo)
+	if res.Nodeinfo != nil {
+		nodes.readIfaces(res.Nodeinfo)
 	}
 	nodes.Unlock()
 
@@ -81,7 +81,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Lastseen = now
 	node.Online = true
 	node.Neighbours = res.Neighbours
-	node.Nodeinfo = res.NodeInfo
+	node.Nodeinfo = res.Nodeinfo
 	node.Statistics = res.Statistics
 
 	return node
@@ -182,7 +182,7 @@ func (nodes *Nodes) expire() {
 }
 
 // adds the nodes interface addresses to the internal map
-func (nodes *Nodes) readIfaces(nodeinfo *data.NodeInfo) {
+func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo) {
 	nodeID := nodeinfo.NodeID
 	network := nodeinfo.Network
 

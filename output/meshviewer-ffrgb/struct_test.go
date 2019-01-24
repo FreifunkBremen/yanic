@@ -12,7 +12,7 @@ func TestRegister(t *testing.T) {
 	assert := assert.New(t)
 	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 	node := NewNode(nodes, &runtime.Node{
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			Owner: &data.Owner{
 				Contact: "whoami",
 			},
@@ -26,7 +26,7 @@ func TestRegister(t *testing.T) {
 	assert.Len(node.Addresses, 1)
 
 	node = NewNode(nodes, &runtime.Node{
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			Owner: &data.Owner{
 				Contact: "whoami",
 			},

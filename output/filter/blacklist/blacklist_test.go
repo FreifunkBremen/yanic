@@ -23,7 +23,7 @@ func TestFilterBlacklist(t *testing.T) {
 	assert.NoError(err)
 
 	// keep node without nodeid
-	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
+	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 
 	// tests with blacklist
@@ -31,11 +31,11 @@ func TestFilterBlacklist(t *testing.T) {
 	assert.NoError(err)
 
 	// blacklist contains node with nodeid -> drop it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{NodeID: "a"}})
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{NodeID: "a"}})
 	assert.Nil(n)
 
 	// blacklist does not contains node without nodeid -> keep it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 
 	n = filter.Apply(&runtime.Node{})

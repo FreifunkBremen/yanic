@@ -1,7 +1,7 @@
 package data
 
-// NodeInfo struct
-type NodeInfo struct {
+// Nodeinfo struct
+type Nodeinfo struct {
 	NodeID   string    `json:"node_id"`
 	Network  Network   `json:"network"`
 	Owner    *Owner    `json:"owner"`

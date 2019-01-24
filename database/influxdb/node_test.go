@@ -52,7 +52,7 @@ func TestToInflux(t *testing.T) {
 				},
 			},
 		},
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "deadbeef",
 			Owner: &data.Owner{
 				Contact: "nobody",
@@ -96,7 +96,7 @@ func TestToInflux(t *testing.T) {
 	}
 
 	neighbour := &runtime.Node{
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "foobar",
 			Network: data.Network{
 				Mac: "BAFF1E5",
@@ -117,7 +117,7 @@ func TestToInflux(t *testing.T) {
 
 	// do not add a empty statistics of a node
 	droppednode := &runtime.Node{
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "notfound",
 			Network: data.Network{
 				Mac: "instats",

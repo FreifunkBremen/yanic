@@ -29,7 +29,7 @@ func (no *noowner) Apply(node *runtime.Node) *runtime.Node {
 			Lastseen:   node.Lastseen,
 			Online:     node.Online,
 			Statistics: node.Statistics,
-			Nodeinfo: &data.NodeInfo{
+			Nodeinfo: &data.Nodeinfo{
 				NodeID:   nodeinfo.NodeID,
 				Network:  nodeinfo.Network,
 				System:   nodeinfo.System,

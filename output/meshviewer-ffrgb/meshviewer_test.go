@@ -14,7 +14,7 @@ func TestTransform(t *testing.T) {
 	nodes := runtime.NewNodes(&runtime.NodesConfig{})
 	nodes.AddNode(&runtime.Node{
 		Online: true,
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "node_a",
 			Network: data.Network{
 				Mac: "node:a:mac",
@@ -51,7 +51,7 @@ func TestTransform(t *testing.T) {
 	})
 	nodes.AddNode(&runtime.Node{
 		Online: true,
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "node_c",
 			Network: data.Network{
 				Mac: "node:c:mac",
@@ -81,7 +81,7 @@ func TestTransform(t *testing.T) {
 	})
 	nodes.AddNode(&runtime.Node{
 		Online: true,
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "node_b",
 			Network: data.Network{
 				Mac: "node:b:mac",
@@ -117,7 +117,7 @@ func TestTransform(t *testing.T) {
 	})
 	nodes.AddNode(&runtime.Node{
 		Online: false,
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "node_d",
 			Network: data.Network{
 				Mac: "node:d:mac",

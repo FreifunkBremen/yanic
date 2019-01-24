@@ -17,7 +17,7 @@ func TestFilter(t *testing.T) {
 
 	// delete owner by configuration
 	filter, _ = build(true)
-	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Owner: &data.Owner{
 			Contact: "blub",
 		},
@@ -28,7 +28,7 @@ func TestFilter(t *testing.T) {
 
 	// keep owner configuration
 	filter, _ = build(false)
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Owner: &data.Owner{
 			Contact: "blub",
 		},

@@ -25,7 +25,7 @@ func TestStart(t *testing.T) {
 	assert.NoError(err)
 
 	conn.InsertNode(&runtime.Node{
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID:   "73deadbeaf13",
 			Hostname: "inject-test",
 			Network: data.Network{

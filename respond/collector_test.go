@@ -39,5 +39,5 @@ func TestParse(t *testing.T) {
 	assert.NoError(err)
 	assert.NotNil(data)
 
-	assert.Equal("f81a67a5e9c1", data.NodeInfo.NodeID)
+	assert.Equal("f81a67a5e9c1", data.Nodeinfo.NodeID)
 }

@@ -18,7 +18,7 @@ func TestFilterInArea(t *testing.T) {
 		"longitude_max": 12.0,
 	})
 
-	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{Latitude: 4.0, Longitude: 11.0},
 	}})
 	assert.NotNil(n)
@@ -28,35 +28,35 @@ func TestFilterInArea(t *testing.T) {
 	assert.NotNil(n)
 
 	// keep without location -> use has_location for it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 
 	// zeros not in area (0, 0)
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{},
 	}})
 	assert.Nil(n)
 
 	// in area
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{Latitude: 4.0, Longitude: 11.0},
 	}})
 	assert.NotNil(n)
 
 	// over max longitude -> dropped
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{Latitude: 4.0, Longitude: 13.0},
 	}})
 	assert.Nil(n)
 
 	// over max latitude -> dropped
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{Latitude: 6.0, Longitude: 11.0},
 	}})
 	assert.Nil(n)
 
 	// lower then mix latitde -> dropped
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{Latitude: 1.0, Longitude: 2.0},
 	}})
 	assert.Nil(n)

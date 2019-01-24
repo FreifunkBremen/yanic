@@ -20,13 +20,13 @@ func TestFilterHasLocation(t *testing.T) {
 	assert.NoError(err)
 
 	// node has location (with 0,0) -> keep it
-	n := filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{},
 	}})
 	assert.NotNil(n)
 
 	// node without location has no location -> drop it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.Nil(n)
 
 	// node without nodeinfo has no location -> drop it
@@ -38,13 +38,13 @@ func TestFilterHasLocation(t *testing.T) {
 	assert.NoError(err)
 
 	// node has location (with 0,0) -> drop it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Location: &data.Location{},
 	}})
 	assert.Nil(n)
 
 	// node without location has no location -> keep it
-	n = filter.Apply(&runtime.Node{Nodeinfo: &data.NodeInfo{}})
+	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 
 	// node without nodeinfo has no location -> keep it

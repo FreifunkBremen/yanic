@@ -68,7 +68,7 @@ func TestFilter(t *testing.T) {
 	nodes := &runtime.Nodes{
 		List: map[string]*runtime.Node{
 			"a": {
-				Nodeinfo: &data.NodeInfo{NodeID: "a"},
+				Nodeinfo: &data.Nodeinfo{NodeID: "a"},
 			},
 		},
 	}
@@ -83,7 +83,7 @@ func TestFilter(t *testing.T) {
 	nodes = &runtime.Nodes{
 		List: map[string]*runtime.Node{
 			"a": {
-				Nodeinfo: &data.NodeInfo{NodeID: "a"},
+				Nodeinfo: &data.Nodeinfo{NodeID: "a"},
 			},
 		},
 	}

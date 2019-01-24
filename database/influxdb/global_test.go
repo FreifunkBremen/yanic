@@ -124,7 +124,7 @@ func createTestNodes() *runtime.Nodes {
 				Total: 23,
 			},
 		},
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "abcdef012345",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
@@ -146,7 +146,7 @@ func createTestNodes() *runtime.Nodes {
 				Total: 2,
 			},
 		},
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "112233445566",
 			Hardware: data.Hardware{
 				Model: "TP-Link 841",
@@ -156,7 +156,7 @@ func createTestNodes() *runtime.Nodes {
 
 	nodes.AddNode(&runtime.Node{
 		Online: true,
-		Nodeinfo: &data.NodeInfo{
+		Nodeinfo: &data.Nodeinfo{
 			NodeID: "0xdeadbeef0x",
 			VPN:    true,
 			Hardware: data.Hardware{

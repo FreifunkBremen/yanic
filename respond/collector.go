@@ -260,7 +260,7 @@ func (res *Response) parse() (*data.ResponseData, error) {
 func (coll *Collector) saveResponse(addr *net.UDPAddr, res *data.ResponseData) {
 	// Search for NodeID
 	var nodeID string
-	if val := res.NodeInfo; val != nil {
+	if val := res.Nodeinfo; val != nil {
 		nodeID = val.NodeID
 	} else if val := res.Neighbours; val != nil {
 		nodeID = val.NodeID
@@ -284,8 +284,8 @@ func (coll *Collector) saveResponse(addr *net.UDPAddr, res *data.ResponseData) {
 	if res.Neighbours != nil && res.Neighbours.NodeID != nodeID {
 		res.Neighbours = nil
 	}
-	if res.NodeInfo != nil && res.NodeInfo.NodeID != nodeID {
-		res.NodeInfo = nil
+	if res.Nodeinfo != nil && res.Nodeinfo.NodeID != nodeID {
+		res.Nodeinfo = nil
 	}
 
 	// Process the data and update IP address

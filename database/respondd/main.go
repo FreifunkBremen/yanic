@@ -51,7 +51,7 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 
 func (conn *Connection) InsertNode(node *runtime.Node) {
 	res := &data.ResponseData{
-		NodeInfo:   node.Nodeinfo,
+		Nodeinfo:   node.Nodeinfo,
 		Statistics: node.Statistics,
 		Neighbours: node.Neighbours,
 	}
