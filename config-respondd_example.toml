@@ -1,0 +1,15 @@
+# how ofter the cache respond of a respondd request is calculated
+data_interval = "3m"
+
+# if set true, respond will contain data from batman interface
+multi_instance = false
+
+[[listen]]
+address = "ff02::2:1001"
+interface = ""
+port = 1001
+
+# manuelle data for respond
+[data.nodeinfo.location]
+latitude = 53.112446246
+longitude = 8.734087944

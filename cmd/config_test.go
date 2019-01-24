@@ -10,7 +10,9 @@ import (
 func TestReadConfig(t *testing.T) {
 	assert := assert.New(t)
 
-	config, err := ReadConfigFile("../config_example.toml")
+	config := &ServeConfig{}
+	err := ReadConfigFile("../config_example.toml", config)
+
 	assert.NoError(err)
 	assert.NotNil(config)
 
@@ -40,11 +42,11 @@ func TestReadConfig(t *testing.T) {
 		},
 	}, meshviewer)
 
-	_, err = ReadConfigFile("testdata/config_invalid.toml")
+	err = ReadConfigFile("testdata/config_invalid.toml", config)
 	assert.Error(err, "not unmarshalable")
 	assert.Contains(err.Error(), "invalid TOML syntax")
 
-	_, err = ReadConfigFile("testdata/adsa.toml")
+	err = ReadConfigFile("testdata/adsa.toml", config)
 	assert.Error(err, "not found able")
 	assert.Contains(err.Error(), "no such file or directory")
 }

@@ -19,7 +19,10 @@ var importCmd = &cobra.Command{
 		path := args[0]
 		site := args[1]
 		domain := args[2]
-		config := loadConfig()
+		config := &ServeConfig{}
+		if err := ReadConfigFile(configPath, config); err != nil {
+			log.Panicf("unable to load config file: %s", err)
+		}
 
 		err := allDatabase.Start(config.Database)
 		if err != nil {

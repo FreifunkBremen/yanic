@@ -9,6 +9,7 @@ import (
 	"github.com/bdlm/log"
 	"github.com/spf13/cobra"
 
+	"github.com/FreifunkBremen/yanic/database"
 	allDatabase "github.com/FreifunkBremen/yanic/database/all"
 	allOutput "github.com/FreifunkBremen/yanic/output/all"
 	"github.com/FreifunkBremen/yanic/respond"
@@ -16,16 +17,26 @@ import (
 	"github.com/FreifunkBremen/yanic/webserver"
 )
 
+// ServeConfig represents the whole configuration
+type ServeConfig struct {
+	Respondd  respond.Config
+	Webserver webserver.Config
+	Nodes     runtime.NodesConfig
+	Database  database.Config
+}
+
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:     "serve",
 	Short:   "Runs the yanic server",
 	Example: "yanic serve --config /etc/yanic.toml",
 	Run: func(cmd *cobra.Command, args []string) {
-		config := loadConfig()
+		config := &ServeConfig{}
+		if err := ReadConfigFile(configPath, config); err != nil {
+			log.Panicf("unable to load config file: %s", err)
+		}
 
-		err := allDatabase.Start(config.Database)
-		if err != nil {
+		if err := allDatabase.Start(config.Database); err != nil {
 			log.Panicf("could not connect to database: %s", err)
 		}
 		defer allDatabase.Close()
@@ -33,8 +44,7 @@ var serveCmd = &cobra.Command{
 		nodes = runtime.NewNodes(&config.Nodes)
 		nodes.Start()
 
-		err = allOutput.Start(nodes, config.Nodes)
-		if err != nil {
+		if err := allOutput.Start(nodes, config.Nodes); err != nil {
 			log.Panicf("error on init outputs: %s", err)
 		}
 		defer allOutput.Close()

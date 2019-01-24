@@ -1,0 +1,13 @@
+[Unit]
+Description=yanic
+
+[Service]
+Type=simple
+User=yanic
+ExecStart=/opt/go/bin/yanic respondd --config /etc/respondd.conf
+Restart=always
+RestartSec=5s
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target

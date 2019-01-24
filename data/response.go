@@ -2,8 +2,8 @@ package data
 
 // ResponseData struct
 type ResponseData struct {
-	Neighbours   *Neighbours            `json:"neighbours"`
-	Nodeinfo     *Nodeinfo              `json:"nodeinfo"`
-	Statistics   *Statistics            `json:"statistics"`
+	Nodeinfo   *Nodeinfo   `json:"nodeinfo" toml:"nodeinfo"`
+	Statistics *Statistics `json:"statistics" toml:"statistics"`
+	Neighbours *Neighbours `json:"neighbours" toml:"neighbours"`
 	CustomFields map[string]interface{} `json:"-"`
 }

@@ -24,5 +24,6 @@ _testmain.go
 *.prof
 webroot
 /config.toml
+/config-respondd.toml
 /vendor
 /bin
