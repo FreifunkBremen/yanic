@@ -9,9 +9,9 @@ import (
 	"github.com/FreifunkBremen/yanic/cmd"
 )
 
-type Hook struct{}
+type hook struct{}
 
-func (hook *Hook) Fire(entry *log.Entry) error {
+func (h *hook) Fire(entry *log.Entry) error {
 	switch entry.Level {
 	case log.PanicLevel:
 		entry.Logger.Out = os.Stderr
@@ -31,12 +31,12 @@ func (hook *Hook) Fire(entry *log.Entry) error {
 	return nil
 }
 
-func (hook *Hook) Levels() []stdLogger.Level {
+func (h *hook) Levels() []stdLogger.Level {
 	return log.AllLevels
 }
 
 func main() {
-	log.AddHook(&Hook{})
+	log.AddHook(&hook{})
 
 	cmd.Execute()
 }
