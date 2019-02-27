@@ -69,7 +69,7 @@ func TestTransform(t *testing.T) {
 			},
 		},
 		Neighbours: &data.Neighbours{
-			NodeID: "node_b",
+			NodeID: "node_c",
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:c:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
