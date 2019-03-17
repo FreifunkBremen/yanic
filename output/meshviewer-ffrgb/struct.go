@@ -31,6 +31,7 @@ type Node struct {
 	GatewayIPv6    string        `json:"gateway6,omitempty"`
 	NodeID         string        `json:"node_id"`
 	MAC            string        `json:"mac"`
+	MACs           []string      `json:"macs"`
 	Addresses      []string      `json:"addresses"`
 	SiteCode       string        `json:"-"`
 	DomainCode     string        `json:"domain"`
@@ -84,6 +85,7 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 	if nodeinfo := n.Nodeinfo; nodeinfo != nil {
 		node.NodeID = nodeinfo.NodeID
 		node.MAC = nodeinfo.Network.Mac
+		node.MACs = nodeinfo.Network.Mesh["bat0"].Interfaces.Other
 		node.SiteCode = nodeinfo.System.SiteCode
 		node.DomainCode = nodeinfo.System.DomainCode
 		node.Hostname = nodeinfo.Hostname
