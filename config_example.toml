@@ -1,6 +1,6 @@
 # This is the config file for Yanic written in "Tom's Obvious, Minimal Language."
 # syntax: https://github.com/toml-lang/toml
-# (if you need somethink multiple times, checkout out the [[array of table]] section)
+# (if you need something multiple times, checkout out the [[array of table]] section)
 
 # Send respondd request to update information
 [respondd]
