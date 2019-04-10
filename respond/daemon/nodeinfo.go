@@ -2,9 +2,9 @@ package respondd
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"runtime"
-	"net"
 
 	"github.com/FreifunkBremen/yanic/data"
 )
@@ -47,19 +47,19 @@ func getAddresses(iface string) (addrs []string) {
 	if err != nil {
 		return
 	}
-	inAddrs, err := in.Addrs() 
+	inAddrs, err := in.Addrs()
 	if err != nil {
 		return
 	}
 	for _, a := range inAddrs {
 		var ip net.IP
 		switch v := a.(type) {
-			case *net.IPNet:
-				ip = v.IP
-			case *net.IPAddr:
-				ip = v.IP
-			default:
-				continue
+		case *net.IPNet:
+			ip = v.IP
+		case *net.IPAddr:
+			ip = v.IP
+		default:
+			continue
 		}
 		if ip4 := ip.To4(); ip4 == nil {
 			addrs = append(addrs, ip.String())

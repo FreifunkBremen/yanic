@@ -29,12 +29,12 @@ type Daemon struct {
 }
 
 type AnswerConfig struct {
-	NodeID     string `toml:"node_id"`
-	Hostname   string `toml:"hostname"`
-	SiteCode   string `toml:"site_code"`
-	DomainCode string `toml:"domain_code"`
-	Location *data.Location `json:"location,omitempty"`
-	VPN bool `toml:"vpn"`
+	NodeID     string         `toml:"node_id"`
+	Hostname   string         `toml:"hostname"`
+	SiteCode   string         `toml:"site_code"`
+	DomainCode string         `toml:"domain_code"`
+	Location   *data.Location `json:"location,omitempty"`
+	VPN        bool           `toml:"vpn"`
 }
 
 func (d *Daemon) getAnswer(iface string) (*AnswerConfig, string) {
