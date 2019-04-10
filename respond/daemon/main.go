@@ -7,24 +7,12 @@ import (
 	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/lib/duration"
 )
 
-type Daemon struct {
-	MultiInstance bool              `toml:"multi_instance"`
-	DataInterval  duration.Duration `toml:"data_interval"`
-	Listen        []struct {
-		Address   string `toml:"address"`
-		Interface string `toml:"interface"`
-		Port      int    `toml:"port"`
-	} `toml:"listen"`
-	Data            *data.ResponseData `toml:"data"`
-	dataByInterface map[string]*data.ResponseData
-}
-
 func (d *Daemon) Start() {
-	if d.Data == nil {
-		d.Data = &data.ResponseData{}
+	d.dataByInterface = make(map[string]*data.ResponseData)
+	if d.AnswerByZones == nil {
+		d.AnswerByZones = make(map[string]*AnswerConfig)
 	}
 
 	d.updateData()

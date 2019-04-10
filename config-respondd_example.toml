@@ -1,15 +1,26 @@
 # how ofter the cache respond of a respondd request is calculated
 data_interval = "3m"
 
-# if set true, respond will contain data from batman interface
-multi_instance = false
+interfaces = [ "wlp4s0" ]
 
 [[listen]]
-address = "ff02::2:1001"
+address   = "ff02::2:1001"
 interface = ""
-port = 1001
+port      = 1001
 
-# manuelle data for respond
-[data.nodeinfo.location]
-latitude = 53.112446246
+[defaults]
+node_id  = ""
+hostname = ""
+site_code = "ffhb"
+domain_code = ""
+vpn = false
+
+[defaults.location]
+latitude  = 53.112446246
 longitude = 8.734087944
+
+
+# if divergent configuration of defaults are wanted by respond on interface/zones example with bat0
+[zones.bat0]
+node_id  = ""
+hostname = ""
