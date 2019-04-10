@@ -9,36 +9,43 @@ import (
 	"github.com/FreifunkBremen/yanic/data"
 )
 
-func (d *Daemon) updateNodeinfo(iface string, data *data.ResponseData) {
+func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 	config, nodeID := d.getAnswer(iface)
-	data.Nodeinfo.NodeID = nodeID
+	resp.Nodeinfo.NodeID = nodeID
 
 	if config.Hostname == "" {
-		data.Nodeinfo.Hostname, _ = os.Hostname()
+		resp.Nodeinfo.Hostname, _ = os.Hostname()
 	} else {
-		data.Nodeinfo.Hostname = config.Hostname
+		resp.Nodeinfo.Hostname = config.Hostname
 	}
 
-	data.Nodeinfo.VPN = config.VPN
-	data.Nodeinfo.Location = config.Location
+	resp.Nodeinfo.VPN = config.VPN
+	resp.Nodeinfo.Location = config.Location
 
-	data.Nodeinfo.System.SiteCode = config.SiteCode
-	data.Nodeinfo.System.DomainCode = config.DomainCode
+	resp.Nodeinfo.System.SiteCode = config.SiteCode
+	resp.Nodeinfo.System.DomainCode = config.DomainCode
 
-	data.Nodeinfo.Hardware.Nproc = runtime.NumCPU()
+	resp.Nodeinfo.Hardware.Nproc = runtime.NumCPU()
 
-	if data.Nodeinfo.Network.Mac == "" {
-		data.Nodeinfo.Network.Mac = fmt.Sprintf("%s:%s:%s:%s:%s:%s", nodeID[0:2], nodeID[2:4], nodeID[4:6], nodeID[6:8], nodeID[8:10], nodeID[10:12])
+	if resp.Nodeinfo.Network.Mac == "" {
+		resp.Nodeinfo.Network.Mac = fmt.Sprintf("%s:%s:%s:%s:%s:%s", nodeID[0:2], nodeID[2:4], nodeID[4:6], nodeID[6:8], nodeID[8:10], nodeID[10:12])
 	}
 
-	if iface == "" {
-		data.Nodeinfo.Network.Addresses = []string{}
-		for _, i := range d.Interfaces {
-			addrs := getAddresses(i)
-			data.Nodeinfo.Network.Addresses = append(data.Nodeinfo.Network.Addresses, addrs...)
+	if iface != "" {
+		resp.Nodeinfo.Network.Addresses = getAddresses(iface)
+	}
+
+	resp.Nodeinfo.Network.Mesh = make(map[string]*data.NetworkInterface)
+	for _, bface := range d.Batman {
+		b := NewBatman(bface)
+		mesh := data.NetworkInterface{}
+		for _, bbface := range b.Interfaces {
+			addr := b.Address(bbface)
+			if addr != "" {
+				mesh.Interfaces.Tunnel = append(mesh.Interfaces.Tunnel, addr)
+			}
 		}
-	} else {
-		data.Nodeinfo.Network.Addresses = getAddresses(iface)
+		resp.Nodeinfo.Network.Mesh[bface] = &mesh
 	}
 }
 

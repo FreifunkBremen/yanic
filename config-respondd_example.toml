@@ -1,7 +1,7 @@
 # how ofter the cache respond of a respondd request is calculated
 data_interval = "3m"
 
-interfaces = [ "wlp4s0" ]
+batman = "[::1]:33123"
 
 [[listen]]
 address   = "ff02::2:1001"

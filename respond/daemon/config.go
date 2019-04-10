@@ -19,8 +19,9 @@ type Daemon struct {
 		Interface string `toml:"interface"`
 		Port      int    `toml:"port"`
 	} `toml:"listen"`
-	InterfacesBatman []string `toml:"interfaces_batman"`
-	Interfaces       []string `toml:"interfaces"`
+
+	Batman []string `toml:"batman"`
+	Babel  string   `toml:"babel"`
 
 	dataByInterface map[string]*data.ResponseData
 

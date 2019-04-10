@@ -1,8 +1,8 @@
 package respondd
 
 import (
-	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/host"
+	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 
 	"github.com/FreifunkBremen/yanic/data"
