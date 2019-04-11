@@ -14,11 +14,11 @@ hostname = ""
 site_code = "ffhb"
 domain_code = ""
 vpn = false
+traffic_interfaces = [ "eth0" ]
 
 [defaults.location]
 latitude  = 53.112446246
 longitude = 8.734087944
-
 
 # if divergent configuration of defaults are wanted by respond on interface/zones example with bat0
 [zones.bat0]
