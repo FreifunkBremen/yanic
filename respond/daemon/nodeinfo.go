@@ -2,9 +2,14 @@ package respondd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
+	"os/exec"
 	"runtime"
+	"strings"
+
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
 )
@@ -26,6 +31,30 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 	resp.Nodeinfo.System.DomainCode = config.DomainCode
 
 	resp.Nodeinfo.Hardware.Nproc = runtime.NumCPU()
+
+	if out, err := exec.Command("lsb_release", "-sri").Output(); err == nil {
+		f := strings.Fields(string(out))
+		if len(f) == 2 {
+			resp.Nodeinfo.Software.Firmware.Base = f[0]
+			resp.Nodeinfo.Software.Firmware.Release = f[1]
+		}
+	} else {
+		log.Errorf("not able to run lsb_release: %s", err)
+	}
+
+	if out, err := exec.Command("fastd", "-v").Output(); err == nil {
+		resp.Nodeinfo.Software.Fastd.Enabled = true
+
+		f := strings.Fields(string(out))
+		if len(f) >= 2 {
+			resp.Nodeinfo.Software.Fastd.Version = f[1]
+		}
+	} else {
+		log.Infof("not able to run fastd: %s", err)
+	}
+	if v, err := ioutil.ReadFile("/sys/module/batman_adv/version"); err == nil {
+		resp.Nodeinfo.Software.BatmanAdv.Version = trim(string(v))
+	}
 
 	if resp.Nodeinfo.Network.Mac == "" {
 		resp.Nodeinfo.Network.Mac = fmt.Sprintf("%s:%s:%s:%s:%s:%s", nodeID[0:2], nodeID[2:4], nodeID[4:6], nodeID[6:8], nodeID[8:10], nodeID[10:12])
