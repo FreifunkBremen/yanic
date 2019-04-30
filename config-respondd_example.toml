@@ -1,11 +1,12 @@
 # how ofter the cache respond of a respondd request is calculated
 data_interval = "3m"
 
-batman = "[::1]:33123"
+batman = ["bat03", "bat04"]
+babel  = "[::1]:33123"
 
 [[listen]]
 address   = "ff02::2:1001"
-interface = ""
+interface = "bat03"
 port      = 1001
 
 [defaults]
@@ -21,6 +22,7 @@ latitude  = 53.112446246
 longitude = 8.734087944
 
 # if divergent configuration of defaults are wanted by respond on interface/zones example with bat0
-[zones.bat0]
+[zones.bat03]
 node_id  = ""
 hostname = ""
+#...
