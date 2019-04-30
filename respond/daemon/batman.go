@@ -23,7 +23,10 @@ func NewBatman(iface string) *Batman {
 		log.WithField("iface", iface).Error("not able to run batctl")
 		return nil
 	}
-	b := &Batman{Bridge: iface}
+	b := &Batman{
+		Bridge:     iface,
+		Interfaces: []string{iface},
+	}
 	for _, line := range strings.Split(string(out), "\n") {
 		i := strings.Split(line, ":")[0]
 		if i != "" {
