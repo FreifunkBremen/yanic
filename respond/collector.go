@@ -66,7 +66,7 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 	if iface.IPAddress != "" {
 		addr = net.ParseIP(iface.IPAddress)
 	} else {
-		addr, err = getUnicastAddr(iface.InterfaceName, iface.MulticastAddress == "")
+		addr, err = getUnicastAddr(iface.InterfaceName)
 		if err != nil {
 			log.WithField("iface", iface.InterfaceName).Panic(err)
 		}
@@ -99,7 +99,7 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 }
 
 // Returns a unicast address of given interface (linklocal or global unicast address)
-func getUnicastAddr(ifname string, linklocal bool) (net.IP, error) {
+func getUnicastAddr(ifname string) (net.IP, error) {
 	iface, err := net.InterfaceByName(ifname)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func getUnicastAddr(ifname string, linklocal bool) (net.IP, error) {
 		if !ok {
 			continue
 		}
-		if (!linklocal && ipnet.IP.IsGlobalUnicast()) || (linklocal && ipnet.IP.IsLinkLocalUnicast()) {
+		if (ip == nil && ipnet.IP.IsGlobalUnicast()) || ipnet.IP.IsLinkLocalUnicast() {
 			ip = ipnet.IP
 		}
 	}

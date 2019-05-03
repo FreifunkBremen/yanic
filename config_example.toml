@@ -23,14 +23,14 @@ domains            = ["city"]
 # name of interface on which this collector is running
 ifname = "br-ffhb"
 # ip address which is used for sending
-# (optional - without definition used a address of ifname)
+# (optional - without definition used a address of ifname - prefered link local)
 ip_address = "fd2f:5119:f2d::5"
 # disable sending multicast respondd request
 # (for receiving only respondd packages e.g. database respondd)
 #send_no_request = false
 # multicast address to destination of respondd
-# (optional - without definition used batman default ff02::2:1001)
-multicast_address = "ff05::2:1001"
+# (optional - without definition used default ff05::2:1001)
+#multicast_address = "ff02::2:1001"
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
 #port = 10001

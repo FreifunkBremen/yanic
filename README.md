@@ -20,7 +20,7 @@ Yet another node info collector
 
 ## How it works
 
-In the first step Yanic sends a multicast message to the group `ff02:0:0:0:0:0:2:1001` and port `1001`.
+In the first step Yanic sends a multicast message to the group `ff05:0:0:0:0:0:2:1001` and port `1001`.
 Recently seen nodes that does not reply are requested via a unicast message.
 
 ## Documentation

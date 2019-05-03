@@ -7,7 +7,7 @@ A little overview of yanic in connection with other software:
 
 It sends the `gluon-neighbour-info` request and collects the answers.
 
-It will send UDP packets with multicast address `ff02:0:0:0:0:0:2:1001` and port `1001`.
+It will send UDP packets with multicast address `ff05:0:0:0:0:0:2:1001` and port `1001`.
 
 If a node does not answer, it will request with the last know address under the port `1001`.
 
