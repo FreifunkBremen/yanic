@@ -7,6 +7,7 @@ import (
 	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/respond"
 )
 
 func (d *Daemon) Start() {
@@ -21,7 +22,17 @@ func (d *Daemon) Start() {
 	for _, listen := range d.Listen {
 		var socket *net.UDPConn
 		var err error
-		addr := net.ParseIP(listen.Address)
+		addrString := listen.Address
+		if addrString == "" {
+			addrString = respond.MulticastAddressDefault
+		}
+		port := listen.Port
+		if port == 0 {
+			port = respond.PortDefault
+		} else if port < 0 {
+			port = 0
+		}
+		addr := net.ParseIP(addrString)
 
 		if addr.IsMulticast() {
 			var iface *net.Interface
@@ -33,14 +44,14 @@ func (d *Daemon) Start() {
 			}
 			if socket, err = net.ListenMulticastUDP("udp6", iface, &net.UDPAddr{
 				IP:   addr,
-				Port: listen.Port,
+				Port: port,
 			}); err != nil {
 				log.Fatal(err)
 			}
 		} else {
 			if socket, err = net.ListenUDP("udp6", &net.UDPAddr{
 				IP:   addr,
-				Port: listen.Port,
+				Port: port,
 			}); err != nil {
 				log.Fatal(err)
 			}
