@@ -66,14 +66,22 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 
 	resp.Nodeinfo.Network.Mesh = make(map[string]*data.NetworkInterface)
 	for _, bface := range d.Batman {
+
 		b := NewBatman(bface)
+
+		if b == nil {
+			continue
+		}
+
 		mesh := data.NetworkInterface{}
+
 		for _, bbface := range b.Interfaces {
 			addr := b.Address(bbface)
 			if addr != "" {
 				mesh.Interfaces.Tunnel = append(mesh.Interfaces.Tunnel, addr)
 			}
 		}
+
 		resp.Nodeinfo.Network.Mesh[bface] = &mesh
 	}
 }
