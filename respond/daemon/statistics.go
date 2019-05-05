@@ -29,8 +29,7 @@ func (d *Daemon) updateStatistics(iface string, resp *data.ResponseData) {
 	}
 	if v, err := load.Misc(); err == nil {
 		resp.Statistics.Processes.Running = uint32(v.ProcsRunning)
-		//TODO fix after upstream
-		resp.Statistics.Processes.Total = uint32(v.Ctxt)
+		resp.Statistics.Processes.Total = uint32(v.ProcsTotal)
 	}
 	if ls, err := net.IOCounters(true); err == nil {
 		resp.Statistics.Traffic.Tx = &data.Traffic{}
