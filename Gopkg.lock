@@ -10,6 +10,14 @@
   version = "v1.1.1"
 
 [[projects]]
+  digest = "1:e92f5581902c345eb4ceffdcd4a854fb8f73cf436d47d837d1ec98ef1fe0a214"
+  name = "github.com/StackExchange/wmi"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5d049714c4a64225c3c79a7cf7d02f7fb5b96338"
+  version = "1.0.0"
+
+[[projects]]
   digest = "1:616fe3fc0d5eb7b89324dc5e47aef8cf05f3b0aed0bfe908e62516da4c638647"
   name = "github.com/bdlm/log"
   packages = ["."]
@@ -40,6 +48,17 @@
   pruneopts = "UT"
   revision = "55a0a92a703041a55ad5ee2c2647f9577a87fdc1"
   version = "v2"
+
+[[projects]]
+  digest = "1:440028f55cb322d8cb5b9d5ebec298a00b7d74690a658fe6b1c0c0b44341bfae"
+  name = "github.com/go-ole/go-ole"
+  packages = [
+    ".",
+    "oleutil",
+  ]
+  pruneopts = "UT"
+  revision = "97b6244175ae18ea6eef668034fd6565847501c9"
+  version = "v1.2.4"
 
 [[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
@@ -105,7 +124,30 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:22799aea8fe96dd5693abdd1eaa14b1b29e3eafbdc7733fa155b3cb556c8a7ae"
+  digest = "1:30f9a1e244122ae2f13e943687c34dcefa169b3246d44aa4d67ec9d5587e02bf"
+  name = "github.com/shirou/gopsutil"
+  packages = [
+    "cpu",
+    "host",
+    "internal/common",
+    "load",
+    "mem",
+    "net",
+    "process",
+  ]
+  pruneopts = "UT"
+  revision = "01487156ffd97029bd146658b44e4c0d06388d82"
+
+[[projects]]
+  branch = "master"
+  digest = "1:99c6a6dab47067c9b898e8c8b13d130c6ab4ffbcc4b7cc6236c2cd0b1e344f5b"
+  name = "github.com/shirou/w32"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bb4de0191aa41b5507caa14b0650cdbddcd9280b"
+
+[[projects]]
+  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = "UT"
@@ -138,14 +180,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:160e165ef13917405d1ebfde865cb9c292b8635f83655e3932662d5586d300ee"
+  digest = "1:4cf0abce65ca9e0e906fdd0d76ad1dd1dcc94afe5901473cbc7f8d623cceabb4"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "c432e742b0af385916e013f6a34e9e73d139cf82"
+  revision = "a43fa875dd822b81eb6d2ad538bc1f4caba169bd"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -160,6 +202,10 @@
     "github.com/naoina/toml",
     "github.com/paulmach/go.geojson",
     "github.com/pkg/errors",
+    "github.com/shirou/gopsutil/host",
+    "github.com/shirou/gopsutil/load",
+    "github.com/shirou/gopsutil/mem",
+    "github.com/shirou/gopsutil/net",
     "github.com/spf13/cobra",
     "github.com/stretchr/testify/assert",
   ]
