@@ -41,7 +41,7 @@ type AnswerConfig struct {
 
 func (d *Daemon) getAnswer(iface string) (*AnswerConfig, string) {
 	config := d.Answer
-	if v, ok := d.AnswerByZones[iface]; iface == "" && ok {
+	if v, ok := d.AnswerByZones[iface]; iface != "" && ok {
 		config = v
 	}
 
