@@ -93,6 +93,11 @@ offline_after = "10m"
 #longitude_max = 39.72
 
 
+# outputs all nodes as points into nodes.geojson
+[[nodes.output.geojson]]
+enable   = true
+path = "/var/www/html/meshviewer/data/nodes.geojson"
+
 # definition for the new more compressed meshviewer.json
 [[nodes.output.meshviewer-ffrgb]]
 enable   = true
