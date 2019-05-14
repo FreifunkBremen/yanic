@@ -43,7 +43,7 @@ func (b *Batman) Address(iface string) string {
 	return i.HardwareAddr.String()
 }
 func (b *Batman) Neighbours() map[string]data.BatadvNeighbours {
-	out, err := exec.Command("batctl", "-m", b.Bridge, "o").Output()
+	out, err := exec.Command("batctl", "-m", b.Bridge, "o", "-nH").Output()
 	if err != nil {
 		log.WithField("iface", b.Bridge).Error("not able to run batctl")
 		return nil
