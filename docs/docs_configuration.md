@@ -387,6 +387,29 @@ longitude_max = 39.72
 
 
 
+## [[nodes.output.geojson]]
+{% method %}
+The geojson output is a minimal output of a geojson file which contains the location data of all monitored nodes to be used in tools to visualize the online nodes.
+{% sample lang="toml" %}
+```toml
+[[nodes.output.geojson]]
+enable   = true
+path = "/var/www/html/meshviewer/data/nodes.geojson"
+```
+{% endmethod %}
+
+
+### path
+{% method %}
+The path, where to store nodelist.json
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/nodelist.json"
+```
+{% endmethod %}
+
+
+
 ## [[nodes.output.meshviewer-ffrgb]]
 {% method %}
 The new json file format for the [meshviewer](https://github.com/ffrgb/meshviewer) developed in Regensburg.
