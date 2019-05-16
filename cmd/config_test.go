@@ -25,7 +25,7 @@ func TestReadConfig(t *testing.T) {
 	assert.Contains(config.Respondd.Sites["ffhb"].Domains, "city")
 
 	// Test output plugins
-	assert.Len(config.Nodes.Output, 3)
+	assert.Len(config.Nodes.Output, 4)
 	outputs := config.Nodes.Output["meshviewer"].([]interface{})
 	assert.Len(outputs, 1)
 	meshviewer := outputs[0]
