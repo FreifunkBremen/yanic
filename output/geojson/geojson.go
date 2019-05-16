@@ -38,6 +38,18 @@ func getNodeDescription(n *runtime.Node) string {
 	return description.String()
 }
 
+func getUMapOptions(n *runtime.Node) map[string]string {
+	result := map[string]string{
+		"iconClass": "Circle",
+	}
+	if n.Online {
+		result["color"] = "Green"
+	} else {
+		result["color"] = "Red"
+	}
+	return result
+}
+
 func transform(nodes *runtime.Nodes) *geojson.FeatureCollection {
 	nodelist := geojson.NewFeatureCollection()
 
@@ -54,6 +66,7 @@ func transform(nodes *runtime.Nodes) *geojson.FeatureCollection {
 		point.Properties["id"] = nodeinfo.NodeID
 		point.Properties["name"] = nodeinfo.Hostname
 		point.Properties["description"] = getNodeDescription(n)
+		point.Properties["_umap_options"] = getUMapOptions(n)
 
 		nodelist.Features = append(nodelist.Features, point)
 	}
