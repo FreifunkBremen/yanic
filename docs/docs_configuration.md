@@ -389,7 +389,8 @@ longitude_max = 39.72
 
 ## [[nodes.output.geojson]]
 {% method %}
-The geojson output is a minimal output of a geojson file which contains the location data of all monitored nodes to be used in tools to visualize the online nodes.
+The geojson output produces a geojson file which contains the location data of all monitored nodes to be used to visualize the location of the nodes.
+It is optimized to be used with [UMap](https://github.com/umap-project/umap) but should work with other tools as well.
 {% sample lang="toml" %}
 ```toml
 [[nodes.output.geojson]]
@@ -401,10 +402,10 @@ path = "/var/www/html/meshviewer/data/nodes.geojson"
 
 ### path
 {% method %}
-The path, where to store nodelist.json
+The path, where to store nodes.geojson
 {% sample lang="toml" %}
 ```toml
-path     = "/var/www/html/meshviewer/data/nodelist.json"
+path     = "/var/www/html/meshviewer/data/nodes.geojson"
 ```
 {% endmethod %}
 
