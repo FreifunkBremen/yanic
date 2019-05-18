@@ -63,8 +63,9 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 
 	if iface != "" {
 		resp.Nodeinfo.Network.Addresses = getAddresses(iface)
+	} else {
+		resp.Nodeinfo.Network.Addresses = []string{}
 	}
-
 	resp.Nodeinfo.Network.Mesh = make(map[string]*data.NetworkInterface)
 	for _, bface := range d.Batman {
 
@@ -100,9 +101,8 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 		}
 		if sbu.EntryData["up"].(bool) {
 			addr := sbu.EntryData["ipv6"].(string)
-
-			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, addr)
 			meshBabel.Interfaces.Tunnel = append(meshBabel.Interfaces.Tunnel, addr)
+			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, addr)
 		}
 		return nil
 	})
