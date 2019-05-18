@@ -18,6 +18,14 @@
   version = "1.0.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:098e1f68eb51964990d5d5db579b45cd58edb228c1b33780401dfb8381aebdcb"
+  name = "github.com/Vivena/babelweb2"
+  packages = ["parser"]
+  pruneopts = "UT"
+  revision = "506f97fed4662649abffd1f5089bf17fcc4e7ecb"
+
+[[projects]]
   digest = "1:616fe3fc0d5eb7b89324dc5e47aef8cf05f3b0aed0bfe908e62516da4c638647"
   name = "github.com/bdlm/log"
   packages = ["."]
@@ -194,6 +202,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/NYTimes/gziphandler",
+    "github.com/Vivena/babelweb2/parser",
     "github.com/bdlm/log",
     "github.com/bdlm/std/logger",
     "github.com/fgrosse/graphigo",
