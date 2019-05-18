@@ -6,6 +6,8 @@ import (
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/lib/duration"
+
+	babelParser "github.com/Vivena/babelweb2/parser"
 )
 
 func trim(s string) string {
@@ -20,8 +22,9 @@ type Daemon struct {
 		Port      int    `toml:"port"`
 	} `toml:"listen"`
 
-	Batman []string `toml:"batman"`
-	Babel  string   `toml:"babel"`
+	Batman    []string               `toml:"batman"`
+	Babel     string                 `toml:"babel"`
+	babelData *babelParser.BabelDesc `toml:"-"`
 
 	dataByInterface map[string]*data.ResponseData
 

@@ -19,6 +19,10 @@ func (d *Daemon) Start() {
 	d.updateData()
 	go d.updateWorker()
 
+	if d.Babel != "" {
+		go d.babelConnect()
+	}
+
 	for _, listen := range d.Listen {
 		var socket *net.UDPConn
 		var err error
