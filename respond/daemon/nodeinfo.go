@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strings"
 
+	babelParser "github.com/Vivena/babelweb2/parser"
 	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
@@ -84,6 +85,27 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 
 		resp.Nodeinfo.Network.Mesh[bface] = &mesh
 	}
+
+	if d.babelData == nil {
+		return
+	}
+
+	meshBabel := data.NetworkInterface{}
+	resp.Nodeinfo.Network.Mesh["babel"] = &meshBabel
+
+	d.babelData.Iter(func(bu babelParser.BabelUpdate) error {
+		sbu := bu.ToSUpdate()
+		if sbu.TableId != "interface" {
+			return nil
+		}
+		if sbu.EntryData["up"].(bool) {
+			addr := sbu.EntryData["ipv6"].(string)
+
+			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, addr)
+			meshBabel.Interfaces.Tunnel = append(meshBabel.Interfaces.Tunnel, addr)
+		}
+		return nil
+	})
 }
 
 func getAddresses(iface string) (addrs []string) {
