@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/Vivena/babelweb2/parser"
-	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
 )
@@ -29,8 +28,6 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 	if d.babelData == nil {
 		return
 	}
-
-	log.Warn(d.babelData.String())
 
 	resp.Neighbours.Babel = make(map[string]data.BabelNeighbours)
 	d.babelData.Iter(func(bu parser.BabelUpdate) error {
