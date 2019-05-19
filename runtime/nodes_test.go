@@ -55,8 +55,8 @@ func TestLoadAndSave(t *testing.T) {
 	// not autoload without StatePath
 	NewNodes(config)
 
-	// Test unmarshalable /dev/null - autolead with StatePath
-	config.StatePath = "/dev/null"
+	// Test unmarshalable
+	config.StatePath = "testdata/nodes-broken.json"
 	nodes := NewNodes(config)
 	// Test unopen able
 	config.StatePath = "/root/nodes.json"
@@ -71,8 +71,8 @@ func TestLoadAndSave(t *testing.T) {
 	os.Remove(tmpfile.Name())
 
 	assert.Panics(func() {
-		SaveJSON(nodes, "/dev/null")
-		// "open /dev/null.tmp: permission denied",
+		SaveJSON(nodes, "/proc/a")
+		// "open /proc/a.tmp: permission denied",
 	})
 
 	tmpfile, _ = ioutil.TempFile("/tmp", "nodes")
@@ -162,6 +162,14 @@ func TestLinksNodes(t *testing.T) {
 	}
 	assert.Len(nodes.List, 0)
 
+	nodes.Update("f4f26dd7a300", &data.ResponseData{
+		Nodeinfo: &data.Nodeinfo{
+			NodeID: "f4f26dd7a300",
+			Network: data.Network{
+				Mac: "f4:f2:6d:d7:a3:00",
+			},
+		},
+	})
 	nodes.Update("f4f26dd7a30a", &data.ResponseData{
 		Nodeinfo: &data.Nodeinfo{
 			NodeID: "f4f26dd7a30a",
@@ -169,11 +177,37 @@ func TestLinksNodes(t *testing.T) {
 				Mac: "f4:f2:6d:d7:a3:0a",
 			},
 		},
+		Neighbours: &data.Neighbours{
+			NodeID: "f4f26dd7a30a",
+			Babel: map[string]data.BabelNeighbours{
+				"vx_mesh_lan": {
+					LinkLocalAddress: "fe80::2",
+					Neighbours: map[string]data.BabelLink{
+						"fe80::1337": {
+							Cost: 26214,
+						},
+					},
+				},
+			},
+		},
 	})
 
 	nodes.Update("f4f26dd7a30b", &data.ResponseData{
 		Nodeinfo: &data.Nodeinfo{
 			NodeID: "f4f26dd7a30b",
+			Network: data.Network{
+				Mesh: map[string]*data.NetworkInterface{
+					"babel": {
+						Interfaces: struct {
+							Wireless []string `json:"wireless,omitempty"`
+							Other    []string `json:"other,omitempty"`
+							Tunnel   []string `json:"tunnel,omitempty"`
+						}{
+							Other: []string{"fe80::1337"},
+						},
+					},
+				},
+			},
 		},
 		Neighbours: &data.Neighbours{
 			NodeID: "f4f26dd7a30b",
@@ -189,21 +223,35 @@ func TestLinksNodes(t *testing.T) {
 		},
 	})
 
-	node := nodes.List["f4f26dd7a30a"]
+	// no neighbours nodeid
+	node := nodes.List["f4f26dd7a300"]
 	assert.NotNil(node)
 	links := nodes.NodeLinks(node)
 	assert.Len(links, 0)
 
-	node = nodes.List["f4f26dd7a30b"]
+	// babel link
+	node = nodes.List["f4f26dd7a30a"]
 	assert.NotNil(node)
 	links = nodes.NodeLinks(node)
 	assert.Len(links, 1)
 	link := links[0]
-	assert.Equal(link.SourceID, "f4f26dd7a30b")
-	assert.Equal(link.SourceAddress, "f4:f2:6d:d7:a3:0b")
-	assert.Equal(link.TargetID, "f4f26dd7a30a")
-	assert.Equal(link.TargetAddress, "f4:f2:6d:d7:a3:0a")
-	assert.Equal(link.TQ, float32(0.8))
+	assert.Equal("f4f26dd7a30a", link.SourceID)
+	assert.Equal("fe80::2", link.SourceAddress)
+	assert.Equal("f4f26dd7a30b", link.TargetID)
+	assert.Equal("fe80::1337", link.TargetAddress)
+	assert.Equal(float32(0.6), link.TQ)
+
+	// batman link
+	node = nodes.List["f4f26dd7a30b"]
+	assert.NotNil(node)
+	links = nodes.NodeLinks(node)
+	assert.Len(links, 1)
+	link = links[0]
+	assert.Equal("f4f26dd7a30b", link.SourceID)
+	assert.Equal("f4:f2:6d:d7:a3:0b", link.SourceAddress)
+	assert.Equal("f4f26dd7a30a", link.TargetID)
+	assert.Equal("f4:f2:6d:d7:a3:0a", link.TargetAddress)
+	assert.Equal(float32(0.8), link.TQ)
 
 	nodeid := nodes.GetNodeIDbyAddress("f4:f2:6d:d7:a3:0a")
 	assert.Equal("f4f26dd7a30a", nodeid)
