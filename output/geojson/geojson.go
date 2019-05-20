@@ -27,10 +27,10 @@ func newNodePoint(n *runtime.Node) (point *geojson.Feature) {
 	point.Properties["online"] = n.Online
 	var description strings.Builder
 	if n.Online {
-		description.WriteString("Online;")
+		description.WriteString("Online\n")
 		if statistics := n.Statistics; statistics != nil {
 			point.Properties["clients"] = statistics.Clients.Total
-			description.WriteString(" " + strconv.Itoa(int(statistics.Clients.Total)) + " Clients\n")
+			description.WriteString("Clients: " + strconv.Itoa(int(statistics.Clients.Total)) + "\n")
 		}
 	} else {
 		description.WriteString("Offline\n")
