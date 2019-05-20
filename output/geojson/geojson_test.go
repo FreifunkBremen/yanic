@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	testNodeDescription string = "Online; 23 Clients; Model: TP-Link 841;" +
-		" Site: mysite; Domain: domain_42;"
+	testNodeDescription string = "Online; 42 Clients\nModel: TP-Link 841\n" +
+		"Site: mysite\nDomain: domain_42\n"
 )
 
 func TestTransform(t *testing.T) {
@@ -27,8 +27,23 @@ func TestTransform(t *testing.T) {
 	umap := getUMapOptions(node)
 	assert.Len(umap, 2)
 
-	description := getNodeDescription(node)
-	assert.Len(description, len(testNodeDescription))
+	nodePoint := newNodePoint(node)
+	assert.Equal(
+		nodePoint.Properties["id"],
+		"abcdef012425",
+	)
+	assert.Equal(
+		nodePoint.Properties["model"],
+		"TP-Link 841",
+	)
+	assert.Equal(
+		nodePoint.Properties["clients"],
+		uint32(42),
+	)
+	assert.Equal(
+		nodePoint.Properties["description"],
+		testNodeDescription,
+	)
 }
 
 func createTestNodes() *runtime.Nodes {
@@ -38,7 +53,7 @@ func createTestNodes() *runtime.Nodes {
 		Online: true,
 		Statistics: &data.Statistics{
 			Clients: data.Clients{
-				Total: 23,
+				Total: 42,
 			},
 		},
 		Nodeinfo: &data.Nodeinfo{
