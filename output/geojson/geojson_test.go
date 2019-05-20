@@ -29,20 +29,20 @@ func TestTransform(t *testing.T) {
 
 	nodePoint := newNodePoint(node)
 	assert.Equal(
-		nodePoint.Properties["id"],
 		"abcdef012425",
+		nodePoint.Properties["id"],
 	)
 	assert.Equal(
-		nodePoint.Properties["model"],
 		"TP-Link 841",
+		nodePoint.Properties["model"],
 	)
 	assert.Equal(
-		nodePoint.Properties["clients"],
 		uint32(42),
+		nodePoint.Properties["clients"],
 	)
 	assert.Equal(
-		nodePoint.Properties["description"],
 		testNodeDescription,
+		nodePoint.Properties["description"],
 	)
 }
 
