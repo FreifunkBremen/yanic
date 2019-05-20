@@ -390,7 +390,7 @@ longitude_max = 39.72
 ## [[nodes.output.geojson]]
 {% method %}
 The geojson output produces a geojson file which contains the location data of all monitored nodes to be used to visualize the location of the nodes.
-It is optimized to be used with [UMap](https://github.com/umap-project/umap) but should work with other tools as well.
+It is optimized to be used with [UMap](https://github.com/umap-project/umap) but should work with other tools as well (e.g. [geojson of ffmuc](https://umap.openstreetmap.fr/en/map/ffmuc-sites_319166).
 {% sample lang="toml" %}
 ```toml
 [[nodes.output.geojson]]
