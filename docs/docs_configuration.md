@@ -391,6 +391,7 @@ longitude_max = 39.72
 {% method %}
 The geojson output produces a geojson file which contains the location data of all monitored nodes to be used to visualize the location of the nodes.
 It is optimized to be used with [UMap](https://github.com/umap-project/umap) but should work with other tools as well.
+
 Here is a public demo provided by Freifunk Muenchen: http://u.osmfr.org/m/328494/
 {% sample lang="toml" %}
 ```toml
