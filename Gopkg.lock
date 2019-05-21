@@ -2,12 +2,28 @@
 
 
 [[projects]]
-  digest = "1:0803645e1f57fb5271a6edc7570b9ea59bac2e5de67957075a43f3d74c8dbd97"
+  digest = "1:af6e785bedb62fc2abb81977c58a7a44e5cf9f7e41b8d3c8dd4d872edea0ce08"
   name = "github.com/NYTimes/gziphandler"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2600fb119af974220d3916a5916d6e31176aac1b"
-  version = "v1.0.1"
+  revision = "dd0439581c7657cb652dfe5c71d7d48baf39541d"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:616fe3fc0d5eb7b89324dc5e47aef8cf05f3b0aed0bfe908e62516da4c638647"
+  name = "github.com/bdlm/log"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b8b76dd35f1d7fdf6a49497c8ac22e6554efffed"
+  version = "v0.1.18"
+
+[[projects]]
+  branch = "master"
+  digest = "1:9da00d14e7f20473d129be028aa99a2f47859aed17e58cd24c5108df76ad3959"
+  name = "github.com/bdlm/std"
+  packages = ["logger"]
+  pruneopts = "UT"
+  revision = "fd3b596111c78b7d14f1e1308ebdb1153013f1a8"
 
 [[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
@@ -34,34 +50,16 @@
   version = "v1.0"
 
 [[projects]]
-  digest = "1:e0123d1a40d588fb2d5f98188927826ed5ddfa1d50e759596a6c774f71b81358"
-  name = "github.com/influxdata/influxdb"
-  packages = ["pkg/escape"]
-  pruneopts = "UT"
-  revision = "698dbc789aff13c2678357a6b93ff73dd7136571"
-  version = "v1.7.3"
-
-[[projects]]
   branch = "master"
-  digest = "1:22a9593272bc74ef4c513e176608eeed2dee7e8bd7542bae40369cb62d907a3b"
+  digest = "1:50708c8fc92aec981df5c446581cf9f90ba9e2a5692118e0ce75d4534aaa14a2"
   name = "github.com/influxdata/influxdb1-client"
   packages = [
     "models",
+    "pkg/escape",
     "v2",
   ]
   pruneopts = "UT"
-  revision = "e237d47d0fc87c8ba2b7c98c349cdceca9c37e27"
-
-[[projects]]
-  branch = "master"
-  digest = "1:ac6b73796941a7ab33ec69fc32f9886a6e7506998f822e3d5205377aee77284a"
-  name = "github.com/influxdata/platform"
-  packages = [
-    "models",
-    "pkg/escape",
-  ]
-  pruneopts = "UT"
-  revision = "98469bf07613ffae6f025893761c1e7a5e96e4aa"
+  revision = "8ff2fc3824fcb533795f9a2f233275f0bb18d6c5"
 
 [[projects]]
   digest = "1:b56c589214f01a5601e0821387db484617392d0042f26234bf2da853a2f498a1"
@@ -83,6 +81,14 @@
   version = "v0.1.1"
 
 [[projects]]
+  digest = "1:36cfc0b6facbc68c92a4d55f32eff22b872a899ab75c384ac24a08dd33bc1380"
+  name = "github.com/paulmach/go.geojson"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a5c451da2d9c67c590ae6be92565b67698286a1a"
+  version = "v1.4"
+
+[[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -99,12 +105,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
+  digest = "1:22799aea8fe96dd5693abdd1eaa14b1b29e3eafbdc7733fa155b3cb556c8a7ae"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
-  version = "v0.0.3"
+  revision = "67fc4837d267bc9bfd6e47f77783fcc3dffc68de"
+  version = "v0.0.4"
 
 [[projects]]
   digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
@@ -122,15 +128,37 @@
   revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
   version = "v1.3.0"
 
+[[projects]]
+  branch = "master"
+  digest = "1:bbe51412d9915d64ffaa96b51d409e070665efc5194fcf145c4a27d4133107a4"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "UT"
+  revision = "22d7a77e9e5f409e934ed268692e56707cd169e5"
+
+[[projects]]
+  branch = "master"
+  digest = "1:160e165ef13917405d1ebfde865cb9c292b8635f83655e3932662d5586d300ee"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows",
+  ]
+  pruneopts = "UT"
+  revision = "c432e742b0af385916e013f6a34e9e73d139cf82"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/NYTimes/gziphandler",
+    "github.com/bdlm/log",
+    "github.com/bdlm/std/logger",
     "github.com/fgrosse/graphigo",
     "github.com/influxdata/influxdb1-client/models",
     "github.com/influxdata/influxdb1-client/v2",
     "github.com/naoina/toml",
+    "github.com/paulmach/go.geojson",
     "github.com/pkg/errors",
     "github.com/spf13/cobra",
     "github.com/stretchr/testify/assert",
