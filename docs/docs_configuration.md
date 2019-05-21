@@ -387,6 +387,31 @@ longitude_max = 39.72
 
 
 
+## [[nodes.output.geojson]]
+{% method %}
+The geojson output produces a geojson file which contains the location data of all monitored nodes to be used to visualize the location of the nodes.
+It is optimized to be used with [UMap](https://github.com/umap-project/umap) but should work with other tools as well.
+Here is a public demo provided by Freifunk Muenchen: http://u.osmfr.org/m/328494/
+{% sample lang="toml" %}
+```toml
+[[nodes.output.geojson]]
+enable   = true
+path = "/var/www/html/meshviewer/data/nodes.geojson"
+```
+{% endmethod %}
+
+
+### path
+{% method %}
+The path, where to store nodes.geojson
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/nodes.geojson"
+```
+{% endmethod %}
+
+
+
 ## [[nodes.output.meshviewer-ffrgb]]
 {% method %}
 The new json file format for the [meshviewer](https://github.com/ffrgb/meshviewer) developed in Regensburg.
