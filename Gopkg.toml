@@ -60,3 +60,7 @@
 [[constraint]]
   name = "github.com/shirou/gopsutil"
   revision = "01487156ffd97029bd146658b44e4c0d06388d82"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/Vivena/babelweb2"

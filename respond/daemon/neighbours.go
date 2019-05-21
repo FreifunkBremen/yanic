@@ -32,12 +32,12 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 	resp.Neighbours.Babel = make(map[string]data.BabelNeighbours)
 	d.babelData.Iter(func(bu parser.BabelUpdate) error {
 		sbu := bu.ToSUpdate()
-		if sbu.TableId != "interface" {
+		if sbu.Table != "interface" {
 			return nil
 		}
 		if sbu.EntryData["up"].(bool) {
 			addr := sbu.EntryData["ipv6"].(string)
-			resp.Neighbours.Babel[string(sbu.EntryId)] = data.BabelNeighbours{
+			resp.Neighbours.Babel[string(sbu.Entry)] = data.BabelNeighbours{
 				Protocol:         "babel",
 				LinkLocalAddress: addr,
 				Neighbours:       make(map[string]data.BabelLink),
@@ -48,7 +48,7 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 
 	d.babelData.Iter(func(bu parser.BabelUpdate) error {
 		sbu := bu.ToSUpdate()
-		if sbu.TableId != "neighbour" {
+		if sbu.Table != "neighbour" {
 			return nil
 		}
 		ifname, ok := sbu.EntryData["if"].(string)

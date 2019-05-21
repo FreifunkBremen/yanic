@@ -56,6 +56,9 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 	if v, err := ioutil.ReadFile("/sys/module/batman_adv/version"); err == nil {
 		resp.Nodeinfo.Software.BatmanAdv.Version = trim(string(v))
 	}
+	if babel := d.babelData; babel != nil {
+		resp.Nodeinfo.Software.Babeld.Version = babel.Version
+	}
 
 	if resp.Nodeinfo.Network.Mac == "" {
 		resp.Nodeinfo.Network.Mac = fmt.Sprintf("%s:%s:%s:%s:%s:%s", nodeID[0:2], nodeID[2:4], nodeID[4:6], nodeID[6:8], nodeID[8:10], nodeID[10:12])
@@ -96,7 +99,7 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 
 	d.babelData.Iter(func(bu babelParser.BabelUpdate) error {
 		sbu := bu.ToSUpdate()
-		if sbu.TableId != "interface" {
+		if sbu.Table != "interface" {
 			return nil
 		}
 		if sbu.EntryData["up"].(bool) {
