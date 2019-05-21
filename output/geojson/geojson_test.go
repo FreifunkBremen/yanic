@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	testNodeDescription string = "Online; 42 Clients\nModel: TP-Link 841\n" +
+	testNodeDescription string = "Online\nClients: 42\nModel: TP-Link 841\n" +
 		"Site: mysite\nDomain: domain_42\n"
 )
 
