@@ -30,24 +30,35 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 		fields = append(fields, graphigo.Metric{Name: node_prefix + "." + name, Value: value})
 	}
 
+	vpnInterfaces := make(map[string]bool)
+	for _, mIface := range nodeinfo.Network.Mesh {
+		for _, tunnel := range mIface.Interfaces.Tunnel {
+			vpnInterfaces[tunnel] = true
+		}
+	}
+
 	if neighbours := node.Neighbours; neighbours != nil {
 		vpn := 0
-		if meshvpn := stats.MeshVPN; meshvpn != nil {
-			for _, group := range meshvpn.Groups {
-				for _, link := range group.Peers {
-					if link != nil && link.Established > 1 {
-						vpn++
-					}
-				}
-			}
-		}
-		addField("neighbours.vpn", vpn)
+
 		// protocol: Batman Advance
 		batadv := 0
-		for _, batadvNeighbours := range neighbours.Batadv {
+		for mac, batadvNeighbours := range neighbours.Batadv {
 			batadv += len(batadvNeighbours.Neighbours)
+			if _, ok := vpnInterfaces[mac]; ok {
+				vpn += len(batadvNeighbours.Neighbours)
+			}
 		}
 		addField("neighbours.batadv", batadv)
+
+		// protocol: Babel
+		babel := 0
+		for _, babelNeighbours := range neighbours.Babel {
+			babel += len(babelNeighbours.Neighbours)
+			if _, ok := vpnInterfaces[babelNeighbours.LinkLocalAddress]; ok {
+				vpn += len(babelNeighbours.Neighbours)
+			}
+		}
+		addField("neighbours.babel", babel)
 
 		// protocol: LLDP
 		lldp := 0
@@ -56,8 +67,10 @@ func (c *Connection) InsertNode(node *runtime.Node) {
 		}
 		addField("neighbours.lldp", lldp)
 
+		addField("neighbours.vpn", vpn)
+
 		// total is the sum of all protocols
-		addField("neighbours.total", batadv+lldp)
+		addField("neighbours.total", batadv+babel+lldp)
 	}
 
 	if t := stats.Traffic.Rx; t != nil {

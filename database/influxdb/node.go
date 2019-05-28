@@ -48,7 +48,15 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		"memory.available": stats.Memory.Available,
 	}
 
+	vpnInterfaces := make(map[string]bool)
+
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		for _, mIface := range nodeinfo.Network.Mesh {
+			for _, tunnel := range mIface.Interfaces.Tunnel {
+				vpnInterfaces[tunnel] = true
+			}
+		}
+
 		tags.SetString("hostname", nodeinfo.Hostname)
 		if nodeinfo.System.SiteCode != "" {
 			tags.SetString("site", nodeinfo.System.SiteCode)
@@ -75,27 +83,29 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		}
 
 	}
-
 	if neighbours := node.Neighbours; neighbours != nil {
 		// VPN Neighbours are Neighbours but includet in one protocol
 		vpn := 0
-		if meshvpn := stats.MeshVPN; meshvpn != nil {
-			for _, group := range meshvpn.Groups {
-				for _, link := range group.Peers {
-					if link != nil && link.Established > 1 {
-						vpn++
-					}
-				}
-			}
-		}
-		fields["neighbours.vpn"] = vpn
 
 		// protocol: Batman Advance
 		batadv := 0
-		for _, batadvNeighbours := range neighbours.Batadv {
+		for mac, batadvNeighbours := range neighbours.Batadv {
 			batadv += len(batadvNeighbours.Neighbours)
+			if _, ok := vpnInterfaces[mac]; ok {
+				vpn += len(batadvNeighbours.Neighbours)
+			}
 		}
 		fields["neighbours.batadv"] = batadv
+
+		// protocol: Babel
+		babel := 0
+		for _, babelNeighbours := range neighbours.Babel {
+			babel += len(babelNeighbours.Neighbours)
+			if _, ok := vpnInterfaces[babelNeighbours.LinkLocalAddress]; ok {
+				vpn += len(babelNeighbours.Neighbours)
+			}
+		}
+		fields["neighbours.babel"] = babel
 
 		// protocol: LLDP
 		lldp := 0
@@ -104,8 +114,11 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		}
 		fields["neighbours.lldp"] = lldp
 
+		// vpn  wait for babel
+		fields["neighbours.vpn"] = vpn
+
 		// total is the sum of all protocols
-		fields["neighbours.total"] = batadv + lldp
+		fields["neighbours.total"] = batadv + babel + lldp
 	}
 	if procstat := stats.ProcStats; procstat != nil {
 		fields["stat.cpu.user"] = procstat.CPU.User
