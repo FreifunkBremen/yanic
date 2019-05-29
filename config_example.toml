@@ -92,6 +92,10 @@ offline_after = "10m"
 #longitude_min = -24.96
 #longitude_max = 39.72
 
+# outputs of all nodes for prometheus exporter
+[[nodes.output.prometheus]]
+enable   = true
+path = "/var/www/html/meshviewer/data/prometheus.txt"
 
 # outputs all nodes as points into nodes.geojson
 [[nodes.output.geojson]]
