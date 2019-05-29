@@ -7,7 +7,7 @@ import (
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/lib/duration"
 
-	babelParser "github.com/Vivena/babelweb2/parser"
+	babelState "github.com/Vivena/babelweb2/state"
 )
 
 func trim(s string) string {
@@ -24,7 +24,7 @@ type Daemon struct {
 
 	Batman    []string               `toml:"batman"`
 	Babel     string                 `toml:"babel"`
-	babelData *babelParser.BabelDesc `toml:"-"`
+	babelData *babelState.BabelState `toml:"-"`
 
 	dataByInterface map[string]*data.ResponseData
 

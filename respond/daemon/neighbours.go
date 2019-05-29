@@ -30,14 +30,13 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 	}
 
 	resp.Neighbours.Babel = make(map[string]data.BabelNeighbours)
-	d.babelData.Iter(func(bu parser.BabelUpdate) error {
-		sbu := bu.ToSUpdate()
-		if sbu.Table != "interface" {
+	d.babelData.Iter(func(t parser.Transition) error {
+		if t.Table != "interface" {
 			return nil
 		}
-		if sbu.EntryData["up"].(bool) {
-			addr := sbu.EntryData["ipv6"].(string)
-			resp.Neighbours.Babel[string(sbu.Entry)] = data.BabelNeighbours{
+		if t.Data["up"].(bool) {
+			addr := t.Data["ipv6"].(string)
+			resp.Neighbours.Babel[string(t.Field)] = data.BabelNeighbours{
 				Protocol:         "babel",
 				LinkLocalAddress: addr,
 				Neighbours:       make(map[string]data.BabelLink),
@@ -46,24 +45,23 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 		return nil
 	})
 
-	d.babelData.Iter(func(bu parser.BabelUpdate) error {
-		sbu := bu.ToSUpdate()
-		if sbu.Table != "neighbour" {
+	d.babelData.Iter(func(t parser.Transition) error {
+		if t.Table != "neighbour" {
 			return nil
 		}
-		ifname, ok := sbu.EntryData["if"].(string)
+		ifname, ok := t.Data["if"].(string)
 		if !ok {
 			return errors.New("neighbour without if")
 		}
-		addr := sbu.EntryData["address"].(string)
+		addr := t.Data["address"].(string)
 		if !ok {
 			return errors.New("neighbour without address")
 		}
 		if bIfname, ok := resp.Neighbours.Babel[ifname]; ok {
 			link := data.BabelLink{
-				RXCost: int(sbu.EntryData["rxcost"].(uint64)),
-				TXCost: int(sbu.EntryData["txcost"].(uint64)),
-				Cost:   int(sbu.EntryData["cost"].(uint64)),
+				RXCost: int(t.Data["rxcost"].(uint64)),
+				TXCost: int(t.Data["txcost"].(uint64)),
+				Cost:   int(t.Data["cost"].(uint64)),
 			}
 			bIfname.Neighbours[addr] = link
 			return nil

@@ -57,7 +57,7 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 		resp.Nodeinfo.Software.BatmanAdv.Version = trim(string(v))
 	}
 	if babel := d.babelData; babel != nil {
-		resp.Nodeinfo.Software.Babeld.Version = babel.Version
+		resp.Nodeinfo.Software.Babeld.Version = babel.Version()
 	}
 
 	if resp.Nodeinfo.Network.Mac == "" {
@@ -97,13 +97,12 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 	meshBabel := data.NetworkInterface{}
 	resp.Nodeinfo.Network.Mesh["babel"] = &meshBabel
 
-	d.babelData.Iter(func(bu babelParser.BabelUpdate) error {
-		sbu := bu.ToSUpdate()
-		if sbu.Table != "interface" {
+	d.babelData.Iter(func(t babelParser.Transition) error {
+		if t.Table != "interface" {
 			return nil
 		}
-		if sbu.EntryData["up"].(bool) {
-			addr := sbu.EntryData["ipv6"].(string)
+		if t.Data["up"].(bool) {
+			addr := t.Data["ipv6"].(string)
 			meshBabel.Interfaces.Tunnel = append(meshBabel.Interfaces.Tunnel, addr)
 			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, addr)
 		}
