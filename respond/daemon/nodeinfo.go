@@ -102,7 +102,8 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 			return nil
 		}
 		if t.Data["up"].(bool) {
-			addr := t.Data["ipv6"].(string)
+			addrIP := t.Data["ipv6"].(net.IP)
+			addr := addrIP.String()
 			meshBabel.Interfaces.Tunnel = append(meshBabel.Interfaces.Tunnel, addr)
 			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, addr)
 		}

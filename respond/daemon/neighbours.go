@@ -2,6 +2,7 @@ package respondd
 
 import (
 	"errors"
+	"net"
 
 	"github.com/Vivena/babelweb2/parser"
 
@@ -35,10 +36,10 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 			return nil
 		}
 		if t.Data["up"].(bool) {
-			addr := t.Data["ipv6"].(string)
+			addr := t.Data["ipv6"].(net.IP)
 			resp.Neighbours.Babel[string(t.Field)] = data.BabelNeighbours{
 				Protocol:         "babel",
-				LinkLocalAddress: addr,
+				LinkLocalAddress: addr.String(),
 				Neighbours:       make(map[string]data.BabelLink),
 			}
 		}
@@ -53,7 +54,7 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 		if !ok {
 			return errors.New("neighbour without if")
 		}
-		addr, ok := t.Data["address"].(string)
+		addr, ok := t.Data["address"].(net.IP)
 		if !ok {
 			return errors.New("neighbour without address")
 		}
@@ -63,7 +64,7 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 				TXCost: int(t.Data["txcost"].(uint64)),
 				Cost:   int(t.Data["cost"].(uint64)),
 			}
-			bIfname.Neighbours[addr] = link
+			bIfname.Neighbours[addr.String()] = link
 			return nil
 		}
 		return errors.New("ifname not found during parsing")
