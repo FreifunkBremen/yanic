@@ -53,7 +53,7 @@ func (d *Daemon) updateNeighbours(iface string, resp *data.ResponseData) {
 		if !ok {
 			return errors.New("neighbour without if")
 		}
-		addr := t.Data["address"].(string)
+		addr, ok := t.Data["address"].(string)
 		if !ok {
 			return errors.New("neighbour without address")
 		}
