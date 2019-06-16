@@ -16,7 +16,9 @@ func (d *Daemon) Start() {
 		d.AnswerByZones = make(map[string]*AnswerConfig)
 	}
 
+	d.dataMX.Lock()
 	d.updateData()
+	d.dataMX.Unlock()
 	go d.updateWorker()
 
 	if d.Babel != "" {
@@ -69,6 +71,8 @@ func (d *Daemon) updateWorker() {
 	c := time.Tick(d.DataInterval.Duration)
 
 	for range c {
+		d.dataMX.Lock()
 		d.updateData()
+		d.dataMX.Unlock()
 	}
 }

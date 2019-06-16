@@ -3,6 +3,7 @@ package respondd
 import (
 	"io/ioutil"
 	"strings"
+	"sync"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/lib/duration"
@@ -26,6 +27,7 @@ type Daemon struct {
 	Babel     string                 `toml:"babel"`
 	babelData *babelState.BabelState `toml:"-"`
 
+	dataMX          sync.Mutex
 	dataByInterface map[string]*data.ResponseData
 
 	Answer        *AnswerConfig            `toml:"defaults"`

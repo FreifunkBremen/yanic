@@ -22,6 +22,8 @@ func (d *Daemon) updateData() {
 }
 
 func (d *Daemon) getData(iface string) *data.ResponseData {
+	d.dataMX.Lock()
+	defer d.dataMX.Unlock()
 	if iData, ok := d.dataByInterface[iface]; ok {
 		return iData
 	}
