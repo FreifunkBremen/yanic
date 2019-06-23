@@ -18,12 +18,16 @@
   version = "1.0.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:098e1f68eb51964990d5d5db579b45cd58edb228c1b33780401dfb8381aebdcb"
+  branch = "junk"
+  digest = "1:1a347503fd769372dfd0b46d57f4cfc4cb2478442a18fda76de70fa68c553d21"
   name = "github.com/Vivena/babelweb2"
-  packages = ["parser"]
+  packages = [
+    "parser",
+    "state",
+  ]
   pruneopts = "UT"
-  revision = "506f97fed4662649abffd1f5089bf17fcc4e7ecb"
+  revision = "16df517a77f42434116c06dc239461218a8ebd3d"
+  source = "github.com/genofire/babelweb2"
 
 [[projects]]
   digest = "1:616fe3fc0d5eb7b89324dc5e47aef8cf05f3b0aed0bfe908e62516da4c638647"
@@ -155,7 +159,7 @@
   revision = "bb4de0191aa41b5507caa14b0650cdbddcd9280b"
 
 [[projects]]
-  digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
+  digest = "1:22799aea8fe96dd5693abdd1eaa14b1b29e3eafbdc7733fa155b3cb556c8a7ae"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = "UT"
@@ -203,6 +207,7 @@
   input-imports = [
     "github.com/NYTimes/gziphandler",
     "github.com/Vivena/babelweb2/parser",
+    "github.com/Vivena/babelweb2/state",
     "github.com/bdlm/log",
     "github.com/bdlm/std/logger",
     "github.com/fgrosse/graphigo",
