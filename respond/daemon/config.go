@@ -41,7 +41,9 @@ type AnswerConfig struct {
 	DomainCode        string         `toml:"domain_code"`
 	Location          *data.Location `json:"location,omitempty"`
 	VPN               bool           `toml:"vpn"`
-	TrafficInterfaces []string       `toml:"traffic_interfaces"`
+	InterfaceMAC      string         `toml:"interface_mac"`
+	InterfacesTraffic []string       `toml:"interfaces_traffic"`
+	InterfacesAddress []string       `toml:"interfaces_address"`
 }
 
 func (d *Daemon) getAnswer(iface string) (*AnswerConfig, string) {

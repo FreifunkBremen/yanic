@@ -15,7 +15,9 @@ hostname = ""
 site_code = "ffhb"
 domain_code = ""
 vpn = false
-traffic_interfaces = [ "eth0" ]
+interface_mac = "eth0"
+interfaces_traffic = [ "eth0" ]
+interfaces_address = [ "br-ffhb", "eth0" ]
 
 [defaults.location]
 latitude  = 53.112446246

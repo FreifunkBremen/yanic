@@ -60,14 +60,23 @@ func (d *Daemon) updateNodeinfo(iface string, resp *data.ResponseData) {
 		resp.Nodeinfo.Software.Babeld.Version = babel.Version()
 	}
 
+	if config.InterfaceMAC != "" {
+		i, err := net.InterfaceByName(config.InterfaceMAC)
+		if err == nil {
+			resp.Nodeinfo.Network.Mac = i.HardwareAddr.String()
+		}
+	}
 	if resp.Nodeinfo.Network.Mac == "" {
 		resp.Nodeinfo.Network.Mac = fmt.Sprintf("%s:%s:%s:%s:%s:%s", nodeID[0:2], nodeID[2:4], nodeID[4:6], nodeID[6:8], nodeID[8:10], nodeID[10:12])
 	}
 
-	if iface != "" {
+	if iface != "" && len(config.InterfacesAddress) == 0 {
 		resp.Nodeinfo.Network.Addresses = getAddresses(iface)
 	} else {
 		resp.Nodeinfo.Network.Addresses = []string{}
+		for _, ifname := range config.InterfacesAddress {
+			resp.Nodeinfo.Network.Addresses = append(resp.Nodeinfo.Network.Addresses, getAddresses(ifname)...)
+		}
 	}
 	resp.Nodeinfo.Network.Mesh = make(map[string]*data.NetworkInterface)
 	for _, bface := range d.Batman {

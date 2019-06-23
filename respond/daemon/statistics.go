@@ -37,7 +37,7 @@ func (d *Daemon) updateStatistics(iface string, resp *data.ResponseData) {
 
 		allowedInterfaces := make(map[string]bool)
 
-		for _, iface := range config.TrafficInterfaces {
+		for _, iface := range config.InterfacesTraffic {
 			allowedInterfaces[iface] = true
 		}
 
