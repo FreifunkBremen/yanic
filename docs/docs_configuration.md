@@ -521,6 +521,21 @@ path     = "/var/www/html/meshviewer/data/nodelist.json"
 ```
 {% endmethod %}
 
+## [[nodes.output.raw]]
+{% method %}
+This output takes the respondd response as sent by the node and includes it in a JSON document.
+{% endmethod %}
+
+
+### path
+{% method %}
+The path, where to store raw.json
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/raw.json"
+```
+{% endmethod %}
+
 
 
 ## [database]
