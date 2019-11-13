@@ -110,7 +110,7 @@ ifname              = "br-ffhb"
 {% method %}
 ip address is the own address which is used for sending.
 If not set or set with empty string it will take an address of ifname.
-(It preferes the link local address, so at babel mesh-network it should be configurated)
+(It prefers the link local address, so at babel mesh-network it should be configurated)
 {% sample lang="toml" %}
 ```toml
 ip_address          = "fe80::..."
