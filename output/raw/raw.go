@@ -1,4 +1,4 @@
-package nodelist
+package raw
 
 import (
 	"github.com/FreifunkBremen/yanic/data"
