@@ -58,6 +58,10 @@ func TestRegister(t *testing.T) {
 				},
 			},
 		},
+		CustomFields: map[string]interface{}{
+			"custom_fields": "are_custom",
+			"custom_int":    3,
+		},
 	})
 	assert.NotNil(node)
 	assert.NotNil(node.Addresses)
@@ -66,4 +70,6 @@ func TestRegister(t *testing.T) {
 	assert.Equal(13.3, node.Location.Longitude)
 	assert.Equal(8.7, node.Location.Latitude)
 	assert.Equal(0.74, *node.MemoryUsage)
+	assert.Equal("are_custom", node.CustomFields["custom_fields"])
+	assert.Equal(3, node.CustomFields["custom_int"])
 }
