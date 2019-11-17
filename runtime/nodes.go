@@ -83,6 +83,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	node.Neighbours = res.Neighbours
 	node.Nodeinfo = res.Nodeinfo
 	node.Statistics = res.Statistics
+	node.CustomFields = res.CustomFields
 
 	return node
 }

@@ -41,10 +41,65 @@ func TestParse(t *testing.T) {
 		Raw: compressed,
 	}
 
-	data, err := res.parse()
+	data, err := res.parse([]CustomFieldConfig{})
 
 	assert.NoError(err)
 	assert.NotNil(data)
 
 	assert.Equal("f81a67a5e9c1", data.Nodeinfo.NodeID)
+}
+
+func TestParseCustomFields(t *testing.T) {
+	assert := assert.New(t)
+
+	// read testdata
+	compressed, err := ioutil.ReadFile("testdata/nodeinfo.flated")
+	assert.Nil(err)
+
+	res := &Response{
+		Raw: compressed,
+	}
+
+	customFields := []CustomFieldConfig{
+		{
+			Name: "my_custom_field",
+			Path: "nodeinfo.hostname",
+		},
+	}
+
+	data, err := res.parse(customFields)
+
+	assert.NoError(err)
+	assert.NotNil(data)
+
+	assert.Equal("Trillian", data.CustomFields["my_custom_field"])
+	assert.Equal("Trillian", data.Nodeinfo.Hostname)
+}
+
+func TestParseCustomFieldNotExistant(t *testing.T) {
+	assert := assert.New(t)
+
+	// read testdata
+	compressed, err := ioutil.ReadFile("testdata/nodeinfo.flated")
+	assert.Nil(err)
+
+	res := &Response{
+		Raw: compressed,
+	}
+
+	customFields := []CustomFieldConfig{
+		{
+			Name: "some_other_field",
+			Path: "nodeinfo.some_field_which_doesnt_exist",
+		},
+	}
+
+	data, err := res.parse(customFields)
+
+	assert.NoError(err)
+	assert.NotNil(data)
+
+	_, ok := data.CustomFields["some_other_field"]
+	assert.Equal("Trillian", data.Nodeinfo.Hostname)
+	assert.False(ok)
 }
