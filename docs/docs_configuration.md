@@ -18,6 +18,12 @@ collect_interval = "1m"
 #[respondd.sites.example]
 #domains            = ["city"]
 
+#[[respondd.custom_field]]
+#name = zip
+# You can use arbitrary GJSON expressions here, see https://github.com/tidwall/gjson
+# We expect this expression to return a string.
+#path = nodeinfo.location.zip
+
 [[respondd.interfaces]]
 ifname             = "br-ffhb"
 #ip_address        = "fe80::..."
@@ -147,6 +153,24 @@ If not set or set to 0 the kernel will use a random free port at its own.
 port              = 10001
 ```
 {% endmethod %}
+
+### [[respondd.custom_fields]]
+{% method %}
+If you have custom respondd fields, you can ask Yanic to also collect these.
+
+NOTE: This does not automatically include these fields in the output.
+The meshviewer-ffrgb output module will include them under "custom_fields",
+but other modules may simply ignore them.
+
+{% sample lang="toml" %}
+```toml
+name = zip
+# You can use arbitrary GJSON expressions here, see https://github.com/tidwall/gjson
+# We expect this expression to return a string.
+path = nodeinfo.location.zip
+```
+{% endmethod %}
+
 
 
 ## [webserver]
