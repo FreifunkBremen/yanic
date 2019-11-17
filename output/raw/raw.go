@@ -8,12 +8,13 @@ import (
 
 // Node struct
 type RawNode struct {
-	Firstseen  jsontime.Time    `json:"firstseen"`
-	Lastseen   jsontime.Time    `json:"lastseen"`
-	Online     bool             `json:"online"`
-	Statistics *data.Statistics `json:"statistics"`
-	Nodeinfo   *data.Nodeinfo   `json:"nodeinfo"`
-	Neighbours *data.Neighbours `json:"neighbours"`
+	Firstseen    jsontime.Time          `json:"firstseen"`
+	Lastseen     jsontime.Time          `json:"lastseen"`
+	Online       bool                   `json:"online"`
+	Statistics   *data.Statistics       `json:"statistics"`
+	Nodeinfo     *data.Nodeinfo         `json:"nodeinfo"`
+	Neighbours   *data.Neighbours       `json:"neighbours"`
+	CustomFields map[string]interface{} `json:"custom_fields"`
 }
 
 type NodeList struct {
@@ -31,12 +32,13 @@ func transform(nodes *runtime.Nodes) *NodeList {
 	for _, nodeOrigin := range nodes.List {
 		if nodeOrigin != nil {
 			node := &RawNode{
-				Firstseen:  nodeOrigin.Firstseen,
-				Lastseen:   nodeOrigin.Lastseen,
-				Online:     nodeOrigin.Online,
-				Statistics: nodeOrigin.Statistics,
-				Nodeinfo:   nodeOrigin.Nodeinfo,
-				Neighbours: nodeOrigin.Neighbours,
+				Firstseen:    nodeOrigin.Firstseen,
+				Lastseen:     nodeOrigin.Lastseen,
+				Online:       nodeOrigin.Online,
+				Statistics:   nodeOrigin.Statistics,
+				Nodeinfo:     nodeOrigin.Nodeinfo,
+				Neighbours:   nodeOrigin.Neighbours,
+				CustomFields: nodeOrigin.CustomFields,
 			}
 			nodelist.List = append(nodelist.List, node)
 		}
