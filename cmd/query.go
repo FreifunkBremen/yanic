@@ -44,11 +44,12 @@ var queryCmd = &cobra.Command{
 			}
 			ifacesConfigs = append(ifacesConfigs, ifaceConfig)
 		}
+		var config respond.Config
+		config.Interfaces = ifacesConfigs
 
 		nodes := runtime.NewNodes(&runtime.NodesConfig{})
 
-		sitesDomains := make(map[string][]string)
-		collector := respond.NewCollector(nil, nodes, sitesDomains, ifacesConfigs)
+		collector := respond.NewCollector(nil, nodes, &config)
 		defer collector.Close()
 		collector.SendPacket(dstAddress)
 

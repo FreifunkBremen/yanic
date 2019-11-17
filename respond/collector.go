@@ -20,12 +20,12 @@ import (
 type Collector struct {
 	connections []multicastConn // UDP sockets
 
-	queue        chan *Response // received responses
-	db           database.Connection
-	nodes        *runtime.Nodes
-	sitesDomains map[string][]string
-	interval     time.Duration // Interval for multicast packets
-	stop         chan interface{}
+	queue    chan *Response // received responses
+	db       database.Connection
+	nodes    *runtime.Nodes
+	interval time.Duration // Interval for multicast packets
+	stop     chan interface{}
+	config   *Config
 }
 
 type multicastConn struct {
@@ -35,17 +35,17 @@ type multicastConn struct {
 }
 
 // NewCollector creates a Collector struct
-func NewCollector(db database.Connection, nodes *runtime.Nodes, sitesDomains map[string][]string, ifaces []InterfaceConfig) *Collector {
+func NewCollector(db database.Connection, nodes *runtime.Nodes, config *Config) *Collector {
 
 	coll := &Collector{
-		db:           db,
-		nodes:        nodes,
-		sitesDomains: sitesDomains,
-		queue:        make(chan *Response, 400),
-		stop:         make(chan interface{}),
+		db:     db,
+		nodes:  nodes,
+		queue:  make(chan *Response, 400),
+		stop:   make(chan interface{}),
+		config: config,
 	}
 
-	for _, iface := range ifaces {
+	for _, iface := range config.Interfaces {
 		coll.listenUDP(iface)
 	}
 
@@ -349,7 +349,7 @@ func (coll *Collector) globalStatsWorker() {
 
 // saves global statistics
 func (coll *Collector) saveGlobalStats() {
-	stats := runtime.NewGlobalStats(coll.nodes, coll.sitesDomains)
+	stats := runtime.NewGlobalStats(coll.nodes, coll.config.SitesDomains())
 
 	for site, domains := range stats {
 		for domain, stat := range domains {

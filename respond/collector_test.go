@@ -16,8 +16,15 @@ const (
 
 func TestCollector(t *testing.T) {
 	nodes := runtime.NewNodes(&runtime.NodesConfig{})
+	config := &Config{
+		Sites: map[string]SiteConfig{
+			SITE_TEST: {
+				Domains: []string{DOMAIN_TEST},
+			},
+		},
+	}
 
-	collector := NewCollector(nil, nodes, map[string][]string{SITE_TEST: {DOMAIN_TEST}}, []InterfaceConfig{})
+	collector := NewCollector(nil, nodes, config)
 	collector.Start(time.Millisecond)
 	time.Sleep(time.Millisecond * 10)
 	collector.Close()
