@@ -14,33 +14,34 @@ type Meshviewer struct {
 }
 
 type Node struct {
-	Firstseen      jsontime.Time `json:"firstseen"`
-	Lastseen       jsontime.Time `json:"lastseen"`
-	IsOnline       bool          `json:"is_online"`
-	IsGateway      bool          `json:"is_gateway"`
-	Clients        uint32        `json:"clients"`
-	ClientsWifi24  uint32        `json:"clients_wifi24"`
-	ClientsWifi5   uint32        `json:"clients_wifi5"`
-	ClientsOthers  uint32        `json:"clients_other"`
-	RootFSUsage    float64       `json:"rootfs_usage"`
-	LoadAverage    float64       `json:"loadavg"`
-	MemoryUsage    *float64      `json:"memory_usage,omitempty"`
-	Uptime         jsontime.Time `json:"uptime,omitempty"`
-	GatewayNexthop string        `json:"gateway_nexthop,omitempty"`
-	GatewayIPv4    string        `json:"gateway,omitempty"`
-	GatewayIPv6    string        `json:"gateway6,omitempty"`
-	NodeID         string        `json:"node_id"`
-	MAC            string        `json:"mac"`
-	Addresses      []string      `json:"addresses"`
-	SiteCode       string        `json:"-"`
-	DomainCode     string        `json:"domain"`
-	Hostname       string        `json:"hostname"`
-	Owner          string        `json:"owner,omitempty"`
-	Location       *Location     `json:"location,omitempty"`
-	Firmware       Firmware      `json:"firmware,omitempty"`
-	Autoupdater    Autoupdater   `json:"autoupdater"`
-	Nproc          int           `json:"nproc"`
-	Model          string        `json:"model,omitempty"`
+	Firstseen      jsontime.Time          `json:"firstseen"`
+	Lastseen       jsontime.Time          `json:"lastseen"`
+	IsOnline       bool                   `json:"is_online"`
+	IsGateway      bool                   `json:"is_gateway"`
+	Clients        uint32                 `json:"clients"`
+	ClientsWifi24  uint32                 `json:"clients_wifi24"`
+	ClientsWifi5   uint32                 `json:"clients_wifi5"`
+	ClientsOthers  uint32                 `json:"clients_other"`
+	RootFSUsage    float64                `json:"rootfs_usage"`
+	LoadAverage    float64                `json:"loadavg"`
+	MemoryUsage    *float64               `json:"memory_usage,omitempty"`
+	Uptime         jsontime.Time          `json:"uptime,omitempty"`
+	GatewayNexthop string                 `json:"gateway_nexthop,omitempty"`
+	GatewayIPv4    string                 `json:"gateway,omitempty"`
+	GatewayIPv6    string                 `json:"gateway6,omitempty"`
+	NodeID         string                 `json:"node_id"`
+	MAC            string                 `json:"mac"`
+	Addresses      []string               `json:"addresses"`
+	SiteCode       string                 `json:"-"`
+	DomainCode     string                 `json:"domain"`
+	Hostname       string                 `json:"hostname"`
+	Owner          string                 `json:"owner,omitempty"`
+	Location       *Location              `json:"location,omitempty"`
+	Firmware       Firmware               `json:"firmware,omitempty"`
+	Autoupdater    Autoupdater            `json:"autoupdater"`
+	Nproc          int                    `json:"nproc"`
+	Model          string                 `json:"model,omitempty"`
+	CustomFields   map[string]interface{} `json:"custom_fields,omitempty"`
 }
 
 // Firmware out of software
@@ -152,6 +153,12 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 		node.GatewayIPv6 = nodes.GetNodeIDbyAddress(statistic.GatewayIPv6)
 		if node.GatewayIPv6 == "" {
 			node.GatewayIPv6 = statistic.GatewayIPv6
+		}
+	}
+	if customFields := n.CustomFields; customFields != nil {
+		node.CustomFields = make(map[string]interface{})
+		for fieldName, fieldValue := range customFields {
+			node.CustomFields[fieldName] = fieldValue
 		}
 	}
 
