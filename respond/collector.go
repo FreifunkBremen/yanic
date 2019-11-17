@@ -5,10 +5,12 @@ import (
 	"compress/flate"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"time"
 
 	"github.com/bdlm/log"
+	"github.com/tidwall/gjson"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/database"
@@ -237,7 +239,7 @@ func (coll *Collector) sender() {
 
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
-		if data, err := obj.parse(); err != nil {
+		if data, err := obj.parse(coll.config.CustomFields); err != nil {
 			log.WithField("address", obj.Address.String()).Errorf("unable to decode response %s", err)
 		} else {
 			coll.saveResponse(obj.Address, data)
@@ -245,14 +247,32 @@ func (coll *Collector) parser() {
 	}
 }
 
-func (res *Response) parse() (*data.ResponseData, error) {
+func (res *Response) parse(customFields []CustomFieldConfig) (*data.ResponseData, error) {
 	// Deflate
 	deflater := flate.NewReader(bytes.NewReader(res.Raw))
 	defer deflater.Close()
 
+	jsonData, err := ioutil.ReadAll(deflater)
+	if err != nil {
+		return nil, err
+	}
+
 	// Unmarshal
 	rdata := &data.ResponseData{}
-	err := json.NewDecoder(deflater).Decode(rdata)
+	err = json.Unmarshal(jsonData, rdata)
+
+	rdata.CustomFields = make(map[string]interface{})
+	if !gjson.Valid(string(jsonData)) {
+		log.WithField("jsonData", jsonData).Info("JSON data is invalid")
+	} else {
+		jsonParsed := gjson.Parse(string(jsonData))
+		for _, customField := range customFields {
+			field := jsonParsed.Get(customField.Path)
+			if field.Exists() {
+				rdata.CustomFields[customField.Name] = field.String()
+			}
+		}
+	}
 
 	return rdata, err
 }

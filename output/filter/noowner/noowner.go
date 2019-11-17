@@ -41,7 +41,8 @@ func (no *noowner) Apply(node *runtime.Node) *runtime.Node {
 				VPN:      nodeinfo.VPN,
 				Wireless: nodeinfo.Wireless,
 			},
-			Neighbours: node.Neighbours,
+			Neighbours:   node.Neighbours,
+			CustomFields: node.CustomFields,
 		}
 	}
 	return node
