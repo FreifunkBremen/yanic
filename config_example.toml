@@ -157,6 +157,16 @@ path = "/var/www/html/meshviewer/data/nodelist.json"
 no_owner = true
 
 
+# definition for raw.json
+[[nodes.output.raw]]
+enable   = true
+path = "/var/www/html/meshviewer/data/raw.json"
+
+[nodes.output.raw.filter]
+# WARNING: if it is not set, it will publish contact information of other persons
+no_owner = true
+
+
 
 [database]
 # this will send delete commands to the database to prune data

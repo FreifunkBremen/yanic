@@ -548,6 +548,14 @@ path     = "/var/www/html/meshviewer/data/nodelist.json"
 ## [[nodes.output.raw]]
 {% method %}
 This output takes the respondd response as sent by the node and includes it in a JSON document.
+{% sample lang="toml" %}
+```toml
+[[nodes.output.raw]]
+enable   = false
+path     = "/var/www/html/meshviewer/data/raw.json"
+#[nodes.output.raw.filter]
+#no_owner = false
+```
 {% endmethod %}
 
 
