@@ -1,16 +1,11 @@
 package respond
 
 import (
-	"bytes"
-	"compress/flate"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"time"
 
 	"github.com/bdlm/log"
-	"github.com/tidwall/gjson"
 
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/database"
@@ -74,7 +69,7 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 		}
 	}
 
-	multicastAddress := multicastAddressDefault
+	multicastAddress := MulticastAddressDefault
 	if iface.MulticastAddress != "" {
 		multicastAddress = iface.MulticastAddress
 	}
@@ -88,7 +83,7 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 	if err != nil {
 		log.Panic(err)
 	}
-	conn.SetReadBuffer(maxDataGramSize)
+	conn.SetReadBuffer(MaxDataGramSize)
 
 	coll.connections = append(coll.connections, multicastConn{
 		Conn:             conn,
@@ -213,7 +208,7 @@ func (coll *Collector) SendPacket(destination net.IP) {
 func (coll *Collector) sendPacket(conn *net.UDPConn, destination net.IP) {
 	addr := net.UDPAddr{
 		IP:   destination,
-		Port: port,
+		Port: PortDefault,
 		Zone: conn.LocalAddr().(*net.UDPAddr).Zone,
 	}
 
@@ -245,36 +240,6 @@ func (coll *Collector) parser() {
 			coll.saveResponse(obj.Address, data)
 		}
 	}
-}
-
-func (res *Response) parse(customFields []CustomFieldConfig) (*data.ResponseData, error) {
-	// Deflate
-	deflater := flate.NewReader(bytes.NewReader(res.Raw))
-	defer deflater.Close()
-
-	jsonData, err := ioutil.ReadAll(deflater)
-	if err != nil {
-		return nil, err
-	}
-
-	// Unmarshal
-	rdata := &data.ResponseData{}
-	err = json.Unmarshal(jsonData, rdata)
-
-	rdata.CustomFields = make(map[string]interface{})
-	if !gjson.Valid(string(jsonData)) {
-		log.WithField("jsonData", jsonData).Info("JSON data is invalid")
-	} else {
-		jsonParsed := gjson.Parse(string(jsonData))
-		for _, customField := range customFields {
-			field := jsonParsed.Get(customField.Path)
-			if field.Exists() {
-				rdata.CustomFields[customField.Name] = field.String()
-			}
-		}
-	}
-
-	return rdata, err
 }
 
 func (coll *Collector) saveResponse(addr *net.UDPAddr, res *data.ResponseData) {
@@ -328,7 +293,7 @@ func (coll *Collector) saveResponse(addr *net.UDPAddr, res *data.ResponseData) {
 }
 
 func (coll *Collector) receiver(conn *net.UDPConn) {
-	buf := make([]byte, maxDataGramSize)
+	buf := make([]byte, MaxDataGramSize)
 	for {
 		n, src, err := conn.ReadFromUDP(buf)
 
