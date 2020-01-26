@@ -64,7 +64,7 @@ var serveCmd = &cobra.Command{
 			}
 			defer srv.Close()
 		} else if config.Webserver.Prometheus.Enable {
-				log.Panic("to use prometheus exporter, please enable [webserver].")
+			log.Panic("to use prometheus exporter, please enable [webserver].")
 		}
 
 		// Wait for INT/TERM
