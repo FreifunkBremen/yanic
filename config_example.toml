@@ -54,11 +54,11 @@ webroot = "/var/www/html/meshviewer"
 
 [webserver.prometheus]
 # need webserver and respondd enabled (the exporter used the first interface
-enable = false
+enable    = false
 # how long to wait till answer are calulated
-wait = 1s
+wait     = "1s"
 # how old values are allowed 
-outdated = 2s
+outdated = "2s"
 
 
 

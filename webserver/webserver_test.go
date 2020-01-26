@@ -11,7 +11,7 @@ func TestWebserver(t *testing.T) {
 	assert := assert.New(t)
 
 	config := Config{
-		Bind: ":12345",
+		Bind:    ":12345",
 		Webroot: "/tmp",
 	}
 

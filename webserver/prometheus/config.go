@@ -15,14 +15,13 @@ type Config struct {
 	Outdated duration.Duration `toml:"outdated"`
 }
 
-
 func CreateExporter(config Config, srv *http.Server, coll *respond.Collector, nodes *runtime.Nodes) {
 	mux := http.NewServeMux()
 	ex := &Exporter{
 		config: config,
-		srv: srv,
-		coll: coll,
-		nodes: nodes,
+		srv:    srv,
+		coll:   coll,
+		nodes:  nodes,
 	}
 	mux.Handle("/metric", ex)
 	if srv.Handler != nil {

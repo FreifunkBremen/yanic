@@ -14,11 +14,10 @@ import (
 
 type Exporter struct {
 	config Config
-	srv *http.Server
-	coll *respond.Collector
-	nodes *runtime.Nodes
+	srv    *http.Server
+	coll   *respond.Collector
+	nodes  *runtime.Nodes
 }
-
 
 func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var ip net.IP
@@ -36,7 +35,7 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		ip = node.Address.IP
 		if ex.writeNode(res, node) {
 			log.WithFields(map[string]interface{}{
-				"ip": ip,
+				"ip":      ip,
 				"node_id": nodeID,
 			}).Debug("take node from cache")
 			return
@@ -63,7 +62,7 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 		if getOne {
 			log.WithFields(map[string]interface{}{
-				"ip": ip,
+				"ip":      ip,
 				"node_id": nodeID,
 			}).Debug("take node from cache")
 			return
@@ -78,7 +77,7 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	// wait
 	log.WithFields(map[string]interface{}{
-		"ip": ip,
+		"ip":      ip,
 		"node_id": nodeID,
 	}).Debug("waited for")
 	time.Sleep(ex.config.Wait.Duration)
@@ -103,7 +102,7 @@ func (ex *Exporter) writeNode(res http.ResponseWriter, node *runtime.Node) bool 
 	for _, m := range metrics {
 		str, err := m.String()
 		if err == nil {
-			io.WriteString(res, str + "\n")
+			io.WriteString(res, str+"\n")
 		} else {
 			logger := log.WithField("database", "prometheus")
 			if nodeinfo := node.Nodeinfo; nodeinfo != nil {
