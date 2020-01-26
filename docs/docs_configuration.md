@@ -545,6 +545,67 @@ path     = "/var/www/html/meshviewer/data/nodelist.json"
 ```
 {% endmethod %}
 
+
+
+## [[nodes.output.prometheus-sd]]
+{% method %}
+The Prometheus Service Discovery (SD) output is a output with the list of addresses of the nodes to use them in later exporter by prometheus.
+For usage in Prometheus read there Documentation [Use file-based service discovery to discover scrape targets](https://prometheus.io/docs/guides/file-sd/).
+{% sample lang="toml" %}
+```toml
+[[nodes.output.prometheus-sd]]
+enable         = false
+path           = "/var/www/html/meshviewer/data/prometheus-sd.json"
+target_address = "ip"
+
+[nodes.output.prometheus-sd.labels]
+labelname1 = "labelvalue 1"
+# some useful e.g.:
+hosts   = "ffhb"
+service = "yanic"
+```
+{% endmethod %}
+
+
+### path
+{% method %}
+The path, where to store prometheus-sd.json
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/prometheus-sd.json"
+```
+{% endmethod %}
+
+### target_address
+{% method %}
+In the prometheus-sd.json the usage of which information of the node as targets (address).
+
+Use the `node_id` as value, to put the Node ID into the target list as address.
+Use the `ip` as value to put the last IP address into the target list from where the respondd message is recieved (maybe a link-local address).
+Default value is `ip`.
+
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/prometheus-sd.json"
+```
+{% endmethod %}
+
+
+### [nodes.output.prometheus-sd.labels]
+{% method %}
+You could optional set manuelle labels with inserting into a prometheus-sd.json.
+Useful if you want to identify the yanic instance when you use multiple own on the same prometheus database (e.g. multisites).
+
+{% sample lang="toml" %}
+```toml
+labelname1 = "labelvalue 1"
+# some useful e.g.:
+hosts   = "ffhb"
+service = "yanic"
+```
+{% endmethod %}
+
+
 ## [[nodes.output.raw]]
 {% method %}
 This output takes the respondd response as sent by the node and includes it in a JSON document.
