@@ -1,15 +1,15 @@
-package webserver
+package prometheus
 
 import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-func PrometheusMetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []PrometheusMetric {
-	m := []PrometheusMetric{}
+func MetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []Metric {
+	m := []Metric{}
 
 	// before node metrics to get link statics undependent of node validation
 	for _, link := range nodes.NodeLinks(node) {
-		m = append(m, PrometheusMetric{
+		m = append(m, Metric{
 			Labels: map[string]interface{}{
 				"source_id":   link.SourceID,
 				"source_addr": link.SourceAddress,
@@ -60,7 +60,7 @@ func PrometheusMetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []Prome
 	}
 
 	addMetric := func(name string, value interface{}) {
-		m = append(m, PrometheusMetric{Labels: labels, Name: "yanic_" + name, Value: value})
+		m = append(m, Metric{Labels: labels, Name: "yanic_" + name, Value: value})
 	}
 
 	if node.Online {

@@ -1,4 +1,4 @@
-package webserver
+package prometheus
 
 import (
 	"errors"
@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-type PrometheusMetric struct {
+type Metric struct {
 	Name   string
 	Value  interface{}
 	Labels map[string]interface{}
 }
 
-func (m *PrometheusMetric) String() (string, error) {
+func (m *Metric) String() (string, error) {
 	if m.Value == nil {
 		return "", errors.New("no value of metric found")
 	}

@@ -1,4 +1,4 @@
-package webserver
+package prometheus
 
 import (
 	"testing"
@@ -6,24 +6,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPrometheusMetric(t *testing.T) {
+func TestMetric(t *testing.T) {
 	assert := assert.New(t)
 
 	var tests = []struct {
-		input  PrometheusMetric
+		input  Metric
 		err    string
 		output string
 	}{
 		{
-			input: PrometheusMetric{Name: "test1"},
+			input: Metric{Name: "test1"},
 			err:   "no value of metric found",
 		},
 		{
-			input:  PrometheusMetric{Name: "test2", Value: 3},
+			input:  Metric{Name: "test2", Value: 3},
 			output: "test2 3",
 		},
 		{
-			input: PrometheusMetric{Name: "test3", Value: 3.2,
+			input: Metric{Name: "test3", Value: 3.2,
 				Labels: map[string]interface{}{
 					"site_code": "lola",
 				},
@@ -31,7 +31,7 @@ func TestPrometheusMetric(t *testing.T) {
 			output: `test3{site_code="lola"} 3.2`,
 		},
 		{
-			input: PrometheusMetric{Name: "test4", Value: "0",
+			input: Metric{Name: "test4", Value: "0",
 				Labels: map[string]interface{}{
 					"frequency": float32(3.2),
 				},
@@ -39,7 +39,7 @@ func TestPrometheusMetric(t *testing.T) {
 			output: `test4{frequency="3.2000"} 0`,
 		},
 		{
-			input: PrometheusMetric{Name: "test5", Value: 3,
+			input: Metric{Name: "test5", Value: 3,
 				Labels: map[string]interface{}{
 					"node_id": "lola",
 					"blub":    3.3423533,

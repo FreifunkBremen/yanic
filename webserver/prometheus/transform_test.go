@@ -1,4 +1,4 @@
-package webserver
+package prometheus
 
 import (
 	"testing"
@@ -9,10 +9,10 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-func TestPrometheusMetricsFromNode(t *testing.T) {
+func TestMetricsFromNode(t *testing.T) {
 	assert := assert.New(t)
 
-	m := PrometheusMetricsFromNode(nil, &runtime.Node{})
+	m := MetricsFromNode(nil, &runtime.Node{})
 	assert.Len(m, 0)
 
 	nodes := runtime.NewNodes(&runtime.NodesConfig{})
@@ -76,11 +76,11 @@ func TestPrometheusMetricsFromNode(t *testing.T) {
 		},
 	}
 	nodes.AddNode(node)
-	m = PrometheusMetricsFromNode(nodes, node)
+	m = MetricsFromNode(nodes, node)
 	assert.Len(m, 15)
 	assert.Equal(m[0].Labels["source_id"], "wasd1")
 
-	m = PrometheusMetricsFromNode(nil, &runtime.Node{
+	m = MetricsFromNode(nil, &runtime.Node{
 		Online: true,
 		Nodeinfo: &data.Nodeinfo{
 			NodeID: "wasd",

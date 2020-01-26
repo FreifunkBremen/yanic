@@ -1,4 +1,4 @@
-package webserver
+package prometheus
 
 import (
 	"io"
@@ -6,43 +6,21 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/FreifunkBremen/yanic/lib/duration"
 	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-type PrometheusConfig struct {
-	Enable   bool              `toml:"enable"`
-	Wait     duration.Duration `toml:"wait"`
-	Outdated duration.Duration `toml:"outdated"`
-}
-
-type prometheusExporter struct {
-	config PrometheusConfig
+type Exporter struct {
+	config Config
 	srv *http.Server
 	coll *respond.Collector
 	nodes *runtime.Nodes
 }
 
 
-func CreatePrometheusExporter(config PrometheusConfig, srv *http.Server, coll *respond.Collector, nodes *runtime.Nodes) {
-	mux := http.NewServeMux()
-	ex := &prometheusExporter{
-		config: config,
-		srv: srv,
-		coll: coll,
-		nodes: nodes,
-	}
-	mux.Handle("/metric", ex)
-	if srv.Handler != nil {
-		mux.Handle("/", srv.Handler)
-	}
-	srv.Handler = mux
-}
-
-func (ex *prometheusExporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var ip net.IP
 	nodeID := ""
 
@@ -56,7 +34,7 @@ func (ex *prometheusExporter) ServeHTTP(res http.ResponseWriter, req *http.Reque
 			return
 		}
 		ip = node.Address.IP
-		if ex.writePrometheusNode(res, node) {
+		if ex.writeNode(res, node) {
 			log.WithFields(map[string]interface{}{
 				"ip": ip,
 				"node_id": nodeID,
@@ -76,7 +54,7 @@ func (ex *prometheusExporter) ServeHTTP(res http.ResponseWriter, req *http.Reque
 		})
 		getOne := false
 		if len(node_select) == 1 {
-			if ex.writePrometheusNode(res, node_select[0]) {
+			if ex.writeNode(res, node_select[0]) {
 				getOne = true
 			}
 		} else if len(node_select) > 1 {
@@ -111,17 +89,17 @@ func (ex *prometheusExporter) ServeHTTP(res http.ResponseWriter, req *http.Reque
 		http.Error(res, "not able to fetch this node", http.StatusGatewayTimeout)
 		return
 	}
-	if ex.writePrometheusNode(res, node) {
+	if ex.writeNode(res, node) {
 		return
 	}
 	http.Error(res, "not able to fetch new values from this node", http.StatusGatewayTimeout)
 }
 
-func (ex *prometheusExporter) writePrometheusNode(res http.ResponseWriter, node *runtime.Node) bool {
+func (ex *Exporter) writeNode(res http.ResponseWriter, node *runtime.Node) bool {
 	if !time.Now().Before(node.Lastseen.GetTime().Add(ex.config.Outdated.Duration)) {
 		return false
 	}
-	metrics := PrometheusMetricsFromNode(ex.nodes, node)
+	metrics := MetricsFromNode(ex.nodes, node)
 	for _, m := range metrics {
 		str, err := m.String()
 		if err == nil {

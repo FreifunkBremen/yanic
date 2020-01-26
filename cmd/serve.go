@@ -14,6 +14,7 @@ import (
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/FreifunkBremen/yanic/webserver"
+	"github.com/FreifunkBremen/yanic/webserver/prometheus"
 )
 
 // serveCmd represents the serve command
@@ -58,7 +59,7 @@ var serveCmd = &cobra.Command{
 			srv := webserver.New(config.Webserver)
 			go webserver.Start(srv)
 			if config.Webserver.Prometheus.Enable && config.Respondd.Enable {
-				webserver.CreatePrometheusExporter(config.Webserver.Prometheus, srv, collector, nodes)
+				prometheus.CreateExporter(config.Webserver.Prometheus, srv, collector, nodes)
 			} else {
 				log.Panic("to use prometheus exporter, please enable [respondd].")
 			}
