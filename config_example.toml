@@ -54,7 +54,7 @@ webroot = "/var/www/html/meshviewer"
 
 [webserver.prometheus]
 # need webserver and respondd enabled (the exporter used the first interface
-enable    = false
+enable   = false
 # how long to wait till answer are calulated
 wait     = "1s"
 # how old values are allowed 
@@ -175,7 +175,16 @@ path = "/var/www/html/meshviewer/data/raw.json"
 # WARNING: if it is not set, it will publish contact information of other persons
 no_owner = true
 
+# definition for prometheus-sd.json
+[[nodes.output.prometheus-sd]]
+enable  = true
+path    = "/var/www/html/meshviewer/data/prometheus-sd.json"
+# ip = lates recieved ip, node_id = node id from host
+target_address = "ip"
 
+[nodes.output.prometheus-sd.labels]
+hosts   = "ffhb"
+service = "yanic"
 
 [database]
 # this will send delete commands to the database to prune data
