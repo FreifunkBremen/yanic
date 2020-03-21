@@ -48,7 +48,7 @@ func (nodes *Nodes) AddNode(node *Node) {
 	nodes.Lock()
 	defer nodes.Unlock()
 	nodes.List[nodeinfo.NodeID] = node
-	nodes.readIfaces(nodeinfo)
+	nodes.readIfaces(nodeinfo, false)
 }
 
 // Update a Node
@@ -65,7 +65,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 		nodes.List[nodeID] = node
 	}
 	if res.Nodeinfo != nil {
-		nodes.readIfaces(res.Nodeinfo)
+		nodes.readIfaces(res.Nodeinfo, true)
 	}
 	nodes.Unlock()
 
@@ -183,7 +183,7 @@ func (nodes *Nodes) expire() {
 }
 
 // adds the nodes interface addresses to the internal map
-func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo) {
+func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, warning bool) {
 	nodeID := nodeinfo.NodeID
 	network := nodeinfo.Network
 
@@ -203,7 +203,7 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo) {
 			continue
 		}
 		if oldNodeID, _ := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
-			if oldNodeID != "" {
+			if oldNodeID != "" && warning {
 				log.Warnf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
 			}
 			nodes.ifaceToNodeID[addr] = nodeID
@@ -221,7 +221,7 @@ func (nodes *Nodes) load() {
 			nodes.Lock()
 			for _, node := range nodes.List {
 				if node.Nodeinfo != nil {
-					nodes.readIfaces(node.Nodeinfo)
+					nodes.readIfaces(node.Nodeinfo, false)
 				}
 			}
 			nodes.Unlock()
