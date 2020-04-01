@@ -15,6 +15,9 @@ type GlobalStats struct {
 	ClientsWifi   uint32
 	ClientsWifi24 uint32
 	ClientsWifi5  uint32
+	ClientsOwe    uint32
+	ClientsOwe24  uint32
+	ClientsOwe5   uint32
 	Gateways      uint32
 	Nodes         uint32
 
@@ -80,6 +83,9 @@ func (s *GlobalStats) Add(node *Node) {
 		s.ClientsWifi24 += stats.Clients.Wifi24
 		s.ClientsWifi5 += stats.Clients.Wifi5
 		s.ClientsWifi += stats.Clients.Wifi
+		s.ClientsOwe24 += stats.Clients.Owe24
+		s.ClientsOwe5 += stats.Clients.Owe5
+		s.ClientsOwe += stats.Clients.Owe
 	}
 	if node.IsGateway() {
 		s.Gateways++
