@@ -63,6 +63,9 @@ type Clients struct {
 	Wifi   uint32 `json:"wifi"`
 	Wifi24 uint32 `json:"wifi24"`
 	Wifi5  uint32 `json:"wifi5"`
+	Owe    uint32 `json:"owe"`
+	Owe24  uint32 `json:"owe24"`
+	Owe5   uint32 `json:"owe5"`
 	Total  uint32 `json:"total"`
 }
 

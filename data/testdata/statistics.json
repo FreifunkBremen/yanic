@@ -1,6 +1,9 @@
 {
   "clients": {
     "total": 35,
+    "owe": 10,
+    "owe24": 5,
+    "owe5": 6,
     "wifi": 35,
     "wifi24": 30,
     "wifi5": 8
