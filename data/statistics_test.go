@@ -20,6 +20,9 @@ func TestStatistics(t *testing.T) {
 	assert.Equal(uint32(35), obj.Clients.Wifi)
 	assert.Equal(uint32(30), obj.Clients.Wifi24)
 	assert.Equal(uint32(8), obj.Clients.Wifi5)
+	assert.Equal(uint32(10), obj.Clients.Owe)
+	assert.Equal(uint32(5), obj.Clients.Owe24)
+	assert.Equal(uint32(6), obj.Clients.Owe5)
 }
 
 func testfile(name string, obj interface{}) {
