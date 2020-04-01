@@ -48,6 +48,9 @@ func GlobalStatsFields(stats *runtime.GlobalStats) map[string]interface{} {
 		"clients.wifi":   stats.ClientsWifi,
 		"clients.wifi24": stats.ClientsWifi24,
 		"clients.wifi5":  stats.ClientsWifi5,
+		"clients.owe":    stats.ClientsOwe,
+		"clients.owe24":  stats.ClientsOwe24,
+		"clients.owe5":   stats.ClientsOwe5,
 	}
 }
 
