@@ -4,11 +4,10 @@ stages:
   - test
 
 before_script:
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - mkdir -p /go/src/github.com/FreifunkBremen/
   - cp -R /builds/freifunkbremen/yanic /go/src/github.com/FreifunkBremen/yanic
   - cd /go/src/github.com/FreifunkBremen/yanic
-  - dep ensure
+  - go get -t ./...
 
 build-my-project:
   stage: build
