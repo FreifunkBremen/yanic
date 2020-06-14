@@ -33,7 +33,7 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 		ip = node.Address.IP
-		if ex.writeNode(res, node) {
+		if ex.writeNode(res, node, true) {
 			log.WithFields(map[string]interface{}{
 				"ip":      ip,
 				"node_id": nodeID,
@@ -51,21 +51,16 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 			nodeID = n.Nodeinfo.NodeID
 			return n_addr != nil && ip.Equal(n_addr.IP)
 		})
-		getOne := false
 		if len(node_select) == 1 {
-			if ex.writeNode(res, node_select[0]) {
-				getOne = true
+			if ex.writeNode(res, node_select[0], true) {
+				log.WithFields(map[string]interface{}{
+					"ip":      ip,
+					"node_id": nodeID,
+				}).Debug("take node from cache")
+				return
 			}
 		} else if len(node_select) > 1 {
 			log.Error("strange count of nodes")
-		}
-
-		if getOne {
-			log.WithFields(map[string]interface{}{
-				"ip":      ip,
-				"node_id": nodeID,
-			}).Debug("take node from cache")
-			return
 		}
 	} else {
 		http.Error(res, "please request with ?ip= or ?node_id=", http.StatusNotFound)
@@ -88,26 +83,36 @@ func (ex *Exporter) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "not able to fetch this node", http.StatusGatewayTimeout)
 		return
 	}
-	if ex.writeNode(res, node) {
-		return
-	}
-	http.Error(res, "not able to fetch new values from this node", http.StatusGatewayTimeout)
+	ex.writeNode(res, node, false)
 }
 
-func (ex *Exporter) writeNode(res http.ResponseWriter, node *runtime.Node) bool {
+func (ex *Exporter) writeNode(res http.ResponseWriter, node *runtime.Node, dry bool) bool {
+	logger := log.WithField("database", "prometheus")
+	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
+		logger = logger.WithField("node_id", nodeinfo.NodeID)
+	}
+
 	if !time.Now().Before(node.Lastseen.GetTime().Add(ex.config.Outdated.Duration)) {
+		if dry {
+			return false
+		}
+		m := Metric{Labels: MetricLabelsFromNode(node), Name: "yanic_node_up", Value: 0}
+		str, err := m.String()
+		if err == nil {
+			io.WriteString(res, str+"\n")
+		} else {
+			logger.Warnf("not able to get metrics from node: %s", err)
+			http.Error(res, "not able to generate metric from node", http.StatusInternalServerError)
+		}
 		return false
 	}
+
 	metrics := MetricsFromNode(ex.nodes, node)
 	for _, m := range metrics {
 		str, err := m.String()
 		if err == nil {
 			io.WriteString(res, str+"\n")
 		} else {
-			logger := log.WithField("database", "prometheus")
-			if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-				logger = logger.WithField("node_id", nodeinfo.NodeID)
-			}
 			logger.Warnf("not able to get metrics from node: %s", err)
 			http.Error(res, "not able to generate metric from node", http.StatusInternalServerError)
 		}

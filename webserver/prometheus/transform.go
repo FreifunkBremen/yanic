@@ -4,35 +4,16 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-func MetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []Metric {
-	m := []Metric{}
-
-	// before node metrics to get link statics undependent of node validation
-	for _, link := range nodes.NodeLinks(node) {
-		m = append(m, Metric{
-			Labels: map[string]interface{}{
-				"source_id":   link.SourceID,
-				"source_addr": link.SourceAddress,
-				"target_id":   link.TargetID,
-				"target_addr": link.TargetAddress,
-			},
-			Name:  "yanic_link",
-			Value: link.TQ * 100,
-		})
-	}
+func MetricLabelsFromNode(node *runtime.Node) (labels map[string]interface{}) {
+	labels = make(map[string]interface{})
 
 	nodeinfo := node.Nodeinfo
-	stats := node.Statistics
-
-	// validation
-	if nodeinfo == nil || stats == nil {
-		return m
+	if nodeinfo == nil {
+		return
 	}
 
-	labels := map[string]interface{}{
-		"node_id":  nodeinfo.NodeID,
-		"hostname": nodeinfo.Hostname,
-	}
+	labels["node_id"] =  nodeinfo.NodeID
+	labels["hostname"] = nodeinfo.Hostname
 
 	if nodeinfo.System.SiteCode != "" {
 		labels["site_code"] = nodeinfo.System.SiteCode
@@ -58,6 +39,36 @@ func MetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []Metric {
 		labels["location_lat"] = location.Latitude
 		labels["location_long"] = location.Longitude
 	}
+
+	return
+}
+
+func MetricsFromNode(nodes *runtime.Nodes, node *runtime.Node) []Metric {
+	m := []Metric{}
+
+	// before node metrics to get link statics undependent of node validation
+	for _, link := range nodes.NodeLinks(node) {
+		m = append(m, Metric{
+			Labels: map[string]interface{}{
+				"source_id":   link.SourceID,
+				"source_addr": link.SourceAddress,
+				"target_id":   link.TargetID,
+				"target_addr": link.TargetAddress,
+			},
+			Name:  "yanic_link",
+			Value: link.TQ * 100,
+		})
+	}
+
+	nodeinfo := node.Nodeinfo
+	stats := node.Statistics
+
+	// validation
+	if nodeinfo == nil || stats == nil {
+		return m
+	}
+
+	labels := MetricLabelsFromNode(node)
 
 	addMetric := func(name string, value interface{}) {
 		m = append(m, Metric{Labels: labels, Name: "yanic_" + name, Value: value})
