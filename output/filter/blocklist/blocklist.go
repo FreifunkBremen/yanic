@@ -1,4 +1,4 @@
-package blacklist
+package blocklist
 
 import (
 	"errors"
@@ -7,10 +7,10 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-type blacklist map[string]interface{}
+type blocklist map[string]interface{}
 
 func init() {
-	filter.Register("blacklist", build)
+	filter.Register("blocklist", build)
 }
 
 func build(config interface{}) (filter.Filter, error) {
@@ -19,7 +19,7 @@ func build(config interface{}) (filter.Filter, error) {
 		return nil, errors.New("invalid configuration, array (of strings) expected")
 	}
 
-	list := make(blacklist)
+	list := make(blocklist)
 	for _, value := range values {
 		if nodeid, ok := value.(string); ok {
 			list[nodeid] = struct{}{}
@@ -30,7 +30,7 @@ func build(config interface{}) (filter.Filter, error) {
 	return &list, nil
 }
 
-func (list blacklist) Apply(node *runtime.Node) *runtime.Node {
+func (list blocklist) Apply(node *runtime.Node) *runtime.Node {
 	if nodeinfo := node.Nodeinfo; nodeinfo != nil {
 		if _, ok := list[nodeinfo.NodeID]; ok {
 			return nil

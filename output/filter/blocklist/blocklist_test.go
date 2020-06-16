@@ -1,4 +1,4 @@
-package blacklist
+package blocklist
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFilterBlacklist(t *testing.T) {
+func TestFilterBlocklist(t *testing.T) {
 	assert := assert.New(t)
 
 	// invalid config
@@ -26,15 +26,15 @@ func TestFilterBlacklist(t *testing.T) {
 	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 
-	// tests with blacklist
+	// tests with blocklist
 	filter, err = build([]interface{}{"a", "c"})
 	assert.NoError(err)
 
-	// blacklist contains node with nodeid -> drop it
+	// blocklist contains node with nodeid -> drop it
 	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{NodeID: "a"}})
 	assert.Nil(n)
 
-	// blacklist does not contains node without nodeid -> keep it
+	// blocklist does not contains node without nodeid -> keep it
 	n = filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{}})
 	assert.NotNil(n)
 

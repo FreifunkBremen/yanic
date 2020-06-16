@@ -112,7 +112,7 @@ func TestStart(t *testing.T) {
 			map[string]interface{}{
 				"enable": true,
 				"filter": map[string]interface{}{
-					"blacklist": true,
+					"blocklist": true,
 				},
 			},
 		},
