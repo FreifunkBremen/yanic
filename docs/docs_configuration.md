@@ -282,7 +282,7 @@ It is possible to have multiple output for one type of output, just add this gro
 enable = true
 [nodes.output.example.filter]
 no_owner  = true
-blacklist = ["00112233445566", "1337f0badead"]
+blocklist = ["00112233445566", "1337f0badead"]
 sites = ["ffhb"]
 domain_as_site = true
 domain_append_site = true
@@ -311,7 +311,7 @@ For each output format there can be set different filters
 ```toml
 [nodes.output.example.filter]
 no_owner  = true
-blacklist = ["00112233445566", "1337f0badead"]
+blocklist = ["00112233445566", "1337f0badead"]
 sites = ["ffhb"]
 has_location = true
 [nodes.output.example.filter.in_area]
@@ -337,12 +337,12 @@ no_owner = true
 {% endmethod %}
 
 
-### blacklist
+### blocklist
 {% method %}
 List of nodeids of nodes that should be filtered out, so they won't appear in output
 {% sample lang="toml" %}
 ```toml
-blacklist = ["00112233445566", "1337f0badead"]
+blocklist = ["00112233445566", "1337f0badead"]
 ```
 {% endmethod %}
 
@@ -448,7 +448,7 @@ enable   = true
 path     = "/var/www/html/meshviewer/data/meshviewer.json"
 #[nodes.output.meshviewer-ffrgb.filter]
 #no_owner = false
-#blacklist = ["00112233445566", "1337f0badead"]
+#blocklist = ["00112233445566", "1337f0badead"]
 #has_location = true
 
 #[nodes.output.meshviewer-ffrgb.filter.in_area]
