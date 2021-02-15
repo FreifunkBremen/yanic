@@ -18,6 +18,11 @@
     },
     "status-page": {
       "api": 1
+    },
+    "wireguard": {
+      "enabled": true,
+      "public_key": "0000000000000000000000000000000000000000000=",
+      "version": "1.0.20210124"
     }
   },
   "network": {
