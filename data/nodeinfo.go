@@ -80,6 +80,11 @@ type Software struct {
 	StatusPage *struct {
 		API int `json:"api"`
 	} `json:"status-page,omitempty"`
+	WireGuard *struct {
+		Enabled   bool   `json:"enabled,omitempty"`
+		PublicKey string `json:"public_key,omitempty"`
+		Version   string `json:"version,omitempty"`
+	} `json:"wireguard,omitempty"`
 }
 
 // Hardware struct
