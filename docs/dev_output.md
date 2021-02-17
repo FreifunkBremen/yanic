@@ -1,6 +1,6 @@
 # Add new output type
 
-Write a new package to implement the interface [output.Output:](https://github.com/FreifunkBremen/yanic/blob/master/output/output.go)
+Write a new package to implement the interface [output.Output:](https://github.com/FreifunkBremen/yanic/blob/main/output/output.go)
 
 ```go
 type Output interface {
@@ -27,4 +27,4 @@ Short: the function signature of _Register_ should be `func Register(configurati
 
 
 
-At last add you import string to compile the your database as well in this [all](https://github.com/FreifunkBremen/yanic/blob/master/output/all/main.go) package.
+At last add you import string to compile the your database as well in this [all](https://github.com/FreifunkBremen/yanic/blob/main/output/all/main.go) package.

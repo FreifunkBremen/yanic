@@ -8,9 +8,9 @@ __   __          _
 Yet another node info collector
 ```
 
-[![CircleCI](https://circleci.com/gh/FreifunkBremen/yanic/tree/master.svg?style=shield)](https://circleci.com/gh/FreifunkBremen/yanic/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=master)](https://coveralls.io/github/FreifunkBremen/yanic?branch=master)
-[![codecov](https://codecov.io/gh/FreifunkBremen/yanic/branch/master/graph/badge.svg)](https://codecov.io/gh/FreifunkBremen/yanic)
+[![CircleCI](https://circleci.com/gh/FreifunkBremen/yanic/tree/main.svg?style=shield)](https://circleci.com/gh/FreifunkBremen/yanic/tree/main)
+[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=main)](https://coveralls.io/github/FreifunkBremen/yanic?branch=main)
+[![codecov](https://codecov.io/gh/FreifunkBremen/yanic/branch/main/graph/badge.svg)](https://codecov.io/gh/FreifunkBremen/yanic)
 [![Go Report Card](https://goreportcard.com/badge/github.com/FreifunkBremen/yanic)](https://goreportcard.com/report/github.com/FreifunkBremen/yanic)
 
 `yanic` is a respondd client that fetches, stores and publishes information about a Freifunk network. The goals:
@@ -23,7 +23,7 @@ In the first step Yanic sends a multicast message to the group `ff05::2:1001` an
 Recently seen nodes that does not reply are requested via a unicast message.
 
 ## Documentation
-Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/master/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
+Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/main/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
 
 # Installation
 Take a look into the Documentation (see above) or for Quick Overview in [INSTALL.md](INSTALL.md).
@@ -115,7 +115,7 @@ Global Flags:
 
 
 ## Communities using Yanic
-* **Freifunk Bremen** uses InfluxDB, [Grafana](https://grafana.bremen.freifunk.net), and [Meshviewer](https://map.bremen.freifunk.net) with a patch to show state-version of `nodes.json`. 
+* **Freifunk Bremen** uses InfluxDB, [Grafana](https://grafana.bremen.freifunk.net), and [Meshviewer](https://map.bremen.freifunk.net) with a patch to show state-version of `nodes.json`.
 * **Freifunk Nord** uses [hopglass](https://github.com/hopglass/hopglass) (commit 587740a) as frontend:  https://mesh.freifunknord.de/
 * **Freifunk Kiel** uses [Meshviewer](https://github.com/ffrgb/meshviewer/) as frontend: https://map.freifunk.in-kiel.de/
 

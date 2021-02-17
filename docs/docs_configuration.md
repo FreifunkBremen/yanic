@@ -1,6 +1,6 @@
 # Configuration
 
-Here you would find a long description, maybe the description in [example file](https://github.com/FreifunkBremen/yanic/blob/master/config_example.toml) are enough for you.
+Here you would find a long description, maybe the description in [example file](https://github.com/FreifunkBremen/yanic/blob/main/config_example.toml) are enough for you.
 
 The config file for Yanic written in "Tom's Obvious, Minimal Language." [syntax](https://github.com/toml-lang/toml).
 (if you need somethink multiple times, checkout out the [[array of table]] section)

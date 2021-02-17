@@ -1,6 +1,6 @@
 # Add new database type
 
-Write a new package to implement the interface [database.Connection:](https://github.com/FreifunkBremen/yanic/blob/master/database/database.go)
+Write a new package to implement the interface [database.Connection:](https://github.com/FreifunkBremen/yanic/blob/main/database/database.go)
 
 ```go
 type Connection interface {
@@ -42,8 +42,8 @@ Short: the function signature of _ConnectFunction_ should be `func Connect(confi
 
 
 
-At last add you import string to compile the your database as well in this [all](https://github.com/FreifunkBremen/yanic/blob/master/database/all/main.go) package.
+At last add you import string to compile the your database as well in this [all](https://github.com/FreifunkBremen/yanic/blob/main/database/all/main.go) package.
 
 
 
-TIP: take a look in the easy database type [logging](https://github.com/FreifunkBremen/yanic/blob/master/database/logging/file.go).
+TIP: take a look in the easy database type [logging](https://github.com/FreifunkBremen/yanic/blob/main/database/logging/file.go).
