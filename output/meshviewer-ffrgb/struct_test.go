@@ -37,6 +37,16 @@ func TestRegister(t *testing.T) {
 				Longitude: 13.3,
 				Latitude:  8.7,
 			},
+			Software: data.Software{
+				Autoupdater: &struct {
+					Enabled bool   `json:"enabled,omitempty"`
+					Branch  string `json:"branch,omitempty"`
+				}{},
+				Firmware: &struct {
+					Base    string `json:"base,omitempty"`
+					Release string `json:"release,omitempty"`
+				}{},
+			},
 		},
 		Statistics: &data.Statistics{
 			Memory: data.Memory{

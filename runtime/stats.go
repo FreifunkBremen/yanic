@@ -92,8 +92,10 @@ func (s *GlobalStats) Add(node *Node) {
 	}
 	if info := node.Nodeinfo; info != nil {
 		s.Models.Increment(info.Hardware.Model)
-		s.Firmwares.Increment(info.Software.Firmware.Release)
-		if info.Software.Autoupdater.Enabled {
+		if info.Software.Firmware != nil {
+			s.Firmwares.Increment(info.Software.Firmware.Release)
+		}
+		if info.Software.Autoupdater != nil && info.Software.Autoupdater.Enabled {
 			s.Autoupdater.Increment(info.Software.Autoupdater.Branch)
 		} else {
 			s.Autoupdater.Increment(DISABLED_AUTOUPDATER)

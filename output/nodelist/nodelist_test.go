@@ -32,7 +32,12 @@ func createTestNodes() *runtime.Nodes {
 			},
 		},
 	}
-	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
+	nodeData.Nodeinfo.Software.Firmware = &struct {
+		Base    string `json:"base,omitempty"`
+		Release string `json:"release,omitempty"`
+	}{
+		Release: "2016.1.6+entenhausen1",
+	}
 	nodes.AddNode(nodeData)
 
 	nodes.AddNode(&runtime.Node{

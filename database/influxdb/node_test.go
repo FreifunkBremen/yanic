@@ -68,7 +68,7 @@ func TestToInflux(t *testing.T) {
 				},
 			},
 			Software: data.Software{
-				Autoupdater: struct {
+				Autoupdater: &struct {
 					Enabled bool   `json:"enabled,omitempty"`
 					Branch  string `json:"branch,omitempty"`
 				}{
@@ -111,11 +111,17 @@ func TestToInflux(t *testing.T) {
 				Mac: "BAFF1E5",
 			},
 			Software: data.Software{
-				Autoupdater: struct {
+				Autoupdater: &struct {
 					Enabled bool   `json:"enabled,omitempty"`
 					Branch  string `json:"branch,omitempty"`
 				}{
 					Enabled: false,
+				},
+				Firmware: &struct {
+					Base    string `json:"base,omitempty"`
+					Release string `json:"release,omitempty"`
+				}{
+					Base: "gluon",
 				},
 			},
 		},

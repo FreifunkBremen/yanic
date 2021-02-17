@@ -94,7 +94,12 @@ func createTestNodes() *Nodes {
 			},
 		},
 	}
-	nodeData.Nodeinfo.Software.Firmware.Release = "2016.1.6+entenhausen1"
+	nodeData.Nodeinfo.Software.Firmware = &struct {
+		Base    string `json:"base,omitempty"`
+		Release string `json:"release,omitempty"`
+	}{
+		Release: "2016.1.6+entenhausen1",
+	}
 	nodes.AddNode(nodeData)
 
 	nodes.AddNode(&Node{
@@ -110,7 +115,7 @@ func createTestNodes() *Nodes {
 				Model: "TP-Link 841",
 			},
 			Software: data.Software{
-				Autoupdater: struct {
+				Autoupdater: &struct {
 					Enabled bool   `json:"enabled,omitempty"`
 					Branch  string `json:"branch,omitempty"`
 				}{
