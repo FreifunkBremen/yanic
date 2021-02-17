@@ -100,10 +100,14 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 				Latitude:  location.Latitude,
 			}
 		}
-		node.Firmware = nodeinfo.Software.Firmware
-		node.Autoupdater = Autoupdater{
-			Enabled: nodeinfo.Software.Autoupdater.Enabled,
-			Branch:  nodeinfo.Software.Autoupdater.Branch,
+		if nodeinfo.Software.Firmware != nil {
+			node.Firmware = *nodeinfo.Software.Firmware
+		}
+		if autoupdater := nodeinfo.Software.Autoupdater; autoupdater != nil {
+			node.Autoupdater = Autoupdater{
+				Enabled: autoupdater.Enabled,
+				Branch:  autoupdater.Branch,
+			}
 		}
 		node.Nproc = nodeinfo.Hardware.Nproc
 		node.Model = nodeinfo.Hardware.Model

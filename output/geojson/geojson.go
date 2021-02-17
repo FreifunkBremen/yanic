@@ -39,7 +39,7 @@ func newNodePoint(n *runtime.Node) (point *geojson.Feature) {
 		point.Properties["model"] = nodeinfo.Hardware.Model
 		description.WriteString("Model: " + nodeinfo.Hardware.Model + "\n")
 	}
-	if fw := nodeinfo.Software.Firmware; fw.Release != "" {
+	if fw := nodeinfo.Software.Firmware; fw != nil && fw.Release != "" {
 		point.Properties["firmware"] = fw.Release
 		description.WriteString("Firmware: " + fw.Release + "\n")
 	}

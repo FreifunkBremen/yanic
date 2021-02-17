@@ -57,27 +57,27 @@ type Location struct {
 
 // Software struct
 type Software struct {
-	Autoupdater struct {
+	Autoupdater *struct {
 		Enabled bool   `json:"enabled,omitempty"`
 		Branch  string `json:"branch,omitempty"`
 	} `json:"autoupdater,omitempty"`
-	BatmanAdv struct {
+	BatmanAdv *struct {
 		Version string `json:"version,omitempty"`
 		Compat  int    `json:"compat,omitempty"`
 	} `json:"batman-adv,omitempty"`
-	Babeld struct {
+	Babeld *struct {
 		Version string `json:"version,omitempty"`
 	} `json:"babeld,omitempty"`
-	Fastd struct {
+	Fastd *struct {
 		Enabled   bool   `json:"enabled,omitempty"`
 		Version   string `json:"version,omitempty"`
 		PublicKey string `json:"public_key,omitempty"`
 	} `json:"fastd,omitempty"`
-	Firmware struct {
+	Firmware *struct {
 		Base    string `json:"base,omitempty"`
 		Release string `json:"release,omitempty"`
 	} `json:"firmware,omitempty"`
-	StatusPage struct {
+	StatusPage *struct {
 		API int `json:"api"`
 	} `json:"status-page,omitempty"`
 }
