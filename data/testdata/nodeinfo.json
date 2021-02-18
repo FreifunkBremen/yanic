@@ -18,6 +18,10 @@
     },
     "status-page": {
       "api": 1
+    },
+    "wgpeerselector": {
+      "version": "v1",
+      "enabled": true
     }
   },
   "network": {

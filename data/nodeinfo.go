@@ -80,6 +80,10 @@ type Software struct {
 	StatusPage *struct {
 		API int `json:"api"`
 	} `json:"status-page,omitempty"`
+	WGPeerselector *struct {
+		Enabled   bool   `json:"enabled,omitempty"`
+		Version   string `json:"version,omitempty"`
+	} `json:"wgpeerselector,omitempty"`
 }
 
 // Hardware struct
