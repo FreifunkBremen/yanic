@@ -11,6 +11,7 @@
 | Freifunk Ulzen | [meshviewer ](http://map.ffue.eu)from Freifunk Regensburg | - |
 | Freifunk Gera Greiz | [meshviewer](https://www.freifunk-gera-greiz.de/meshviewer/) from Freifunk Regensburg | [grafana](https://www.freifunk-gera-greiz.de/grafana/dashboard/db/meshviewer-graphen) - with influxdb |
 | Freifunk Westpfalz | [meshviewer ](https://map.freifunk-westpfalz.de/)from Freifunk Regensburg | [grafana](https://stats.freifunk-westpfalz.de/)- with influxdb |
+| Freifunk Rhein-Sieg e.V. | [meshviewer ](https://map.freifunk-rhein-sieg.net/) from Freifunk Regensburg | [grafana](https://grafana.freifunk-rhein-sieg.net/)- with influxdb |
 
 
 ### meshviewer-collector
