@@ -22,9 +22,11 @@ type Node struct {
 // Link represents a link between two nodes
 type Link struct {
 	SourceID      string
+	SourceHostname string
 	SourceAddress string
 	TargetID      string
 	TargetAddress string
+	TargetHostname string
 	TQ            float32
 }
 
