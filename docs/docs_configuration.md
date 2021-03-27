@@ -570,6 +570,31 @@ path     = "/var/www/html/meshviewer/data/raw.json"
 
 
 
+## [[nodes.output.raw-jsonl]]
+{% method %}
+This output takes the respondd response as sent by the node and inserts it into a line-separated JSON document (JSONL). In this format, each line can be interpreted as a separate JSON element, which is useful for json streaming. The first line is a json object containing the timestamp and version of the file. This is followed by a line for each node, each containing a json object.
+{% sample lang="toml" %}
+```toml
+[[nodes.output.raw-jsonl]]
+enable   = false
+path     = "/var/www/html/meshviewer/data/raw.jsonl"
+#[nodes.output.raw.filter]
+#no_owner = false
+```
+{% endmethod %}
+
+
+### path
+{% method %}
+The path, where to store raw.jsonl
+{% sample lang="toml" %}
+```toml
+path     = "/var/www/html/meshviewer/data/raw.jsonl"
+```
+{% endmethod %}
+
+
+
 ## [database]
 {% method %}
 The database organize all database types.
