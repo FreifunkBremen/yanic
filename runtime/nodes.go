@@ -273,3 +273,25 @@ func SaveJSON(input interface{}, outputFile string) {
 		log.Panic(err)
 	}
 }
+
+// Save a slice of json objects as line-encoded JSON (JSONL) to a path.
+func SaveJSONL(input []interface{}, outputFile string) {
+	tmpFile := outputFile + ".tmp"
+
+	f, err := os.OpenFile(tmpFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for _, element := range input {
+		err = json.NewEncoder(f).Encode(element)
+		if err != nil {
+			log.Panic(err)
+		}
+	}
+
+	f.Close()
+	if err := os.Rename(tmpFile, outputFile); err != nil {
+		log.Panic(err)
+	}
+}
