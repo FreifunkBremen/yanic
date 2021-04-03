@@ -117,7 +117,7 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	for sourceMAC, batadv := range neighbours.Batadv {
 		for neighbourMAC, link := range batadv.Neighbours {
 			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
-				neighbour := nodes.List[neighbours.NodeID]
+				neighbour := nodes.List[neighbourID]
 
 				link := Link{
 					SourceID:      neighbours.NodeID,
@@ -128,10 +128,10 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 				}
 
 				if neighbour.Nodeinfo != nil {
-					link.SourceHostname = neighbour.Nodeinfo.Hostname
+					link.TargetHostname = neighbour.Nodeinfo.Hostname
 				}
 				if node.Nodeinfo != nil {
-					link.TargetHostname = node.Nodeinfo.Hostname
+					link.SourceHostname = node.Nodeinfo.Hostname
 				}
 
 				result = append(result, link)
