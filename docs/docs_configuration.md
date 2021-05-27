@@ -657,9 +657,11 @@ enable = true
 Save collected data to InfluxDB.
 There are would be the following measurements:
 - node: store node specific data i.e. clients memory, airtime
+- link: store link tq between two interfaces of two different nodes
 - global: store global data, i.e. count of clients and nodes
 - firmware: store the count of nodes tagged with firmware
 - model: store the count of nodes tagged with hardware model
+- autoupdater: store the count of autoupdate branch
 {% sample lang="toml" %}
 ```toml
 enable   = false
