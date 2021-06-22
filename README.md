@@ -119,6 +119,7 @@ Global Flags:
 * **Freifunk Nord** uses [meshviewer](https://github.com/ffrgb/meshviewer) (commit 587740a) as frontend:  https://mesh.freifunknord.de/
 * **Freifunk Hannover** uses [Grafana](https://stats.ffh.zone), InfluxDB, and [Meshviewer](https://hannover.freifunk.net/karte/).
 * **Freifunk Rhein-Sieg e.V.** uses InfluxDB, [Grafana](https://grafana.freifunk-rhein-sieg.net/), [Meshviewer](https://map.freifunk-rhein-sieg.net/) - see [Github](https://github.com/Freifunk-Rhein-Sieg/Ansible-FFlo)
+* **Freifunk Ingolstadt** uses InfluxDB, [Grafana](https://grafana.freifunk-ingolstadt.de/), [Meshviewer](https://map.freifunk-ingolstadt.de/) - see https://git.bingo-ev.de/freifunk/mapserver-docker
 
 Do you know someone else using Yanic? Create a [pull request](https://github.com/FreifunkBremen/yanic/issues/new?template=community.md&title=Mention+community+$name)!
 
