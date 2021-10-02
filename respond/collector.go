@@ -5,6 +5,8 @@ import (
 	"net"
 	"time"
 
+	"golang.org/x/sys/unix"
+
 	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/data"
@@ -88,6 +90,20 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 		log.Panic(err)
 	}
 	conn.SetReadBuffer(MaxDataGramSize)
+
+	raw, err := conn.SyscallConn()
+	if err != nil {
+		log.Panic(err)
+	}
+	err = raw.Control(func(fd uintptr) {
+		err = unix.SetsockoptInt(int(fd), unix.IPPROTO_IPV6, unix.IPV6_MULTICAST_IF, ifaceInfo.Index)
+		if err != nil {
+			log.Panic(err)
+		}
+	})
+	if err != nil {
+		log.Panic(err)
+	}
 
 	coll.connections = append(coll.connections, multicastConn{
 		Conn:             conn,
