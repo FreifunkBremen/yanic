@@ -19,7 +19,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tidwall/gjson v1.6.5
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
-	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4 // indirect
+	golang.org/x/sys v0.0.0-20211002104244-808efd93c36d // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/fgrosse/graphigo.v2 v2.0.0-20151220153422-55a0a92a7030 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
