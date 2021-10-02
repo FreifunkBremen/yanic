@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # checks if every desired package has test files
 
 import os
@@ -15,7 +15,7 @@ for root, dirs, files in os.walk("."):
     continue
 
   # source files but not test files?
-  if len(filter(source_re.match, files)) > 0 and len(filter(test_re.match, files)) == 0:
+  if len(list(filter(source_re.match, files))) > 0 and len(list(filter(test_re.match, files))) == 0:
     print("no test files for {}".format(root))
     missing = True
 
