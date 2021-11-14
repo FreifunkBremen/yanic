@@ -40,6 +40,8 @@ ip_address = "fd2f:5119:f2d::5"
 #send_no_request = false
 # multicast address to destination of respondd
 # (optional - without definition used default ff05::2:1001)
+# Very old gluon uses "ff02::2:1001" as multicast, newer use ff05::2:1001. If you have old and new
+# gluon nodes on the same network, create a separate "respondd.interfaces" section for each mutlicast address.
 #multicast_address = "ff02::2:1001"
 # define a port to listen
 # if not set or set to 0 the kernel will use a random free port at its own
