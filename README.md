@@ -8,8 +8,7 @@ __   __          _
 Yet another node info collector
 ```
 
-[![CircleCI](https://circleci.com/gh/FreifunkBremen/yanic/tree/main.svg?style=shield)](https://circleci.com/gh/FreifunkBremen/yanic/tree/main)
-[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=main)](https://coveralls.io/github/FreifunkBremen/yanic?branch=main)
+[![Test, Lint](https://github.com/FreifunkBremen/yanic/actions/workflows/go.yml/badge.svg)](https://github.com/FreifunkBremen/yanic/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/FreifunkBremen/yanic/branch/main/graph/badge.svg)](https://codecov.io/gh/FreifunkBremen/yanic)
 [![Go Report Card](https://goreportcard.com/badge/github.com/FreifunkBremen/yanic)](https://goreportcard.com/report/github.com/FreifunkBremen/yanic)
 

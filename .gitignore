@@ -26,3 +26,5 @@ webroot
 /config.toml
 /vendor
 /bin
+coverage.html
+coverage.out
