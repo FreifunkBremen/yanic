@@ -6,7 +6,7 @@ import (
 
 	"github.com/bdlm/log"
 	"github.com/influxdata/influxdb1-client/models"
-	"github.com/influxdata/influxdb1-client/v2"
+	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/FreifunkBremen/yanic/database"
 )
@@ -62,8 +62,7 @@ func init() {
 	database.RegisterAdapter("influxdb", Connect)
 }
 func Connect(configuration map[string]interface{}) (database.Connection, error) {
-	var config Config
-	config = configuration
+	config := Config(configuration)
 
 	// Make client
 	c, err := client.NewHTTPClient(client.HTTPConfig{

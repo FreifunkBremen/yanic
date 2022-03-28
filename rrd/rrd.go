@@ -13,7 +13,7 @@ import (
 	"github.com/bdlm/log"
 )
 
-var linePattern = regexp.MustCompile("^<!-- ....-..-.. ..:..:.. [A-Z]+ / (\\d+) --> <row><v>([^<]+)</v><v>([^<]+)</v></row>")
+var linePattern = regexp.MustCompile(`^<!-- ....-..-.. ..:..:.. [A-Z]+ / (\\d+) --> <row><v>([^<]+)</v><v>([^<]+)</v></row>`)
 
 // Dataset a timestemp with values (node and clients)
 type Dataset struct {

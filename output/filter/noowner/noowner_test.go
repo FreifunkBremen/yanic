@@ -12,11 +12,12 @@ func TestFilter(t *testing.T) {
 	assert := assert.New(t)
 
 	// invalid config
-	filter, err := build("nope")
+	_, err := build("nope")
 	assert.Error(err)
 
 	// delete owner by configuration
-	filter, _ = build(true)
+	filter, err := build(true)
+	assert.NoError(err)
 	n := filter.Apply(&runtime.Node{Nodeinfo: &data.Nodeinfo{
 		Owner: &data.Owner{
 			Contact: "blub",

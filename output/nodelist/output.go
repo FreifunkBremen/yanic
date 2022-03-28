@@ -26,8 +26,7 @@ func init() {
 }
 
 func Register(configuration map[string]interface{}) (output.Output, error) {
-	var config Config
-	config = configuration
+	config := Config(configuration)
 
 	if path := config.Path(); path != "" {
 		return &Output{

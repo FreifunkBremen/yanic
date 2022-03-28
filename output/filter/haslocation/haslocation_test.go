@@ -12,11 +12,11 @@ func TestFilterHasLocation(t *testing.T) {
 	assert := assert.New(t)
 
 	// invalid config
-	filter, err := build(3)
+	_, err := build(3)
 	assert.Error(err)
 
 	// test to drop nodes without location
-	filter, err = build(true)
+	filter, err := build(true)
 	assert.NoError(err)
 
 	// node has location (with 0,0) -> keep it

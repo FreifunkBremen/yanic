@@ -7,6 +7,7 @@ package logging
  */
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -31,8 +32,7 @@ func init() {
 }
 
 func Connect(configuration map[string]interface{}) (database.Connection, error) {
-	var config Config
-	config = configuration
+	config := Config(configuration)
 
 	file, err := os.OpenFile(config.Path(), os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
@@ -63,6 +63,8 @@ func (conn *Connection) Close() {
 }
 
 func (conn *Connection) log(v ...interface{}) {
-	fmt.Println(v...)
-	conn.file.WriteString(fmt.Sprintln("[", time.Now().String(), "]", v))
+	_, err := fmt.Fprintf(conn.file, "[%s] %v", time.Now().String(), v)
+	if err != nil {
+		log.Println(err)
+	}
 }

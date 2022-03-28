@@ -165,8 +165,6 @@ func TestTransform(t *testing.T) {
 			assert.Equal("node:b:mac:lan", link.TargetAddress)
 			assert.Equal(float32(0.2), link.SourceTQ)
 			assert.Equal(float32(0), link.TargetTQ)
-			break
-
 		case "node:a:mac:wifi":
 			assert.Equal("wifi", link.Type)
 			assert.Equal("node:b:mac:wifi", link.TargetAddress)
@@ -177,7 +175,6 @@ func TestTransform(t *testing.T) {
 			assert.Equal("node:c:mac:lan", link.TargetAddress)
 			assert.Equal(float32(0.8), link.SourceTQ)
 			assert.Equal(float32(0.4), link.TargetTQ)
-			break
 		default:
 			assert.False(true, "invalid link.SourceAddress found")
 		}

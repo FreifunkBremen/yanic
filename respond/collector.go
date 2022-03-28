@@ -89,7 +89,9 @@ func (coll *Collector) listenUDP(iface InterfaceConfig) {
 	if err != nil {
 		log.Panic(err)
 	}
-	conn.SetReadBuffer(MaxDataGramSize)
+	if err := conn.SetReadBuffer(MaxDataGramSize); err != nil {
+		log.Println("failed to set read buffer:", err)
+	}
 
 	raw, err := conn.SyscallConn()
 	if err != nil {

@@ -56,7 +56,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 	now := jsontime.Now()
 
 	nodes.Lock()
-	node, _ := nodes.List[nodeID]
+	node := nodes.List[nodeID]
 
 	if node == nil {
 		node = &Node{
@@ -213,7 +213,7 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, warning bool) {
 		if addr == "" {
 			continue
 		}
-		if oldNodeID, _ := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
+		if oldNodeID := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
 			if oldNodeID != "" && warning {
 				log.Warnf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
 			}

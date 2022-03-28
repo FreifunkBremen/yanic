@@ -135,7 +135,7 @@ func TestSelectNodes(t *testing.T) {
 	})
 	assert.Len(selectedNodes, 1)
 	time := jsontime.Time{}
-	time.UnmarshalJSON([]byte("2017-03-10T12:12:01"))
+	assert.NoError(time.UnmarshalJSON([]byte("\"2017-03-10T12:12:01\"")))
 	assert.Equal(time, selectedNodes[0].Firstseen)
 }
 

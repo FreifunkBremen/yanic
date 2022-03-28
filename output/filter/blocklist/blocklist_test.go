@@ -14,9 +14,11 @@ func TestFilterBlocklist(t *testing.T) {
 	// invalid config
 	filter, err := build(3)
 	assert.Error(err)
+	assert.Nil(filter)
 
 	filter, err = build([]interface{}{2, "a"})
 	assert.Error(err)
+	assert.Nil(filter)
 
 	// tests with empty list
 	filter, err = build([]interface{}{})

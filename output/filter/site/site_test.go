@@ -12,13 +12,13 @@ func TestFilterSite(t *testing.T) {
 	assert := assert.New(t)
 
 	// invalid config
-	filter, err := build("ffhb")
+	_, err := build("ffhb")
 	assert.Error(err)
 
-	filter, err = build([]interface{}{3, "ffhb"})
+	_, err = build([]interface{}{3, "ffhb"})
 	assert.Error(err)
 
-	filter, err = build([]interface{}{"ffhb"})
+	filter, err := build([]interface{}{"ffhb"})
 	assert.NoError(err)
 
 	// wronge node

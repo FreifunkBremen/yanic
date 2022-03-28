@@ -45,8 +45,7 @@ func init() {
 }
 
 func Register(configuration map[string]interface{}) (output.Output, error) {
-	var config Config
-	config = configuration
+	config := Config(configuration)
 
 	builder := nodeFormats[config.Version()]
 	if builder == nil {

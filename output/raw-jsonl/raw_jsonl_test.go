@@ -9,11 +9,6 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-const (
-	testNodeDescription string = "Online\nClients: 42\nModel: TP-Link 841\n" +
-		"Site: mysite\nDomain: domain_42\n"
-)
-
 func TestTransform(t *testing.T) {
 	testNodes := createTestNodes()
 	result := transform(testNodes)

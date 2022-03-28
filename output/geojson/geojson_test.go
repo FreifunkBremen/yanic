@@ -9,11 +9,6 @@ import (
 	"github.com/FreifunkBremen/yanic/runtime"
 )
 
-const (
-	testNodeDescription string = "Online\nClients: 42\nModel: TP-Link 841\n" +
-		"Site: mysite\nDomain: domain_42\n"
-)
-
 func TestTransform(t *testing.T) {
 	testNodes := createTestNodes()
 	nodes := transform(testNodes)
@@ -41,7 +36,7 @@ func TestTransform(t *testing.T) {
 		nodePoint.Properties["clients"],
 	)
 	assert.Equal(
-		testNodeDescription,
+		"Online\nClients: 42\nModel: TP-Link 841\nSite: mysite\nDomain: domain_42\n",
 		nodePoint.Properties["description"],
 	)
 }

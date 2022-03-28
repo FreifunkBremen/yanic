@@ -2,6 +2,7 @@ package influxdb
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -15,7 +16,9 @@ import (
 func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 	for _, measurement := range []string{MeasurementNode, MeasurementLink} {
 		query := fmt.Sprintf("delete from %s where time < now() - %ds", measurement, deleteAfter/time.Second)
-		conn.client.Query(client.NewQuery(query, conn.config.Database(), "m"))
+		if _, err := conn.client.Query(client.NewQuery(query, conn.config.Database(), "m")); err != nil {
+			log.Println(err)
+		}
 	}
 
 }
@@ -197,6 +200,4 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 		conn.addPoint(MeasurementDHCP, tags, fields, time)
 	}
-
-	return
 }

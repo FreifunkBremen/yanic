@@ -38,8 +38,7 @@ func init() {
 }
 
 func Connect(configuration map[string]interface{}) (database.Connection, error) {
-	var config Config
-	config = configuration
+	config := Config(configuration)
 
 	conn, err := net.Dial(config.Type(), config.Address())
 	if err != nil {

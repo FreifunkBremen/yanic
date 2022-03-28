@@ -35,9 +35,7 @@ func (c Config) Prefix() string {
 }
 
 func Connect(configuration map[string]interface{}) (database.Connection, error) {
-	var config Config
-
-	config = configuration
+	config := Config(configuration)
 
 	con := &Connection{
 		client: graphigo.Client{

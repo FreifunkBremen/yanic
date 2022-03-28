@@ -38,7 +38,7 @@ func New(configs map[string]interface{}) (set Set, errs []error) {
 			return
 		}
 
-		f, _ := filters[name]
+		f := filters[name]
 		if f == nil {
 			errs = append(errs, fmt.Errorf("unknown filter: %s", name))
 		} else if filter, err := f(config); err != nil {
