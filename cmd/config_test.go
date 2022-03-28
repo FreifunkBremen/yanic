@@ -5,14 +5,16 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReadConfig(t *testing.T) {
 	assert := assert.New(t)
+	require := require.New(t)
 
 	config, err := ReadConfigFile("../config_example.toml")
-	assert.NoError(err)
-	assert.NotNil(config)
+	require.NoError(err)
+	require.NotNil(config)
 
 	assert.True(config.Respondd.Enable)
 	assert.Equal("br-ffhb", config.Respondd.Interfaces[0].InterfaceName)
@@ -26,7 +28,7 @@ func TestReadConfig(t *testing.T) {
 
 	// Test output plugins
 	assert.Len(config.Nodes.Output, 5)
-	outputs := config.Nodes.Output["meshviewer"].([]interface{})
+	outputs := config.Nodes.Output["meshviewer"].([]map[string]interface{})
 	assert.Len(outputs, 1)
 	meshviewer := outputs[0]
 
@@ -41,10 +43,8 @@ func TestReadConfig(t *testing.T) {
 	}, meshviewer)
 
 	_, err = ReadConfigFile("testdata/config_invalid.toml")
-	assert.Error(err, "not unmarshalable")
-	assert.Contains(err.Error(), "invalid TOML syntax")
+	assert.EqualError(err, "toml: line 2: expected '.' or '=', but got '\\n' instead")
 
 	_, err = ReadConfigFile("testdata/adsa.toml")
-	assert.Error(err, "not found able")
-	assert.Contains(err.Error(), "no such file or directory")
+	assert.EqualError(err, "open testdata/adsa.toml: no such file or directory")
 }

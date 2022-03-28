@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
-	"github.com/naoina/toml"
+	"github.com/BurntSushi/toml"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/respond"
@@ -40,12 +39,13 @@ func loadConfig() *Config {
 func ReadConfigFile(path string) (config *Config, err error) {
 	config = &Config{}
 
-	file, err := ioutil.ReadFile(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 
-	err = toml.Unmarshal(file, config)
+	_, err = toml.NewDecoder(file).Decode(config)
 	if err != nil {
 		return nil, err
 	}
