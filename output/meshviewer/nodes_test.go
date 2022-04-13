@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/data"
+	"yanic/runtime"
 )
 
 func TestNodesV1(t *testing.T) {

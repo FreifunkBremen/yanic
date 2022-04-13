@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/runtime"
 )
 
 // Graph a struct for all links between the nodes

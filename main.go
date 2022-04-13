@@ -6,7 +6,7 @@ import (
 	"github.com/bdlm/log"
 	stdLogger "github.com/bdlm/std/logger"
 
-	"github.com/FreifunkBremen/yanic/cmd"
+	"yanic/cmd"
 )
 
 type hook struct{}

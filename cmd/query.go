@@ -10,8 +10,8 @@ import (
 	"github.com/bdlm/log"
 	"github.com/spf13/cobra"
 
-	"github.com/FreifunkBremen/yanic/respond"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/respond"
+	"yanic/runtime"
 )
 
 var (

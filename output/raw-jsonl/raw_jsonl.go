@@ -1,9 +1,9 @@
 package jsonlines
 
 import (
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/lib/jsontime"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/data"
+	"yanic/lib/jsontime"
+	"yanic/runtime"
 )
 
 // RawNode struct

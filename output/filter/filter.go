@@ -6,7 +6,7 @@ import (
 	"github.com/bdlm/log"
 	"github.com/pkg/errors"
 
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/runtime"
 )
 
 // factory function for building a filter

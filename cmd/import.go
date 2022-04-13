@@ -4,9 +4,9 @@ import (
 	"github.com/bdlm/log"
 	"github.com/spf13/cobra"
 
-	allDatabase "github.com/FreifunkBremen/yanic/database/all"
-	"github.com/FreifunkBremen/yanic/rrd"
-	"github.com/FreifunkBremen/yanic/runtime"
+	allDatabase "yanic/database/all"
+	"yanic/rrd"
+	"yanic/runtime"
 )
 
 // importCmd represents the import command

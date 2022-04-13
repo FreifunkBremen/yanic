@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/runtime"
 	"github.com/paulmach/go.geojson"
 )
 

@@ -9,11 +9,11 @@ import (
 	"github.com/bdlm/log"
 	"github.com/spf13/cobra"
 
-	allDatabase "github.com/FreifunkBremen/yanic/database/all"
-	allOutput "github.com/FreifunkBremen/yanic/output/all"
-	"github.com/FreifunkBremen/yanic/respond"
-	"github.com/FreifunkBremen/yanic/runtime"
-	"github.com/FreifunkBremen/yanic/webserver"
+	allDatabase "yanic/database/all"
+	allOutput "yanic/output/all"
+	"yanic/respond"
+	"yanic/runtime"
+	"yanic/webserver"
 )
 
 // serveCmd represents the serve command

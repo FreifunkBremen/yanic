@@ -12,9 +12,9 @@ import (
 
 	"github.com/bdlm/log"
 
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/data"
+	"yanic/database"
+	"yanic/runtime"
 )
 
 type Connection struct {

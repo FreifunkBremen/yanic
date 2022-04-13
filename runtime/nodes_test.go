@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/lib/jsontime"
+	"yanic/data"
+	"yanic/lib/jsontime"
 )
 
 func TestExpire(t *testing.T) {

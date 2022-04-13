@@ -1,4 +1,4 @@
-module github.com/FreifunkBremen/yanic
+module yanic
 
 go 1.17
 

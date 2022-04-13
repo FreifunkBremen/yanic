@@ -6,7 +6,7 @@ import (
 	"github.com/bdlm/log"
 	"github.com/fgrosse/graphigo"
 
-	"github.com/FreifunkBremen/yanic/database"
+	"yanic/database"
 )
 
 const (

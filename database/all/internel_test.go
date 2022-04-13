@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/lib/duration"
+	"yanic/database"
+	"yanic/lib/duration"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,6 +1,6 @@
 package output
 
-import "github.com/FreifunkBremen/yanic/runtime"
+import "yanic/runtime"
 
 // Output interface to use for implementation in e.g. influxdb
 type Output interface {

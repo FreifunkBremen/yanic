@@ -6,10 +6,10 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/respond"
-	"github.com/FreifunkBremen/yanic/runtime"
-	"github.com/FreifunkBremen/yanic/webserver"
+	"yanic/database"
+	"yanic/respond"
+	"yanic/runtime"
+	"yanic/webserver"
 )
 
 // Config represents the whole configuration

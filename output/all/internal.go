@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/FreifunkBremen/yanic/output"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/output"
+	"yanic/runtime"
 )
 
 var quit chan struct{}

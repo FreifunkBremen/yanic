@@ -3,8 +3,8 @@ package meshviewerFFRGB
 import (
 	"time"
 
-	"github.com/FreifunkBremen/yanic/lib/jsontime"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/lib/jsontime"
+	"yanic/runtime"
 )
 
 type Meshviewer struct {

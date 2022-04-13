@@ -6,8 +6,8 @@ import (
 
 	"github.com/bdlm/log"
 
-	"github.com/FreifunkBremen/yanic/lib/jsontime"
-	"github.com/FreifunkBremen/yanic/runtime"
+	"yanic/lib/jsontime"
+	"yanic/runtime"
 )
 
 const (

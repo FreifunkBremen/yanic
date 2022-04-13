@@ -8,8 +8,8 @@ import (
 
 	"github.com/bdlm/log"
 
-	"github.com/FreifunkBremen/yanic/data"
-	"github.com/FreifunkBremen/yanic/lib/jsontime"
+	"yanic/data"
+	"yanic/lib/jsontime"
 )
 
 // Nodes struct: cache DB of Node's structs

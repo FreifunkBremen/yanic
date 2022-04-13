@@ -11,7 +11,7 @@ import (
 	"github.com/bdlm/log"
 	"github.com/tidwall/gjson"
 
-	"github.com/FreifunkBremen/yanic/data"
+	"yanic/data"
 )
 
 const (

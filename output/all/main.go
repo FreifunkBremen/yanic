@@ -1,10 +1,10 @@
 package all
 
 import (
-	_ "github.com/FreifunkBremen/yanic/output/geojson"
-	_ "github.com/FreifunkBremen/yanic/output/meshviewer"
-	_ "github.com/FreifunkBremen/yanic/output/meshviewer-ffrgb"
-	_ "github.com/FreifunkBremen/yanic/output/nodelist"
-	_ "github.com/FreifunkBremen/yanic/output/raw"
-	_ "github.com/FreifunkBremen/yanic/output/raw-jsonl"
+	_ "yanic/output/geojson"
+	_ "yanic/output/meshviewer"
+	_ "yanic/output/meshviewer-ffrgb"
+	_ "yanic/output/nodelist"
+	_ "yanic/output/raw"
+	_ "yanic/output/raw-jsonl"
 )
