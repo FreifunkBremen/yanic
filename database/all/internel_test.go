@@ -38,13 +38,13 @@ func TestStart(t *testing.T) {
 				},
 			},
 			"b": nil,
-			"c": []interface{}{
+			"c": []map[string]interface{}{
 				map[string]interface{}{
 					"path": "c1",
 				},
 			},
 			// fetch continue command in Connect
-			"d": []interface{}{
+			"d": []map[string]interface{}{
 				map[string]interface{}{
 					"path": "d0",
 				},
