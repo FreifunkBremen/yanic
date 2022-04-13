@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"yanic/data"
 	"yanic/runtime"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestStart(t *testing.T) {

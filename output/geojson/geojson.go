@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"yanic/runtime"
 	"github.com/paulmach/go.geojson"
+	"yanic/runtime"
 )
 
 const (

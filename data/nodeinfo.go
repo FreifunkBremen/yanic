@@ -44,8 +44,9 @@ type Owner struct {
 
 // System struct
 type System struct {
-	SiteCode   string `json:"site_code,omitempty"`
-	DomainCode string `json:"domain_code,omitempty"`
+	SiteCode          string `json:"site_code,omitempty"`
+	DomainCode        string `json:"domain_code,omitempty"`
+	PrimaryDomainCode string `json:"primary_domain_code,omitempty"`
 }
 
 // Location struct

@@ -3,8 +3,8 @@ package graphite
 import (
 	"time"
 
-	"yanic/runtime"
 	"github.com/fgrosse/graphigo"
+	"yanic/runtime"
 )
 
 func (c *Connection) InsertGlobals(stats *runtime.GlobalStats, time time.Time, site string, domain string) {

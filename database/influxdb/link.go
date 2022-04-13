@@ -3,8 +3,8 @@ package influxdb
 import (
 	"time"
 
-	"yanic/runtime"
 	models "github.com/influxdata/influxdb1-client/models"
+	"yanic/runtime"
 )
 
 // InsertLink adds a link data point

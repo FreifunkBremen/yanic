@@ -3,8 +3,8 @@ package graphite
 import (
 	"time"
 
-	"yanic/runtime"
 	"github.com/fgrosse/graphigo"
+	"yanic/runtime"
 )
 
 // PruneNode implementation of database

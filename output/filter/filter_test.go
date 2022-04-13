@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"yanic/data"
 	"yanic/runtime"
-	"github.com/stretchr/testify/assert"
 )
 
 type filterBool struct{ bool }

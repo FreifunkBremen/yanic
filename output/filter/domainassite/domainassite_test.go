@@ -3,9 +3,9 @@ package domainassite
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"yanic/data"
 	"yanic/runtime"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFilter(t *testing.T) {

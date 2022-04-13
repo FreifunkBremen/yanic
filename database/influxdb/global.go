@@ -3,8 +3,8 @@ package influxdb
 import (
 	"time"
 
-	"yanic/runtime"
 	"github.com/influxdata/influxdb1-client/models"
+	"yanic/runtime"
 )
 
 // InsertGlobals implementation of database

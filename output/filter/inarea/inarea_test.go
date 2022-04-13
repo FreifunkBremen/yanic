@@ -3,9 +3,9 @@ package inarea
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"yanic/data"
 	"yanic/runtime"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFilterInArea(t *testing.T) {

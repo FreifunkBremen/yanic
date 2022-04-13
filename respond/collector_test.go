@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"yanic/runtime"
 	"github.com/stretchr/testify/assert"
+	"yanic/runtime"
 )
 
 const (

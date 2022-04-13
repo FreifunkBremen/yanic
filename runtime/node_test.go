@@ -3,8 +3,8 @@ package runtime
 import (
 	"testing"
 
-	"yanic/data"
 	"github.com/stretchr/testify/assert"
+	"yanic/data"
 )
 
 func TestNode(t *testing.T) {

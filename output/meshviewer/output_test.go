@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"yanic/runtime"
 	"github.com/stretchr/testify/assert"
+	"yanic/runtime"
 )
 
 func TestOutput(t *testing.T) {

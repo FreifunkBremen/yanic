@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"yanic/database"
 	"yanic/lib/duration"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestStart(t *testing.T) {
@@ -39,13 +39,13 @@ func TestStart(t *testing.T) {
 			},
 			"b": nil,
 			"c": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"path": "c1",
 				},
 			},
 			// fetch continue command in Connect
 			"d": []map[string]interface{}{
-				map[string]interface{}{
+				{
 					"path": "d0",
 				},
 			},
