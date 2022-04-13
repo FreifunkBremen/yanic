@@ -3,9 +3,15 @@ package inarea
 import (
 	"testing"
 
+<<<<<<< HEAD
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/stretchr/testify/assert"
+=======
+	"github.com/stretchr/testify/assert"
+	"yanic/data"
+	"yanic/runtime"
+>>>>>>> 64b9cfe (add primary_domain_dode)
 )
 
 func TestFilterInArea(t *testing.T) {
