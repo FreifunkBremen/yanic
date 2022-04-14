@@ -1,13 +1,13 @@
 package prometheus_sd
 
 import (
-	"os"
 	"net"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"yanic/data"
-	"yanic/runtime"
+	"github.com/FreifunkBremen/yanic/data"
+	"github.com/FreifunkBremen/yanic/runtime"
 )
 
 func TestOutput(t *testing.T) {
