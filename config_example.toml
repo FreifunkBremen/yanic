@@ -158,6 +158,19 @@ path = "/var/www/html/meshviewer/data/nodelist.json"
 # WARNING: if it is not set, it will publish contact information of other persons
 no_owner = true
 
+# definition for prometheus-sd.json
+[[nodes.output.prometheus-sd]]
+enable  = true
+path    = "/var/www/html/meshviewer/data/prometheus-sd.json"
+# ip = lates recieved ip, node_id = node id from host
+target_address = "ip"
+
+# Labels of the data (optional)
+[nodes.output.prometheus-sd.labels]
+#labelname1 = "labelvalue 1"
+## some useful e.g.:
+#hosts   = "ffhb"
+#service = "yanic"
 
 # definition for raw.json
 [[nodes.output.raw]]
