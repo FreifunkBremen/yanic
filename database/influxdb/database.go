@@ -70,6 +70,7 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 		Username:           config.Username(),
 		Password:           config.Password(),
 		InsecureSkipVerify: config.InsecureSkipVerify(),
+		Timeout:            batchTimeout,
 	})
 
 	if err != nil {
