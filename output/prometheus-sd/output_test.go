@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/FreifunkBremen/yanic/data"
 	"github.com/FreifunkBremen/yanic/runtime"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestOutput(t *testing.T) {
