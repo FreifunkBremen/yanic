@@ -30,6 +30,24 @@ const (
 	TargetAddressNodeID TargetAddressType = "node_id"
 )
 
+type TargetAddressFunc func(*runtime.Node) string
+
+var TargetAddressTypeFuncs = map[TargetAddressType]TargetAddressFunc{
+	TargetAddressIP: func(n *runtime.Node) string {
+		if addr := n.Address; addr != nil {
+			return addr.IP.String()
+
+		}
+		return ""
+	},
+	TargetAddressNodeID: func(n *runtime.Node) string {
+		if ni := n.Nodeinfo; ni != nil {
+			return ni.NodeID
+		}
+		return ""
+	},
+}
+
 func (c Config) TargetAddress() TargetAddressType {
 	if v, ok := c["target_address"]; ok {
 		return TargetAddressType(v.(string))
@@ -67,27 +85,67 @@ type Targets struct {
 	Labels  map[string]interface{} `json:"labels,omitempty"`
 }
 
+func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc TargetAddressFunc) *Targets {
+	target := targetFunc(n)
+	if target == "" {
+		return nil
+	}
+
+	labels := map[string]interface{}{}
+	for k, v := range defaultLabels {
+		labels[k] = v
+	}
+	if ni := n.Nodeinfo; ni != nil {
+		labels["node_id"] = ni.NodeID
+		labels["hostname"] = ni.Hostname
+		// model
+		if model := ni.Hardware.Model; model != "" {
+			labels["model"] = model
+		}
+		// system
+		if siteCode := ni.System.SiteCode; siteCode != "" {
+			labels["site_code"] = siteCode
+		}
+		if domainCode := ni.System.DomainCode; domainCode != "" {
+			labels["domain_code"] = domainCode
+		}
+		if primaryDomainCode := ni.System.PrimaryDomainCode; primaryDomainCode != "" {
+			labels["primary_domain_code"] = primaryDomainCode
+		}
+
+		// owner
+		if owner := ni.Owner; owner != nil {
+			labels["owner"] = owner.Contact
+		}
+
+		// wireless - airtime
+		if wifi := ni.Wireless; wifi != nil {
+			labels["wifi_txpower24"] = wifi.TxPower24
+			labels["wifi_channel24"] = wifi.Channel24
+			labels["wifi_txpower5"] = wifi.TxPower5
+			labels["wifi_channel5"] = wifi.Channel5
+		}
+	}
+	return &Targets{
+		Targets: []string{target},
+		Labels:  labels,
+	}
+}
+
 func (o *Output) Save(nodes *runtime.Nodes) {
 	nodes.RLock()
 	defer nodes.RUnlock()
 
-	targets := &Targets{
-		Targets: []string{},
-		Labels:  o.labels,
+	targetFunc, ok := TargetAddressTypeFuncs[o.targetType]
+	if !ok {
+		return
 	}
-	if o.targetType == TargetAddressNodeID {
-		for _, n := range nodes.List {
-			if ni := n.Nodeinfo; ni != nil {
-				targets.Targets = append(targets.Targets, ni.NodeID)
-			}
-		}
-	} else {
-		for _, n := range nodes.List {
-			if addr := n.Address; addr != nil {
-				targets.Targets = append(targets.Targets, addr.IP.String())
-			}
+	targets := []*Targets{}
+	for _, n := range nodes.List {
+		if t := toTargets(n, o.labels, targetFunc); t != nil {
+			targets = append(targets, t)
 		}
 	}
 
-	runtime.SaveJSON([]interface{}{targets}, o.path)
+	runtime.SaveJSON(targets, o.path)
 }
