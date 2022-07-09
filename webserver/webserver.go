@@ -8,10 +8,10 @@ import (
 )
 
 // New creates a new webserver and starts it
-func New(bindAddr, webroot string) *http.Server {
+func New(config Config) *http.Server {
 	return &http.Server{
-		Addr:    bindAddr,
-		Handler: gziphandler.GzipHandler(http.FileServer(http.Dir(webroot))),
+		Addr:    config.Bind,
+		Handler: gziphandler.GzipHandler(http.FileServer(http.Dir(config.Webroot))),
 	}
 }
 

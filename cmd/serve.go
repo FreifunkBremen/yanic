@@ -14,6 +14,7 @@ import (
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/runtime"
 	"github.com/FreifunkBremen/yanic/webserver"
+	"github.com/FreifunkBremen/yanic/webserver/prometheus"
 )
 
 // serveCmd represents the serve command
@@ -39,13 +40,6 @@ var serveCmd = &cobra.Command{
 		}
 		defer allOutput.Close()
 
-		if config.Webserver.Enable {
-			log.Infof("starting webserver on %s", config.Webserver.Bind)
-			srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
-			go webserver.Start(srv)
-			defer srv.Close()
-		}
-
 		if config.Respondd.Enable {
 			// Delaying startup to start at a multiple of `duration` since the zero time.
 			if duration := config.Respondd.Synchronize.Duration; duration > 0 {
@@ -58,6 +52,22 @@ var serveCmd = &cobra.Command{
 			collector = respond.NewCollector(allDatabase.Conn, nodes, &config.Respondd)
 			collector.Start(config.Respondd.CollectInterval.Duration)
 			defer collector.Close()
+		}
+
+		if config.Webserver.Enable {
+			log.Infof("starting webserver on %s", config.Webserver.Bind)
+			srv := webserver.New(config.Webserver)
+			go webserver.Start(srv)
+			if config.Webserver.Prometheus.Enable {
+				if config.Respondd.Enable {
+					prometheus.CreateExporter(config.Webserver.Prometheus, srv, collector, nodes)
+				} else {
+					log.Panic("to use prometheus exporter, please enable [respondd].")
+				}
+			}
+			defer srv.Close()
+		} else if config.Webserver.Prometheus.Enable {
+			log.Panic("to use prometheus exporter, please enable [webserver].")
 		}
 
 		// Wait for INT/TERM
