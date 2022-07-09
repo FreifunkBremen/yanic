@@ -103,7 +103,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 				}
 				// LLDP
 				for _, neighbours := range neighbours.LLDP {
-					for targetAddress := range neighbours {
+					for _, targetAddress := range neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
 							builder.addLink(targetID, sourceID, 255, false)
 						}

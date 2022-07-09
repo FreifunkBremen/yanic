@@ -151,6 +151,20 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 			}
 		}
 	}
+	for portmac, neighmacs := range neighbours.LLDP {
+		for _, neighmac := range neighmacs {
+			if neighbourID := nodes.ifaceToNodeID[neighmac]; neighbourID != "" {
+				result = append(result, Link{
+					SourceID:      neighbours.NodeID,
+					SourceAddress: portmac,
+					TargetID:      neighbourID,
+					TargetAddress: neighmac,
+					// TODO maybe change LLDP for link quality / 100M or 1GE
+					TQ: 1.0,
+				})
+			}
+		}
+	}
 	return result
 }
 

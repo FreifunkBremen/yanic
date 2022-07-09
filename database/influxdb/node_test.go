@@ -98,7 +98,7 @@ func TestToInflux(t *testing.T) {
 					},
 				},
 			},
-			LLDP: map[string]data.LLDPNeighbours{
+			LLDP: map[string][]string{
 				"b-interface-mac": {},
 			},
 		},

@@ -4,7 +4,7 @@ package data
 type Neighbours struct {
 	Batadv map[string]BatadvNeighbours `json:"batadv"`
 	Babel  map[string]BabelNeighbours  `json:"babel"`
-	LLDP   map[string]LLDPNeighbours   `json:"lldp"`
+	LLDP   map[string][]string         `json:"lldp"`
 	//WifiNeighbours map[string]WifiNeighbours   `json:"wifi"`
 	NodeID string `json:"node_id"`
 }
@@ -20,12 +20,6 @@ type WifiLink struct {
 type BatmanLink struct {
 	Lastseen float64 `json:"lastseen"`
 	Tq       int     `json:"tq"`
-}
-
-// LLDPLink struct
-type LLDPLink struct {
-	Name        string `json:"name"`
-	Description string `json:"descr"`
 }
 
 // BabelLink struct
@@ -53,6 +47,3 @@ type BabelNeighbours struct {
 type WifiNeighbours struct {
 	Neighbours map[string]WifiLink `json:"neighbours"`
 }
-
-// LLDPNeighbours struct
-type LLDPNeighbours map[string]LLDPLink
