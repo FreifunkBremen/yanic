@@ -2,6 +2,7 @@ package prometheus_sd
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/FreifunkBremen/yanic/output"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -81,8 +82,8 @@ func Register(configuration map[string]interface{}) (output.Output, error) {
 }
 
 type Targets struct {
-	Targets []string               `json:"targets"`
-	Labels  map[string]interface{} `json:"labels,omitempty"`
+	Targets []string          `json:"targets"`
+	Labels  map[string]string `json:"labels,omitempty"`
 }
 
 func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc TargetAddressFunc) *Targets {
@@ -91,9 +92,10 @@ func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc
 		return nil
 	}
 
-	labels := map[string]interface{}{}
+	labels := map[string]string{}
 	for k, v := range defaultLabels {
-		labels[k] = v
+		vS := v.(string)
+		labels[k] = vS
 	}
 	if ni := n.Nodeinfo; ni != nil {
 		labels["node_id"] = ni.NodeID
@@ -120,10 +122,10 @@ func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc
 
 		// wireless - airtime
 		if wifi := ni.Wireless; wifi != nil {
-			labels["wifi_txpower24"] = wifi.TxPower24
-			labels["wifi_channel24"] = wifi.Channel24
-			labels["wifi_txpower5"] = wifi.TxPower5
-			labels["wifi_channel5"] = wifi.Channel5
+			labels["wifi_txpower24"] = strconv.Itoa(int(wifi.TxPower24))
+			labels["wifi_channel24"] = strconv.Itoa(int(wifi.Channel24))
+			labels["wifi_txpower5"] = strconv.Itoa(int(wifi.TxPower5))
+			labels["wifi_channel5"] = strconv.Itoa(int(wifi.Channel5))
 		}
 	}
 	return &Targets{
