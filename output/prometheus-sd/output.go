@@ -2,6 +2,7 @@ package prometheus_sd
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/FreifunkBremen/yanic/output"
@@ -118,6 +119,12 @@ func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc
 		// owner
 		if owner := ni.Owner; owner != nil {
 			labels["owner"] = owner.Contact
+		}
+
+		// location
+		if location := ni.Location; location != nil {
+			labels["latitude"] = fmt.Sprintf("%v", location.Latitude)
+			labels["longitude"] = fmt.Sprintf("%v", location.Longitude)
 		}
 
 		// wireless - airtime
