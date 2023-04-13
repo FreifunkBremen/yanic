@@ -59,18 +59,6 @@ func TestOutput(t *testing.T) {
 		},
 	})
 
-	// IP
-	out, err = Register(map[string]interface{}{
-		"path": "/tmp/prometheus_sd.json",
-	})
-	os.Remove("/tmp/prometheus_sd.json")
-	assert.NoError(err)
-	assert.NotNil(out)
-
-	out.Save(nodes)
-	_, err = os.Stat("/tmp/prometheus_sd.json")
-	assert.NoError(err)
-
 	// NodeID
 	out, err = Register(map[string]interface{}{
 		"target_address": "node_id",
@@ -87,4 +75,30 @@ func TestOutput(t *testing.T) {
 	out.Save(nodes)
 	_, err = os.Stat("/tmp/prometheus_sd.json")
 	assert.NoError(err)
+
+	// IP
+	out, err = Register(map[string]interface{}{
+		"path": "/tmp/prometheus_sd.json",
+	})
+	os.Remove("/tmp/prometheus_sd.json")
+	assert.NoError(err)
+	assert.NotNil(out)
+
+	out.Save(nodes)
+	_, err = os.Stat("/tmp/prometheus_sd.json")
+	assert.NoError(err)
+
+	// IP-Publish
+	out, err = Register(map[string]interface{}{
+		"path":           "/tmp/prometheus_sd.json",
+		"target_address": "ip-publish",
+	})
+	os.Remove("/tmp/prometheus_sd.json")
+	assert.NoError(err)
+	assert.NotNil(out)
+
+	out.Save(nodes)
+	_, err = os.Stat("/tmp/prometheus_sd.json")
+	assert.NoError(err)
+
 }

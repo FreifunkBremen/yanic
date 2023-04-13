@@ -3,6 +3,7 @@ package prometheus_sd
 import (
 	"errors"
 	"fmt"
+	"net"
 	"strconv"
 
 	"github.com/FreifunkBremen/yanic/output"
@@ -28,25 +29,38 @@ func (c Config) Path() string {
 type TargetAddressType string
 
 const (
-	TargetAddressIP     TargetAddressType = "ip"
-	TargetAddressNodeID TargetAddressType = "node_id"
+	TargetAddressNodeID    TargetAddressType = "node_id"
+	TargetAddressIP        TargetAddressType = "ip"
+	TargetAddressIPPublish TargetAddressType = "ip-publish"
 )
 
-type TargetAddressFunc func(*runtime.Node) string
+type TargetAddressFunc func(*runtime.Node) []string
 
 var TargetAddressTypeFuncs = map[TargetAddressType]TargetAddressFunc{
-	TargetAddressIP: func(n *runtime.Node) string {
+	TargetAddressNodeID: func(n *runtime.Node) []string {
+		if ni := n.Nodeinfo; ni != nil {
+			return []string{ni.NodeID}
+		}
+		return []string{}
+	},
+	TargetAddressIP: func(n *runtime.Node) []string {
 		if addr := n.Address; addr != nil {
-			return addr.IP.String()
+			return []string{addr.IP.String()}
 
 		}
-		return ""
+		return []string{}
 	},
-	TargetAddressNodeID: func(n *runtime.Node) string {
-		if ni := n.Nodeinfo; ni != nil {
-			return ni.NodeID
+	TargetAddressIPPublish: func(n *runtime.Node) []string {
+		addresses := []string{}
+		if nodeinfo := n.Nodeinfo; nodeinfo != nil {
+			for _, addr := range nodeinfo.Network.Addresses {
+				if net.ParseIP(addr).IsGlobalUnicast() {
+					addresses = append(addresses, addr)
+				}
+			}
+
 		}
-		return ""
+		return addresses
 	},
 }
 
@@ -89,7 +103,7 @@ type Targets struct {
 
 func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc TargetAddressFunc) *Targets {
 	target := targetFunc(n)
-	if target == "" {
+	if len(target) <= 0 {
 		return nil
 	}
 
@@ -136,7 +150,7 @@ func toTargets(n *runtime.Node, defaultLabels map[string]interface{}, targetFunc
 		}
 	}
 	return &Targets{
-		Targets: []string{target},
+		Targets: target,
 		Labels:  labels,
 	}
 }
