@@ -27,7 +27,7 @@ with open(yanic_db_path, encoding='UTF-8') as handle:
 
 total = 0
 updated = 0
-yanic_date_format = '%Y-%m-%dT%H:%M:%S+0000'
+yanic_date_format = '%Y-%m-%dT%H:%M:%S%z'
 v1_date_format = '%Y-%m-%dT%H:%M:%S.%f'  # 2017-05-31T18:30:19.759610
 v2_date_format = '%Y-%m-%dT%H:%M:%S.%fZ'  # 2015-08-22T16:05:02.000Z
 version = legacy_db['version']
@@ -39,7 +39,7 @@ if version == 1:
     legacy_date_format = v1_date_format    # ffmap-backend
 elif version == 2:
     legacy_date_format = v2_date_format    # hopglass
-    fallback_date_format = v1_date_format  # ffmap-backend
+    fallback_date_format = yanic_date_format  # other yanic
 else:
     print('unhandled nodes.json version number!', file=sys.stderr)
     sys.exit(1)
