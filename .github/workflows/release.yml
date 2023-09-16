@@ -1,7 +1,10 @@
 
 name: Release
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "Test, Lint"
+    types: [ "completed" ]
     branches:
       - main
       - rc
