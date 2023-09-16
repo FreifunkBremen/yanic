@@ -41,9 +41,9 @@ func GlobalStatsFields(name string, stats *runtime.GlobalStats) []graphigo.Metri
 		{Name: name + ".clients.wifi", Value: stats.ClientsWifi},
 		{Name: name + ".clients.wifi24", Value: stats.ClientsWifi24},
 		{Name: name + ".clients.wifi5", Value: stats.ClientsWifi5},
-		{Name: name + ".clients.owe", Value: stats.ClientsOwe},
-		{Name: name + ".clients.owe24", Value: stats.ClientsOwe24},
-		{Name: name + ".clients.owe5", Value: stats.ClientsOwe5},
+		{Name: name + ".clients.owe", Value: stats.ClientsOWE},
+		{Name: name + ".clients.owe24", Value: stats.ClientsOWE24},
+		{Name: name + ".clients.owe5", Value: stats.ClientsOWE5},
 	}
 }
 

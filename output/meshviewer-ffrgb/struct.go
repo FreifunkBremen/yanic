@@ -22,6 +22,9 @@ type Node struct {
 	ClientsWifi24  uint32                 `json:"clients_wifi24"`
 	ClientsWifi5   uint32                 `json:"clients_wifi5"`
 	ClientsOthers  uint32                 `json:"clients_other"`
+	ClientsOWE     uint32                 `json:"clients_owe"`
+	ClientsOWE24   uint32                 `json:"clients_owe24"`
+	ClientsOWE5    uint32                 `json:"clients_owe5"`
 	RootFSUsage    float64                `json:"rootfs_usage"`
 	LoadAverage    float64                `json:"loadavg"`
 	MemoryUsage    *float64               `json:"memory_usage,omitempty"`
