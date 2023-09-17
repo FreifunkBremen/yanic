@@ -173,7 +173,9 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		fields["airtime"+suffix+".frequency"] = airtime.Frequency
 		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
-
+	// Add selected gateway mac as tag
+	tags.SetString("gateway", stats.GatewayIPv4)
+	tags.SetString("gateway6", stats.GatewayIPv6)
 	conn.addPoint(MeasurementNode, tags, fields, time)
 
 	// Add DHCP statistics
