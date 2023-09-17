@@ -8,10 +8,8 @@
       |_|\__,_|_| |_|_|\___|
     Yet another node info collector
 
-(previously [respond-collector](https://github.com/FreifunkBremen/respond-collector))
 
-[![Build Status](https://travis-ci.org/FreifunkBremen/yanic.svg?branch=main)](https://travis-ci.org/FreifunkBremen/yanic)
-[![Coverage Status](https://coveralls.io/repos/github/FreifunkBremen/yanic/badge.svg?branch=main)](https://coveralls.io/github/FreifunkBremen/yanic?branch=main)
+[![Test, Lint](https://github.com/FreifunkBremen/yanic/actions/workflows/go.yml/badge.svg)](https://github.com/FreifunkBremen/yanic/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/FreifunkBremen/yanic/branch/main/graph/badge.svg)](https://codecov.io/gh/FreifunkBremen/yanic)
 [![Go Report Card](https://goreportcard.com/badge/github.com/FreifunkBremen/yanic)](https://goreportcard.com/report/github.com/FreifunkBremen/yanic)
 

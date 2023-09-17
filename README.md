@@ -22,7 +22,7 @@ In the first step Yanic sends a multicast message to the group `ff05::2:1001` an
 Recently seen nodes that does not reply are requested via a unicast message.
 
 ## Documentation
-Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/main/SUMMARY.md) or [Gitbook](https://freifunkbremen.gitbooks.io/yanic/content/)
+Take a look at the [git](https://github.com/FreifunkBremen/yanic/blob/main/SUMMARY.md) or [website](https://freifunkbremen.github.io/yanic/)
 
 # Installation
 Take a look into the Documentation (see above) or for Quick Overview in [INSTALL.md](INSTALL.md).

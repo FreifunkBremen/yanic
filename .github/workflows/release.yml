@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - "Test, Lint"
+      - "Docs"
     types: [ "completed" ]
     branches:
       - main

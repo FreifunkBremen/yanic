@@ -26,13 +26,13 @@ Flags:
 ### Firstseen
 To import firstseen values there is a little script in contrib:
 
-```
+```sh
 /opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s state.json /var/lib/yanic/state.json
 ```
 
 On a productive system @ once:
 
-```
+```sh
 systemctl stop yanic; cp /var/lib/yanic/state.json /var/lib/yanic/state.bak; /opt/go/src/github.com/FreifunkBremen/yanic/contrib/yanic-import-timestamp -n path/to/nodes_old.json -s /var/lib/yanic/state.json; systemctl start yanic;
 ```
 
@@ -53,7 +53,7 @@ Flags:
   -h, --help            help for serve
 ```
 
-or run as [daemon]({{site.baseurl}}/docs/install.html)
+or run as [daemon](install.md)
 
 
 ## Query

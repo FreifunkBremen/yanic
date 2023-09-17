@@ -22,4 +22,5 @@ List of communities:
 [https://github.com/genofire/meshviewer-collector](https://github.com/genofire/meshviewer-collector/blob/master/config.toml)
 
 Meshviewer with colleced data:
-[https://web.fireorbit.de/meshviewer](https://web.fireorbit.de/meshviewer).
+[multi.meshviewer.org](https://multi.meshviewer.org/)
+Status: [data.meshviewer.org/collector](https://data.meshviewer.org/collector/).
