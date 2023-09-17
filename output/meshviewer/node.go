@@ -30,8 +30,10 @@ type Statistics struct {
 	MemoryUsage *float64 `json:"memory_usage,omitempty"`
 	Uptime      float64  `json:"uptime,omitempty"`
 	Idletime    float64  `json:"idletime,omitempty"`
+	GatewayNexthop string `json:"gateway_nexthop,omitempty"`
 	GatewayIPv4 string   `json:"gateway,omitempty"`
 	GatewayIPv6 string   `json:"gateway6,omitempty"`
+	GatewayTQ   float64  `json:"gateway_tq,omitempty"`
 	Processes   struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
@@ -52,6 +54,7 @@ func NewStatistics(stats *data.Statistics, isOnline bool) *Statistics {
 		NodeID:      stats.NodeID,
 		GatewayIPv4: stats.GatewayIPv4,
 		GatewayIPv6: stats.GatewayIPv6,
+		GatewayTQ: stats.GatewayTQ,
 		RootFsUsage: stats.RootFsUsage,
 		LoadAverage: stats.LoadAverage,
 		Uptime:      stats.Uptime,

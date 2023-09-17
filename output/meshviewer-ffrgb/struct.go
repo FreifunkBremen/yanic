@@ -32,6 +32,7 @@ type Node struct {
 	GatewayNexthop string                 `json:"gateway_nexthop,omitempty"`
 	GatewayIPv4    string                 `json:"gateway,omitempty"`
 	GatewayIPv6    string                 `json:"gateway6,omitempty"`
+	GatewayTQ      float64                `json:"gateway_tq,omitempty"`
 	NodeID         string                 `json:"node_id"`
 	MAC            string                 `json:"mac"`
 	Addresses      []string               `json:"addresses"`
@@ -120,6 +121,9 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 			node.Clients = statistic.Clients.Total
 			node.ClientsWifi24 = statistic.Clients.Wifi24
 			node.ClientsWifi5 = statistic.Clients.Wifi5
+			node.ClientsOWE = statistic.Clients.Owe
+			node.ClientsOWE24 = statistic.Clients.Owe24
+			node.ClientsOWE5 = statistic.Clients.Owe5
 
 			clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
 			if node.Clients == 0 {

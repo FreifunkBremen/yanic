@@ -18,6 +18,7 @@ type Statistics struct {
 	GatewayIPv4    string  `json:"gateway,omitempty"`
 	GatewayIPv6    string  `json:"gateway6,omitempty"`
 	GatewayNexthop string  `json:"gateway_nexthop,omitempty"`
+	GatewayTQ      float64 `json:"gateway_tq,omitempty"`
 	Processes      struct {
 		Total   uint32 `json:"total"`
 		Running uint32 `json:"running"`
