@@ -32,14 +32,16 @@ Nodes (respondd for nodes): [gluon](https://github.com/freifunk-gluon/gluon/)
 
 * [InfluxDB](https://influxdata.com/) SQL-like timeserial database
 * [Graphite](https://graphiteapp.org/) RRD file Based
+* and more
 
-	Visualization from Databases: [Grafana](https://grafana.com/)
+Visualization from Databases: [Grafana](https://grafana.com/)
 
 **Output:**
+
 * meshviewer-ffrgb:
-  * [meshviewer](https://github.com/ffrgb/meshviewer)
+    * [meshviewer](https://github.com/ffrgb/meshviewer)
 * nodelist:
-  * [ffapi](https://freifunk.net/api-generator/)
-    * [freifunk-karte.de](https://freifunk-karte.de)
+    * [ffapi](https://freifunk.net/api-generator/)
+        * [freifunk-karte.de](https://freifunk-karte.de)
 * meshviewer (others):
-  *  unmaintained [origin meshviewer](https://github.com/ffnord/meshviewer) branch: master (v1) and dev (v2)
+    *  unmaintained [origin meshviewer](https://github.com/ffnord/meshviewer) branch: master (v1) and dev (v2)
