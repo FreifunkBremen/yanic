@@ -1,7 +1,7 @@
 package respond
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -34,7 +34,7 @@ func TestParse(t *testing.T) {
 	assert := assert.New(t)
 
 	// read testdata
-	compressed, err := ioutil.ReadFile("testdata/nodeinfo.flated")
+	compressed, err := os.ReadFile("testdata/nodeinfo.flated")
 	assert.Nil(err)
 
 	res := &Response{
@@ -53,7 +53,7 @@ func TestParseCustomFields(t *testing.T) {
 	assert := assert.New(t)
 
 	// read testdata
-	compressed, err := ioutil.ReadFile("testdata/nodeinfo.flated")
+	compressed, err := os.ReadFile("testdata/nodeinfo.flated")
 	assert.Nil(err)
 
 	res := &Response{
@@ -80,7 +80,7 @@ func TestParseCustomFieldNotExistant(t *testing.T) {
 	assert := assert.New(t)
 
 	// read testdata
-	compressed, err := ioutil.ReadFile("testdata/nodeinfo.flated")
+	compressed, err := os.ReadFile("testdata/nodeinfo.flated")
 	assert.Nil(err)
 
 	res := &Response{

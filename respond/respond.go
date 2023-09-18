@@ -5,7 +5,6 @@ import (
 	"compress/flate"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net"
 
 	"github.com/bdlm/log"
@@ -56,7 +55,7 @@ func (res *Response) parse(customFields []CustomFieldConfig) (*data.ResponseData
 	deflater := flate.NewReader(bytes.NewReader(res.Raw))
 	defer deflater.Close()
 
-	jsonData, err := ioutil.ReadAll(deflater)
+	jsonData, err := io.ReadAll(deflater)
 	if err != nil && err != io.ErrUnexpectedEOF {
 		return nil, err
 	}

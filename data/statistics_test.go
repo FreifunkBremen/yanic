@@ -2,7 +2,7 @@ package data
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,7 +26,7 @@ func TestStatistics(t *testing.T) {
 }
 
 func testfile(name string, obj interface{}) {
-	file, err := ioutil.ReadFile("testdata/" + name)
+	file, err := os.ReadFile("testdata/" + name)
 	if err != nil {
 		panic(err)
 	}

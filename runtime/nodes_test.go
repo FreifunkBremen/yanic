@@ -1,7 +1,6 @@
 package runtime
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -65,7 +64,7 @@ func TestLoadAndSave(t *testing.T) {
 	config.StatePath = "testdata/nodes.json"
 	nodes.load()
 
-	tmpfile, _ := ioutil.TempFile("/tmp", "nodes")
+	tmpfile, _ := os.CreateTemp("/tmp", "nodes")
 	config.StatePath = tmpfile.Name()
 	nodes.save()
 	os.Remove(tmpfile.Name())
@@ -75,7 +74,7 @@ func TestLoadAndSave(t *testing.T) {
 		// "open /proc/a.tmp: permission denied",
 	})
 
-	tmpfile, _ = ioutil.TempFile("/tmp", "nodes")
+	tmpfile, _ = os.CreateTemp("/tmp", "nodes")
 	assert.Panics(func() {
 		SaveJSON(tmpfile.Name, tmpfile.Name())
 		// "json: unsupported type: func() string",

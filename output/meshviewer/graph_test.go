@@ -2,7 +2,7 @@ package meshviewer
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,7 +56,7 @@ func testGetNodeByFile(filename string) *runtime.Node {
 }
 
 func testfile(name string, obj interface{}) {
-	file, err := ioutil.ReadFile("../../runtime/testdata/" + name)
+	file, err := os.ReadFile("../../runtime/testdata/" + name)
 	if err != nil {
 		panic(err)
 	}
