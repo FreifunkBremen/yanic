@@ -38,12 +38,12 @@ func TestTransform(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:a:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:wifi": {Tq: 153},
+						"node:b:mac:wifi": {TQ: 153},
 					},
 				},
 				"node:a:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:lan": {Tq: 51},
+						"node:b:mac:lan": {TQ: 51},
 					},
 				},
 			},
@@ -73,7 +73,7 @@ func TestTransform(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:c:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:lan": {Tq: 102},
+						"node:b:mac:lan": {TQ: 102},
 					},
 				},
 			},
@@ -104,12 +104,12 @@ func TestTransform(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:b:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:c:mac:lan": {Tq: 204},
+						"node:c:mac:lan": {TQ: 204},
 					},
 				},
 				"node:b:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:a:mac:wifi": {Tq: 204},
+						"node:a:mac:wifi": {TQ: 204},
 					},
 				},
 			},
@@ -140,12 +140,12 @@ func TestTransform(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:d:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:c:mac:lan": {Tq: 204},
+						"node:c:mac:lan": {TQ: 204},
 					},
 				},
 				"node:d:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:a:mac:wifi": {Tq: 204},
+						"node:a:mac:wifi": {TQ: 204},
 					},
 				},
 			},

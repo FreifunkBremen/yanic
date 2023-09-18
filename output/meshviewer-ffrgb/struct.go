@@ -22,6 +22,9 @@ type Node struct {
 	ClientsWifi24  uint32                 `json:"clients_wifi24"`
 	ClientsWifi5   uint32                 `json:"clients_wifi5"`
 	ClientsOthers  uint32                 `json:"clients_other"`
+	ClientsOWE     uint32                 `json:"clients_owe"`
+	ClientsOWE24   uint32                 `json:"clients_owe24"`
+	ClientsOWE5    uint32                 `json:"clients_owe5"`
 	RootFSUsage    float64                `json:"rootfs_usage"`
 	LoadAverage    float64                `json:"loadavg"`
 	MemoryUsage    *float64               `json:"memory_usage,omitempty"`
@@ -29,6 +32,7 @@ type Node struct {
 	GatewayNexthop string                 `json:"gateway_nexthop,omitempty"`
 	GatewayIPv4    string                 `json:"gateway,omitempty"`
 	GatewayIPv6    string                 `json:"gateway6,omitempty"`
+	GatewayTQ      float64                `json:"gateway_tq,omitempty"`
 	NodeID         string                 `json:"node_id"`
 	MAC            string                 `json:"mac"`
 	Addresses      []string               `json:"addresses"`
@@ -117,6 +121,9 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 			node.Clients = statistic.Clients.Total
 			node.ClientsWifi24 = statistic.Clients.Wifi24
 			node.ClientsWifi5 = statistic.Clients.Wifi5
+			node.ClientsOWE = statistic.Clients.OWE
+			node.ClientsOWE24 = statistic.Clients.OWE24
+			node.ClientsOWE5 = statistic.Clients.OWE5
 
 			clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
 			if node.Clients == 0 {

@@ -97,7 +97,7 @@ func (builder *graphBuilder) readNodes(nodes map[string]*runtime.Node) {
 					for targetAddress, link := range batadvNeighbours.Neighbours {
 						if targetID, found := builder.macToID[targetAddress]; found {
 							_, vpn := vpnInterface[sourceMAC]
-							builder.addLink(targetID, sourceID, link.Tq, vpn)
+							builder.addLink(targetID, sourceID, link.TQ, vpn)
 						}
 					}
 				}
@@ -159,7 +159,7 @@ func (builder *graphBuilder) extract() ([]*GraphNode, []*GraphLink) {
 	return cache.Nodes, links
 }
 
-func (builder *graphBuilder) addLink(targetID string, sourceID string, linkTq int, vpn bool) {
+func (builder *graphBuilder) addLink(targetID string, sourceID string, linkTQ int, vpn bool) {
 	// Sort IDs to generate the key
 	var key string
 	if strings.Compare(sourceID, targetID) > 0 {
@@ -169,8 +169,8 @@ func (builder *graphBuilder) addLink(targetID string, sourceID string, linkTq in
 	}
 
 	var tq float32
-	if linkTq > 0 {
-		tq = float32(1.0 / (float32(linkTq) / 255.0))
+	if linkTQ > 0 {
+		tq = float32(1.0 / (float32(linkTQ) / 255.0))
 	}
 
 	if link, ok := builder.links[key]; !ok {
