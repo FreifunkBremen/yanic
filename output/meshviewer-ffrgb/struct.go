@@ -121,9 +121,9 @@ func NewNode(nodes *runtime.Nodes, n *runtime.Node) *Node {
 			node.Clients = statistic.Clients.Total
 			node.ClientsWifi24 = statistic.Clients.Wifi24
 			node.ClientsWifi5 = statistic.Clients.Wifi5
-			node.ClientsOWE = statistic.Clients.Owe
-			node.ClientsOWE24 = statistic.Clients.Owe24
-			node.ClientsOWE5 = statistic.Clients.Owe5
+			node.ClientsOWE = statistic.Clients.OWE
+			node.ClientsOWE24 = statistic.Clients.OWE24
+			node.ClientsOWE5 = statistic.Clients.OWE5
 
 			clientsWifi := node.ClientsWifi24 + node.ClientsWifi5
 			if node.Clients == 0 {

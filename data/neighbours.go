@@ -19,7 +19,7 @@ type WifiLink struct {
 // BatmanLink struct
 type BatmanLink struct {
 	Lastseen float64 `json:"lastseen"`
-	Tq       int     `json:"tq"`
+	TQ       int     `json:"tq"`
 }
 
 // BabelLink struct

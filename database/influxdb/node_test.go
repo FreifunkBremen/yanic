@@ -83,7 +83,7 @@ func TestToInflux(t *testing.T) {
 				"a-interface-mac": {
 					Neighbours: map[string]data.BatmanLink{
 						"BAFF1E5": {
-							Tq: 204,
+							TQ: 204,
 						},
 					},
 				},

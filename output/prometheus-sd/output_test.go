@@ -47,12 +47,12 @@ func TestOutput(t *testing.T) {
 			Batadv: map[string]data.BatadvNeighbours{
 				"node:a:mac:wifi": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:wifi": {Tq: 153},
+						"node:b:mac:wifi": {TQ: 153},
 					},
 				},
 				"node:a:mac:lan": {
 					Neighbours: map[string]data.BatmanLink{
-						"node:b:mac:lan": {Tq: 51},
+						"node:b:mac:lan": {TQ: 51},
 					},
 				},
 			},

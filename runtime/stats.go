@@ -83,9 +83,9 @@ func (s *GlobalStats) Add(node *Node) {
 		s.ClientsWifi24 += stats.Clients.Wifi24
 		s.ClientsWifi5 += stats.Clients.Wifi5
 		s.ClientsWifi += stats.Clients.Wifi
-		s.ClientsOWE24 += stats.Clients.Owe24
-		s.ClientsOWE5 += stats.Clients.Owe5
-		s.ClientsOWE += stats.Clients.Owe
+		s.ClientsOWE24 += stats.Clients.OWE24
+		s.ClientsOWE5 += stats.Clients.OWE5
+		s.ClientsOWE += stats.Clients.OWE
 	}
 	if node.IsGateway() {
 		s.Gateways++

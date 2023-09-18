@@ -124,7 +124,7 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 					SourceAddress: sourceMAC,
 					TargetID:      neighbourID,
 					TargetAddress: neighbourMAC,
-					TQ:            float32(link.Tq) / 255.0,
+					TQ:            float32(link.TQ) / 255.0,
 				}
 
 				if neighbour.Nodeinfo != nil {

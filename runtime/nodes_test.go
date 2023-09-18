@@ -215,7 +215,7 @@ func TestLinksNodes(t *testing.T) {
 				"f4:f2:6d:d7:a3:0b": {
 					Neighbours: map[string]data.BatmanLink{
 						"f4:f2:6d:d7:a3:0a": {
-							Tq: 204, Lastseen: 0.42,
+							TQ: 204, Lastseen: 0.42,
 						},
 					},
 				},
