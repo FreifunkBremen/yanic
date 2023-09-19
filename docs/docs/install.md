@@ -25,6 +25,14 @@ As root:
 go install github.com/FreifunkBremen/yanic@latest
 ```
 
+or to install a different checkout for example for development run:
+
+```sh
+git clone https://github.com/FreifunkBremen/yanic
+cd yanic
+go install .
+```
+
 ### Install
 
 ```sh
