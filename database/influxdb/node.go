@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	models "github.com/influxdata/influxdb1-client/models"
@@ -174,8 +175,8 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
 	// Add selected gateway mac as tag
-	tags.SetString("gateway", stats.GatewayIPv4)
-	tags.SetString("gateway6", stats.GatewayIPv6)
+	tags.SetString("gateway", strings.ReplaceAll(stats.GatewayIPv4, ":", ""))
+	tags.SetString("gateway6", strings.ReplaceAll(stats.GatewayIPv6, ":", ""))
 	conn.addPoint(MeasurementNode, tags, fields, time)
 
 	// Add DHCP statistics
