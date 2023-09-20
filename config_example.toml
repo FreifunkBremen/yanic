@@ -195,7 +195,7 @@ delete_interval = "1h"
 #enable = true
 
 # Save collected data to InfluxDB.
-# There are the following measurments:
+# There are the following measurements:
 #   node: store node specific data i.e. clients memory, airtime
 #   link: store link tq between two interfaces of two different nodes
 #   global: store global data, i.e. count of clients and nodes
@@ -220,7 +220,7 @@ password = ""
 #site     = "ffhb"
 
 # Save collected data to InfluxDB2.
-# There are the following measurments:
+# There are the following measurements:
 #   node: store node specific data i.e. clients memory, airtime
 #   link: store link tq between two interfaces of two different nodes with i.e. nodeid, address, hostname
 #   global: store global data, i.e. count of clients and nodes
@@ -233,12 +233,12 @@ address  = "http://localhost:8086"
 token = ""
 organization_id = ""
 # fallback of no specific bucket for measurement is setup
-bucket_default = ""
+bucket_default = "yanic"
 
 # Specify bucket per measurement (of not set fallback bucket_default is used or panic)
 #
 # WARNING:
-#   yanic do NOT prune node's data (so please setup it in InfluxDB2 setup).
+#   yanic does NOT prune node's data (so please set up data retention in InfluxDB2 setup).
 #
 #   We highly recommend to setup e.g. Data retention in your InfluxDB2 server per measurements.
 #   https://docs.influxdata.com/influxdb/v2/reference/internals/data-retention/
@@ -247,7 +247,7 @@ bucket_default = ""
 #link = "yanic-temp"
 #node = "yanic-temp"
 #dhcp = "yanic-temp"
-global = "yanic"
+global = "yanic-persistent"
 #firmware = "yanic-temp"
 #model = "yanic-temp"
 #autoupdater = "yanic-temp"
