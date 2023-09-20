@@ -25,6 +25,17 @@ As root:
 go install github.com/FreifunkBremen/yanic@latest
 ```
 
+or to install a different checkout for example for development run:
+
+```sh
+git clone https://github.com/FreifunkBremen/yanic
+cd yanic
+go install .
+```
+
+Now you can use the binary in `~/go/bin/yanic`.
+If you specified `export GOPATH=/opt/go` the binary is located at `/opt/go/bin/yanic`.
+
 #### Work with other databases
 If you like to use another database solution than influxdb, Pull Requests are
 welcome. Just fork this project and create another subpackage within the folder
