@@ -34,6 +34,7 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 	tags := models.Tags{}
 	tags.SetString("nodeid", stats.NodeID)
+	tags.SetString("is_gateway", strconv.FormatBool(node.IsGateway()))
 
 	fields := models.Fields{
 		"load":             stats.LoadAverage,
@@ -190,12 +191,6 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 			"leases.allocated": dhcp.LeasesAllocated,
 			"leases.pruned":    dhcp.LeasesPruned,
-		}
-
-		// Tags
-		tags.SetString("nodeid", stats.NodeID)
-		if nodeinfo := node.Nodeinfo; nodeinfo != nil {
-			tags.SetString("hostname", nodeinfo.Hostname)
 		}
 
 		conn.addPoint(MeasurementDHCP, tags, fields, time)
