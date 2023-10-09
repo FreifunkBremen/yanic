@@ -390,6 +390,73 @@ site     = "ffhb"
     !!! warning
         Tags used by Yanic would override the tags from this config (e.g. `nodeid`, `hostname`, `owner`, `model`, `firmware_base`, `firmware_release`, `frequency11g`, `frequency11a`).
 
+### [[database.connection.influxdb2]]
+Save collected data to InfluxDB2.
+
+There are the following measurements:
+
+  - **node**: store node specific data i.e. clients memory, airtime
+  - **link**: store link tq between two interfaces of two different nodes with i.e. nodeid, address, hostname
+  - **global**: store global data, i.e. count of clients and nodes
+  - **firmware**: store the count of nodes tagged with firmware
+  - **model**: store the count of nodes tagged with hardware model
+  - **autoupdater**: store the count of autoupdate branch
+
+
+!!! info
+    A bucket has to be set in buckets and buchet_default otherwise yanic would panic.
+
+!!! warning
+    yanic does NOT prune node's data (so please set up data retention in InfluxDB2 setup).
+
+    We highly recommend to setup e.g. [Data retention](https://docs.influxdata.com/influxdb/v2/reference/internals/data-retention/) in your InfluxDB2 server per measurements.
+
+```toml
+[[database.connection.influxdb2]]
+enable   = false
+address  = "http://localhost:8086" # (1)
+token = "" # (2)
+organization_id = "" # (3)
+bucket_default = "yanic" # (4)
+
+[database.connection.influxdb2.buckets] # (5)
+#link = "yanic-temp"
+#node = "yanic-temp"
+#dhcp = "yanic-temp"
+global = "yanic-persistent"
+#firmware = "yanic-temp"
+#model = "yanic-temp"
+#autoupdater = "yanic-temp"
+
+# Tagging of the data (optional)
+[database.connection.influxdb2.tags] # (6)
+# Tags used by Yanic would override the tags from this config
+# nodeid, hostname, owner, model, firmware_base, firmware_release,frequency11g and frequency11a are tags which are already used
+#tagname1 = "tagvalue 1"
+# some useful e.g.:
+#system   = "productive"
+#site     = "ffhb"
+```
+
+1.  Address to connect to the InfluxDB2 server.
+2.  Token to get access to InfluxDB2 server.
+3.  Set organization using the InfluxDB2 server.
+
+4.  Bucket in which are the data stored.
+
+    Fallback of bucket per measurement, see `[database.connection.influxdb2.buckets]`
+
+5.  Buckets per measurement.
+
+    If no buckets are set, the default bucket `bucket_default` is used.
+
+6.  You can set additional tags which are added to all data written into the influxdb.
+
+    Useful if you want to identify the yanic instance when you use multiple own on the same influxdb (e.g. multisites).
+
+    !!! warning
+        Tags used by Yanic would override the tags from this config (e.g. `nodeid`, `hostname`, `owner`, `model`, `firmware_base`, `firmware_release`, `frequency11g`, `frequency11a`).
+
 ### [[database.connection.graphite]]
 Save collected data to a graphite database.
 
