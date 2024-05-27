@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb1-client/models"
-	"github.com/influxdata/influxdb1-client/v2"
+	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -97,4 +97,42 @@ func TestAddPoint(t *testing.T) {
 	assert.Panics(func() {
 		connection.addPoint("name", models.Tags{}, nil, time.Now())
 	})
+}
+
+func TestAddPointWithInvalidCharacters(t *testing.T) {
+	assert := assert.New(t)
+
+	connection := &Connection{
+		config: map[string]interface{}{},
+		points: make(chan *client.Point, 1),
+	}
+
+	tagsOrigin := models.Tags{}
+	tagsOrigin.SetString("owner", "\u00a0this owner\nuses invalid chars\t")
+
+	connection.addPoint("name", tagsOrigin, models.Fields{"clients.total": 10}, time.Now())
+	point := <-connection.points
+	assert.NotNil(point)
+	tags := point.Tags()
+	assert.NotNil(tags)
+	assert.Equal(tags["owner"], " this owner uses invalid chars ")
+}
+
+func TestAddPointWithValidCharacters(t *testing.T) {
+	assert := assert.New(t)
+
+	connection := &Connection{
+		config: map[string]interface{}{},
+		points: make(chan *client.Point, 1),
+	}
+
+	tagsOrigin := models.Tags{}
+	tagsOrigin.SetString("owner", "📶this owner uses only\u0020valid chars🛜")
+
+	connection.addPoint("name", tagsOrigin, models.Fields{"clients.total": 10}, time.Now())
+	point := <-connection.points
+	assert.NotNil(point)
+	tags := point.Tags()
+	assert.NotNil(tags)
+	assert.Equal(tags["owner"], "📶this owner uses only\u0020valid chars🛜")
 }

@@ -1,8 +1,10 @@
 package influxdb
 
 import (
+	"strings"
 	"sync"
 	"time"
+	"unicode"
 
 	"github.com/bdlm/log"
 	"github.com/influxdata/influxdb1-client/models"
@@ -94,6 +96,25 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 	return db, nil
 }
 
+func sanitizeValues(tags models.Tags) models.Tags {
+	// https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/
+	// Line protocol does not support the newline character \n in tag or field values.
+	// To be safe, remove all non-printable characters and spaces except ASCII space and U+0020.
+	for _, tag := range tags {
+		cleaned_value := strings.Map(func(r rune) rune {
+			if unicode.IsPrint(r) {
+				return r
+			}
+			return ' '
+		}, string(tag.Value))
+
+		if cleaned_value != string(tag.Value) {
+			tags.SetString(string(tag.Key), cleaned_value)
+		}
+	}
+	return tags
+}
+
 func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fields, t ...time.Time) {
 	if configTags := conn.config.Tags(); configTags != nil {
 		for tag, valueInterface := range configTags {
@@ -107,6 +128,9 @@ func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fi
 			}
 		}
 	}
+
+	tags = sanitizeValues(tags)
+
 	point, err := client.NewPoint(name, tags.Map(), fields, t...)
 	if err != nil {
 		log.Panicf("could not save points: %s", err)
