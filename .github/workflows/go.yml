@@ -63,3 +63,4 @@ jobs:
         with:
           version: latest
           skip-cache: true
+          args: --timeout=5m
