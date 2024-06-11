@@ -103,13 +103,13 @@ func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fi
 				log.WithFields(map[string]interface{}{
 					"name": name,
 					"tag":  tag,
-				}).Warnf("count not save tag configuration on point")
+				}).Warnf("could not save tag configuration on point")
 			}
 		}
 	}
 	point, err := client.NewPoint(name, tags.Map(), fields, t...)
 	if err != nil {
-		log.Panicf("count not save points: %s", err)
+		log.Panicf("could not save points: %s", err)
 	}
 	conn.points <- point
 }
