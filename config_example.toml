@@ -54,6 +54,16 @@ enable  = false
 bind    = "127.0.0.1:8080"
 webroot = "/var/www/html/meshviewer"
 
+[webserver.prometheus]
+# need webserver
+enable   = false
+disable_labels = [
+	# "hostname",
+	# "owner",
+	# "location",
+]
+
+
 
 [nodes]
 # Cache file
