@@ -1,8 +1,9 @@
-name: Test, Lint
+name: Golang
 
 on:
   push:
   pull_request:
+  release:
 
 jobs:
   test:
@@ -64,3 +65,29 @@ jobs:
           version: latest
           skip-cache: true
           args: --timeout=5m
+
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            os: linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.21'
+      - name: Build
+        run: go build -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=$(git describe --tags)" -v -o yanic_${{ matrix.arch }}_${{ matrix.os }}
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+          CGO_ENABLED: 0
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-${{ matrix.arch }}-${{ matrix.os }}
+          path: yanic_*

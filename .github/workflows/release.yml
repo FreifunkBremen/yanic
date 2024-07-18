@@ -1,10 +1,9 @@
-
 name: Release
+
 on:
   workflow_run:
     workflows:
-      - "Test, Lint"
-      - "Docs"
+      - "Golang"
     types: [ "completed" ]
     branches:
       - main
@@ -12,6 +11,7 @@ on:
 
 permissions:
   contents: read # for checkout
+  attestations: read #  for artifacts download
 
 jobs:
   release:
@@ -37,6 +37,15 @@ jobs:
 
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: build-*
+          path: build/
+          merge-multiple: true
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
         env:
