@@ -19,7 +19,8 @@ func (conn *Connection) InsertLink(link *runtime.Link, t time.Time) {
 		AddTag("source.id", link.SourceID).
 		AddTag("source.addr", link.SourceAddress).
 		AddTag("target.id", link.TargetID).
-		AddTag("target.addr", link.TargetAddress)
+		AddTag("target.addr", link.TargetAddress).
+		AddTag("type", link.Type.String())
 	if link.SourceHostname != "" {
 		p.AddTag("source.hostname", link.SourceHostname)
 	}
