@@ -193,6 +193,7 @@ func TestToInflux(t *testing.T) {
 		"source.addr": "a-interface-mac",
 		"target.id":   "foobar",
 		"target.addr": "BAFF1E5",
+		"type":        "vpn",
 	}, tags)
 	assert.EqualValues(80, fields["tq"])
 
