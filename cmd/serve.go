@@ -41,9 +41,11 @@ var serveCmd = &cobra.Command{
 
 		if config.Webserver.Enable {
 			log.Infof("starting webserver on %s", config.Webserver.Bind)
-			srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
+			srv := webserver.New(config.Webserver, nodes)
 			go webserver.Start(srv)
 			defer srv.Close()
+		} else if prom := config.Webserver.Prometheus; prom != nil && prom.Enable {
+			log.Error("to enable prometheus exporter, please enable webserver ")
 		}
 
 		if config.Respondd.Enable {
