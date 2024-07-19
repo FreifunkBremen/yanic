@@ -19,17 +19,6 @@ type Node struct {
 	CustomFields map[string]interface{} `json:"custom_fields"`
 }
 
-// Link represents a link between two nodes
-type Link struct {
-	SourceID       string
-	SourceHostname string
-	SourceAddress  string
-	TargetID       string
-	TargetAddress  string
-	TargetHostname string
-	TQ             float32
-}
-
 // IsGateway returns whether the node is a gateway
 func (node *Node) IsGateway() bool {
 	if info := node.Nodeinfo; info != nil {

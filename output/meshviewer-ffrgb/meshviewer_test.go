@@ -128,8 +128,8 @@ func TestTransform(t *testing.T) {
 							Other    []string `json:"other,omitempty"`
 							Tunnel   []string `json:"tunnel,omitempty"`
 						}{
-							Wireless: []string{"node:b:mac:wifi"},
-							Other:    []string{"node:b:mac:lan"},
+							Wireless: []string{"node:d:mac:wifi"},
+							Other:    []string{"node:d:mac:lan"},
 						},
 					},
 				},
@@ -155,28 +155,41 @@ func TestTransform(t *testing.T) {
 	meshviewer := transform(nodes)
 	assert.NotNil(meshviewer)
 	assert.Len(meshviewer.Nodes, 4)
+	/*
+	   links:
+	   a:wifi <-> b:wifi 153 / 204
+	   a:lan -> b:lan 51
+	   c:lan <-> b:lan 102 / 204
+	   d:lan -> c:lan 204 (but offline)
+	   d:wifi -> a:wifi 204 (but offline)
+	*/
 	links := meshviewer.Links
 	assert.Len(links, 3)
 
+	counter := 0
 	for _, link := range links {
 		switch link.SourceAddress {
 		case "node:a:mac:lan":
-			assert.Equal("other", link.Type)
-			assert.Equal("node:b:mac:lan", link.TargetAddress)
-			assert.Equal(float32(0.2), link.SourceTQ)
-			assert.Equal(float32(0), link.TargetTQ)
+			assert.Equal("node:b:mac:lan", link.TargetAddress, "a:lan -> b:lan")
+			assert.Equal("other", link.Type, "a:lan -> b:lan")
+			assert.Equal(float32(0.2), link.SourceTQ, "a:lan -> b:lan")
+			assert.Equal(float32(0), link.TargetTQ, "a:lan -> b:lan")
+			counter++
 		case "node:a:mac:wifi":
-			assert.Equal("wifi", link.Type)
-			assert.Equal("node:b:mac:wifi", link.TargetAddress)
-			assert.Equal(float32(0.6), link.SourceTQ)
-			assert.Equal(float32(0.8), link.TargetTQ)
+			assert.Equal("node:b:mac:wifi", link.TargetAddress, "a:wifi <-> b:wifi")
+			assert.Equal("wifi", link.Type, "a:wifi <-> b:wifi")
+			assert.Equal(float32(0.6), link.SourceTQ, "a:wifi <-> b:wifi")
+			assert.Equal(float32(0.8), link.TargetTQ, "a:wifi <-> b:wifi")
+			counter++
 		case "node:b:mac:lan":
-			assert.Equal("other", link.Type)
-			assert.Equal("node:c:mac:lan", link.TargetAddress)
-			assert.Equal(float32(0.8), link.SourceTQ)
-			assert.Equal(float32(0.4), link.TargetTQ)
+			assert.Equal("other", link.Type, "b:lan <-> c:lan")
+			assert.Equal("node:c:mac:lan", link.TargetAddress, "b:lan <-> c:lan")
+			assert.Equal(float32(0.8), link.SourceTQ, "b:lan <-> c:lan")
+			assert.Equal(float32(0.4), link.TargetTQ, "b:lan <-> c:lan")
+			counter++
 		default:
 			assert.False(true, "invalid link.SourceAddress found")
 		}
 	}
+	assert.Equal(3, counter, "not found every link")
 }
