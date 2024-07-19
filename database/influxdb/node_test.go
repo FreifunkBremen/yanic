@@ -14,6 +14,7 @@ func TestToInflux(t *testing.T) {
 	assert := assert.New(t)
 
 	node := &runtime.Node{
+		Online: true,
 		Statistics: &data.Statistics{
 			NodeID:      "deadbeef",
 			LoadAverage: 0.5,
@@ -105,6 +106,7 @@ func TestToInflux(t *testing.T) {
 	}
 
 	neighbour := &runtime.Node{
+		Online: true,
 		Nodeinfo: &data.Nodeinfo{
 			NodeID: "foobar",
 			Network: data.Network{
@@ -132,6 +134,7 @@ func TestToInflux(t *testing.T) {
 
 	// do not add a empty statistics of a node
 	droppednode := &runtime.Node{
+		Online: true,
 		Nodeinfo: &data.Nodeinfo{
 			NodeID: "notfound",
 			Network: data.Network{
