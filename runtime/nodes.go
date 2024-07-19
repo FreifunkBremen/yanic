@@ -14,18 +14,22 @@ import (
 
 // Nodes struct: cache DB of Node's structs
 type Nodes struct {
-	List          map[string]*Node  `json:"nodes"` // the current nodemap, indexed by node ID
-	ifaceToNodeID map[string]string // mapping from MAC address to NodeID
-	config        *NodesConfig
+	List                map[string]*Node        `json:"nodes"` // the current nodemap, indexed by node ID
+	ifaceToNodeID       map[string]string       // mapping from MAC address to NodeID
+	ifaceToLinkType     map[string]LinkType     // mapping from MAC address to LinkType
+	ifaceToLinkProtocol map[string]LinkProtocol // mapping from MAC address to LinkProtocol
+	config              *NodesConfig
 	sync.RWMutex
 }
 
 // NewNodes create Nodes structs
 func NewNodes(config *NodesConfig) *Nodes {
 	nodes := &Nodes{
-		List:          make(map[string]*Node),
-		ifaceToNodeID: make(map[string]string),
-		config:        config,
+		List:                make(map[string]*Node),
+		ifaceToNodeID:       make(map[string]string),
+		ifaceToLinkType:     make(map[string]LinkType),
+		ifaceToLinkProtocol: make(map[string]LinkProtocol),
+		config:              config,
 	}
 
 	if config.StatePath != "" {
@@ -48,7 +52,7 @@ func (nodes *Nodes) AddNode(node *Node) {
 	nodes.Lock()
 	defer nodes.Unlock()
 	nodes.List[nodeinfo.NodeID] = node
-	nodes.readIfaces(nodeinfo, false)
+	nodes.readIfaces(nodeinfo, node.Neighbours, false)
 }
 
 // Update a Node
@@ -65,7 +69,7 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 		nodes.List[nodeID] = node
 	}
 	if res.Nodeinfo != nil {
-		nodes.readIfaces(res.Nodeinfo, true)
+		nodes.readIfaces(res.Nodeinfo, res.Neighbours, true)
 	}
 	nodes.Unlock()
 
@@ -110,7 +114,7 @@ func (nodes *Nodes) GetNodeIDbyAddress(addr string) string {
 func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	// Store link data
 	neighbours := node.Neighbours
-	if neighbours == nil || neighbours.NodeID == "" {
+	if neighbours == nil || neighbours.NodeID == "" || !node.Online {
 		return
 	}
 
@@ -133,6 +137,11 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 				if node.Nodeinfo != nil {
 					link.SourceHostname = node.Nodeinfo.Hostname
 				}
+				if lt, ok := nodes.ifaceToLinkType[sourceMAC]; ok && lt != OtherLinkType {
+					link.Type = lt
+				} else if lt, ok := nodes.ifaceToLinkType[neighbourMAC]; ok {
+					link.Type = lt
+				}
 
 				result = append(result, link)
 			}
@@ -141,27 +150,39 @@ func (nodes *Nodes) NodeLinks(node *Node) (result []Link) {
 	for _, iface := range neighbours.Babel {
 		for neighbourIP, link := range iface.Neighbours {
 			if neighbourID := nodes.ifaceToNodeID[neighbourIP]; neighbourID != "" {
-				result = append(result, Link{
+				link := Link{
 					SourceID:      neighbours.NodeID,
 					SourceAddress: iface.LinkLocalAddress,
 					TargetID:      neighbourID,
 					TargetAddress: neighbourIP,
 					TQ:            1.0 - (float32(link.Cost) / 65535.0),
-				})
+				}
+				if lt, ok := nodes.ifaceToLinkType[iface.LinkLocalAddress]; ok && lt != OtherLinkType {
+					link.Type = lt
+				} else if lt, ok := nodes.ifaceToLinkType[neighbourIP]; ok {
+					link.Type = lt
+				}
+				result = append(result, link)
 			}
 		}
 	}
-	for portmac, neighmacs := range neighbours.LLDP {
-		for _, neighmac := range neighmacs {
-			if neighbourID := nodes.ifaceToNodeID[neighmac]; neighbourID != "" {
-				result = append(result, Link{
+	for sourceMAC, neighmacs := range neighbours.LLDP {
+		for _, neighbourMAC := range neighmacs {
+			if neighbourID := nodes.ifaceToNodeID[neighbourMAC]; neighbourID != "" {
+				link := Link{
 					SourceID:      neighbours.NodeID,
-					SourceAddress: portmac,
+					SourceAddress: sourceMAC,
 					TargetID:      neighbourID,
-					TargetAddress: neighmac,
+					TargetAddress: neighbourMAC,
 					// TODO maybe change LLDP for link quality / 100M or 1GE
 					TQ: 1.0,
-				})
+				}
+				if lt, ok := nodes.ifaceToLinkType[sourceMAC]; ok && lt != OtherLinkType {
+					link.Type = lt
+				} else if lt, ok := nodes.ifaceToLinkType[neighbourMAC]; ok {
+					link.Type = lt
+				}
+				result = append(result, link)
 			}
 		}
 	}
@@ -207,8 +228,18 @@ func (nodes *Nodes) expire() {
 	}
 }
 
+func updateIface[K string | LinkProtocol | LinkType](class string, addr string, dataMap map[string]K, value K, warning bool) {
+	if oldValue := dataMap[addr]; oldValue != value {
+		var empty K
+		if oldValue != empty && warning {
+			log.Warnf("override %s from %s to %s on %s", class, oldValue, value, addr)
+		}
+		dataMap[addr] = value
+	}
+}
+
 // adds the nodes interface addresses to the internal map
-func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, warning bool) {
+func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, neighbours *data.Neighbours, warning bool) {
 	nodeID := nodeinfo.NodeID
 	network := nodeinfo.Network
 
@@ -220,6 +251,15 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, warning bool) {
 	addresses := []string{network.Mac}
 
 	for _, iface := range network.Mesh {
+		for _, addr := range iface.Interfaces.Wireless {
+			updateIface("interface-type", addr, nodes.ifaceToLinkType, WirelessLinkType, warning)
+		}
+		for _, addr := range iface.Interfaces.Tunnel {
+			updateIface("interface-type", addr, nodes.ifaceToLinkType, TunnelLinkType, warning)
+		}
+		for _, addr := range iface.Interfaces.Other {
+			updateIface("interface-type", addr, nodes.ifaceToLinkType, OtherLinkType, warning)
+		}
 		addresses = append(addresses, iface.Addresses()...)
 	}
 
@@ -227,13 +267,32 @@ func (nodes *Nodes) readIfaces(nodeinfo *data.Nodeinfo, warning bool) {
 		if addr == "" {
 			continue
 		}
-		if oldNodeID := nodes.ifaceToNodeID[addr]; oldNodeID != nodeID {
-			if oldNodeID != "" && warning {
-				log.Warnf("override nodeID from %s to %s on MAC address %s", oldNodeID, nodeID, addr)
-			}
-			nodes.ifaceToNodeID[addr] = nodeID
+		updateIface("nodeID", addr, nodes.ifaceToNodeID, nodeID, warning)
+	}
+
+	if neighbours == nil || neighbours.NodeID == "" {
+		return
+	}
+
+	for sourceMAC, batadv := range neighbours.Batadv {
+		updateIface("mesh-protocol", sourceMAC, nodes.ifaceToLinkProtocol, BatadvLinkProtocol, warning)
+		for neighbourMAC := range batadv.Neighbours {
+			updateIface("mesh-protocol", neighbourMAC, nodes.ifaceToLinkProtocol, BatadvLinkProtocol, warning)
 		}
 	}
+	for _, iface := range neighbours.Babel {
+		updateIface("mesh-protocol", iface.LinkLocalAddress, nodes.ifaceToLinkProtocol, BabelLinkProtocol, warning)
+		for neighbourIP := range iface.Neighbours {
+			updateIface("mesh-protocol", neighbourIP, nodes.ifaceToLinkProtocol, BabelLinkProtocol, warning)
+		}
+	}
+	for portmac, neighmacs := range neighbours.LLDP {
+		updateIface("mesh-protocol", portmac, nodes.ifaceToLinkProtocol, LLDPLinkProtocol, warning)
+		for _, neighmac := range neighmacs {
+			updateIface("mesh-protocol", neighmac, nodes.ifaceToLinkProtocol, LLDPLinkProtocol, warning)
+		}
+	}
+
 }
 
 func (nodes *Nodes) load() {
@@ -246,7 +305,7 @@ func (nodes *Nodes) load() {
 			nodes.Lock()
 			for _, node := range nodes.List {
 				if node.Nodeinfo != nil {
-					nodes.readIfaces(node.Nodeinfo, false)
+					nodes.readIfaces(node.Nodeinfo, node.Neighbours, false)
 				}
 			}
 			nodes.Unlock()

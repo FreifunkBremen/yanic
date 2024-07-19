@@ -4,16 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bdlm/log"
-
 	"github.com/FreifunkBremen/yanic/lib/jsontime"
 	"github.com/FreifunkBremen/yanic/runtime"
-)
-
-const (
-	LINK_TYPE_WIRELESS = "wifi"
-	LINK_TYPE_TUNNEL   = "vpn"
-	LINK_TYPE_FALLBACK = "other"
 )
 
 func transform(nodes *runtime.Nodes) *Meshviewer {
@@ -25,7 +17,6 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 	}
 
 	links := make(map[string]*Link)
-	typeList := make(map[string]string)
 
 	nodes.RLock()
 	defer nodes.RUnlock()
@@ -36,19 +27,6 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 
 		if !nodeOrigin.Online {
 			continue
-		}
-
-		if nodeinfo := nodeOrigin.Nodeinfo; nodeinfo != nil {
-			if meshes := nodeinfo.Network.Mesh; meshes != nil {
-				for _, mesh := range meshes {
-					for _, addr := range mesh.Interfaces.Wireless {
-						typeList[addr] = LINK_TYPE_WIRELESS
-					}
-					for _, addr := range mesh.Interfaces.Tunnel {
-						typeList[addr] = LINK_TYPE_TUNNEL
-					}
-				}
-			}
 		}
 
 		for _, linkOrigin := range nodes.NodeLinks(nodeOrigin) {
@@ -62,36 +40,11 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 			}
 
 			if link := links[key]; link != nil {
-				linkType, linkTypeFound := typeList[linkOrigin.SourceAddress]
-				if !linkTypeFound {
-					linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
-				}
-
 				if switchSourceTarget {
 					link.TargetTQ = linkOrigin.TQ
-
-					linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
-					if !linkTypeFound {
-						linkType, linkTypeFound = typeList[linkOrigin.SourceAddress]
-					}
 				} else {
 					link.SourceTQ = linkOrigin.TQ
 				}
-
-				if linkTypeFound && linkType != link.Type {
-					if link.Type == LINK_TYPE_FALLBACK {
-						link.Type = linkType
-					} else {
-						log.WithFields(map[string]interface{}{
-							"link":   fmt.Sprintf("%s-%s", linkOrigin.SourceAddress, linkOrigin.TargetAddress),
-							"prev":   link.Type,
-							"new":    linkType,
-							"source": typeList[linkOrigin.SourceAddress],
-							"target": typeList[linkOrigin.TargetAddress],
-						}).Warn("different linktypes")
-					}
-				}
-
 				continue
 			}
 			link := &Link{
@@ -101,11 +54,7 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 				TargetAddress: linkOrigin.TargetAddress,
 				SourceTQ:      linkOrigin.TQ,
 				TargetTQ:      0,
-			}
-
-			linkType, linkTypeFound := typeList[linkOrigin.SourceAddress]
-			if !linkTypeFound {
-				linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
+				Type:          linkOrigin.Type.String(),
 			}
 
 			if switchSourceTarget {
@@ -115,22 +64,13 @@ func transform(nodes *runtime.Nodes) *Meshviewer {
 				link.TargetTQ = linkOrigin.TQ
 				link.Target = linkOrigin.SourceID
 				link.TargetAddress = linkOrigin.SourceAddress
-
-				linkType, linkTypeFound = typeList[linkOrigin.TargetAddress]
-				if !linkTypeFound {
-					linkType, linkTypeFound = typeList[linkOrigin.SourceAddress]
-				}
 			}
 
-			if linkTypeFound {
-				link.Type = linkType
-			} else {
-				link.Type = LINK_TYPE_FALLBACK
-			}
 			links[key] = link
-			meshviewer.Links = append(meshviewer.Links, link)
 		}
 	}
-
+	for _, link := range links {
+		meshviewer.Links = append(meshviewer.Links, link)
+	}
 	return meshviewer
 }

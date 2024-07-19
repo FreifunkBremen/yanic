@@ -18,9 +18,11 @@ func TestExpire(t *testing.T) {
 	// to get default (100%) path of testing
 	// config.PruneAfter.Duration = time.Hour * 24 * 6
 	nodes := &Nodes{
-		config:        config,
-		List:          make(map[string]*Node),
-		ifaceToNodeID: make(map[string]string),
+		config:              config,
+		List:                make(map[string]*Node),
+		ifaceToNodeID:       make(map[string]string),
+		ifaceToLinkType:     make(map[string]LinkType),
+		ifaceToLinkProtocol: make(map[string]LinkProtocol),
 	}
 
 	nodes.Update("expire", &data.ResponseData{})  // should expire
@@ -89,8 +91,10 @@ func TestLoadAndSave(t *testing.T) {
 func TestUpdateNodes(t *testing.T) {
 	assert := assert.New(t)
 	nodes := &Nodes{
-		List:          make(map[string]*Node),
-		ifaceToNodeID: make(map[string]string),
+		List:                make(map[string]*Node),
+		ifaceToNodeID:       make(map[string]string),
+		ifaceToLinkType:     make(map[string]LinkType),
+		ifaceToLinkProtocol: make(map[string]LinkProtocol),
 	}
 	assert.Len(nodes.List, 0)
 
@@ -156,8 +160,10 @@ func TestLinksNodes(t *testing.T) {
 	assert := assert.New(t)
 
 	nodes := &Nodes{
-		List:          make(map[string]*Node),
-		ifaceToNodeID: make(map[string]string),
+		List:                make(map[string]*Node),
+		ifaceToNodeID:       make(map[string]string),
+		ifaceToLinkType:     make(map[string]LinkType),
+		ifaceToLinkProtocol: make(map[string]LinkProtocol),
 	}
 	assert.Len(nodes.List, 0)
 
