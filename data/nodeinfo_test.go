@@ -34,6 +34,9 @@ func TestNodeinfo(t *testing.T) {
 
 	assert.Equal("gluon-v2016.1.2", obj.Software.Firmware.Base)
 	assert.Equal("2016.1.2+bremen1", obj.Software.Firmware.Release)
+	assert.Equal("mpc85xx", obj.Software.Firmware.Target)
+	assert.Equal("p1010", obj.Software.Firmware.Subtarget)
+	assert.Equal("tp-link-tl-wdr4900-v1", obj.Software.Firmware.ImageName)
 
 	assert.Equal("TP-Link TL-WDR4900 v1", obj.Hardware.Model)
 }

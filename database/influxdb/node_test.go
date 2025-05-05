@@ -118,10 +118,16 @@ func TestToInflux(t *testing.T) {
 					Enabled: false,
 				},
 				Firmware: &struct {
-					Base    string `json:"base,omitempty"`
-					Release string `json:"release,omitempty"`
+					Base      string `json:"base,omitempty"`
+					Release   string `json:"release,omitempty"`
+					Target    string `json:"target,omitempty"`
+					Subtarget string `json:"subtarget,omitempty"`
+					ImageName string `json:"image_name,omitempty"`
 				}{
 					Base: "gluon",
+					Target: "x86",
+					Subtarget: "64",
+					ImageName: "x86-64",
 				},
 			},
 		},

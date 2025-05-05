@@ -14,7 +14,10 @@
     },
     "firmware": {
       "base": "gluon-v2016.1.2",
-      "release": "2016.1.2+bremen1"
+      "release": "2016.1.2+bremen1",
+      "target": "mpc85xx",
+      "subtarget": "p1010",
+      "image_name": "tp-link-tl-wdr4900-v1"
     },
     "status-page": {
       "api": 1

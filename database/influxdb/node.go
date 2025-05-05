@@ -84,6 +84,9 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 		if nodeinfo.Software.Firmware != nil {
 			tags.SetString("firmware_base", nodeinfo.Software.Firmware.Base)
 			tags.SetString("firmware_release", nodeinfo.Software.Firmware.Release)
+			tags.SetString("firmware_target", nodeinfo.Software.Firmware.Target)
+			tags.SetString("firmware_subtarget", nodeinfo.Software.Firmware.Subtarget)
+			tags.SetString("firmware_image_name", nodeinfo.Software.Firmware.ImageName)
 		}
 		if nodeinfo.Software.Autoupdater != nil && nodeinfo.Software.Autoupdater.Enabled {
 			tags.SetString("autoupdater", nodeinfo.Software.Autoupdater.Branch)
