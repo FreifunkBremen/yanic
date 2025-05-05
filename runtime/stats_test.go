@@ -95,8 +95,11 @@ func createTestNodes() *Nodes {
 		},
 	}
 	nodeData.Nodeinfo.Software.Firmware = &struct {
-		Base    string `json:"base,omitempty"`
-		Release string `json:"release,omitempty"`
+		Base      string `json:"base,omitempty"`
+		Release   string `json:"release,omitempty"`
+		Target    string `json:"target,omitempty"`
+		Subtarget string `json:"subtarget,omitempty"`
+		ImageName string `json:"image_name,omitempty"`
 	}{
 		Release: "2016.1.6+entenhausen1",
 	}

@@ -75,8 +75,11 @@ type Software struct {
 		PublicKey string `json:"public_key,omitempty"`
 	} `json:"fastd,omitempty"`
 	Firmware *struct {
-		Base    string `json:"base,omitempty"`
-		Release string `json:"release,omitempty"`
+		Base      string `json:"base,omitempty"`
+		Release   string `json:"release,omitempty"`
+		Target    string `json:"target,omitempty"`
+		Subtarget string `json:"subtarget,omitempty"`
+		ImageName string `json:"image_name,omitempty"`
 	} `json:"firmware,omitempty"`
 	StatusPage *struct {
 		API int `json:"api"`
