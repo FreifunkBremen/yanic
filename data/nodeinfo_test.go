@@ -24,3 +24,16 @@ func TestNodeinfoBatAddresses(t *testing.T) {
 	assert.NotNil(addr)
 	assert.Equal([]string{"aa:aa:aa:aa:aa", "aa:aa:aa:aa:ab"}, addr)
 }
+
+func TestNodeinfo(t *testing.T) {
+	assert := assert.New(t)
+	obj := &Nodeinfo{}
+	testfile("nodeinfo.json", obj)
+
+	assert.Equal("stable", obj.Software.Autoupdater.Branch)
+
+	assert.Equal("gluon-v2016.1.2", obj.Software.Firmware.Base)
+	assert.Equal("2016.1.2+bremen1", obj.Software.Firmware.Release)
+
+	assert.Equal("TP-Link TL-WDR4900 v1", obj.Hardware.Model)
+}
