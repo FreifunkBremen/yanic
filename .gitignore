@@ -31,3 +31,6 @@ coverage.out
 
 /node_modules
 .DS_Store
+
+yanic
+yanic_*
