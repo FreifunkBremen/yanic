@@ -43,7 +43,7 @@ func TestReadConfig(t *testing.T) {
 	}, meshviewer)
 
 	_, err = ReadConfigFile("testdata/config_invalid.toml")
-	assert.EqualError(err, "toml: line 2: expected '.' or '=', but got '\\n' instead")
+	assert.EqualError(err, "toml: line 1: expected '.' or '=', but got '\\n' instead")
 
 	_, err = ReadConfigFile("testdata/adsa.toml")
 	assert.EqualError(err, "open testdata/adsa.toml: no such file or directory")
