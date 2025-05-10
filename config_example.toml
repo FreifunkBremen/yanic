@@ -207,7 +207,8 @@ enable   = false
 address  = "http://localhost:8086"
 database = "ffhb"
 username = ""
-password = ""
+# you can use an environment variable like this, but you can also just put the password in here:
+password = "${YANIC_INFLUX_PASSWORD}"
 #insecure_skip_verify = true
 
 # Tagging of the data (optional)

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/BurntSushi/toml"
 
@@ -26,6 +27,8 @@ var (
 	nodes      *runtime.Nodes
 )
 
+var envVarRegex = regexp.MustCompile(`\$\{(\w+)\}`)
+
 func loadConfig() *Config {
 	config, err := ReadConfigFile(configPath)
 	if err != nil {
@@ -39,14 +42,18 @@ func loadConfig() *Config {
 func ReadConfigFile(path string) (config *Config, err error) {
 	config = &Config{}
 
-	file, err := os.Open(path)
+	raw, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
 
-	_, err = toml.NewDecoder(file).Decode(config)
-	if err != nil {
+	processed := envVarRegex.ReplaceAllStringFunc(string(raw), func(match string) string {
+		key := envVarRegex.FindStringSubmatch(match)[1]
+		return os.Getenv(key)
+	})
+
+	// var config Config
+	if _, err := toml.Decode(processed, &config); err != nil {
 		return nil, err
 	}
 
