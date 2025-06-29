@@ -5,7 +5,7 @@
 ### Install
 ```sh
 cd /usr/local/
-wget https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz -O go-release-linux-amd64.tar.gz
+wget https://go.dev/dl/go1.24.4.linux-amd64.tar.gz -O go-release-linux-amd64.tar.gz
 tar xvf go-release-linux-amd64.tar.gz
 rm go-release-linux-amd64.tar.gz
 ```
