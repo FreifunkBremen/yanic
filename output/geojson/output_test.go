@@ -1,6 +1,7 @@
 package geojson
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -18,7 +19,9 @@ func TestOutput(t *testing.T) {
 	out, err = Register(map[string]interface{}{
 		"path": "/tmp/nodes.geojson",
 	})
-	os.Remove("/tmp/nodes.geojson")
+	if err := os.Remove("/tmp/nodes.geojson"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 	assert.NoError(err)
 	assert.NotNil(out)
 

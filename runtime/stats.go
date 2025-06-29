@@ -26,7 +26,7 @@ type GlobalStats struct {
 	Autoupdater CounterMap
 }
 
-//NewGlobalStats returns global statistics for InfluxDB
+// NewGlobalStats returns global statistics for InfluxDB
 func NewGlobalStats(nodes *Nodes, sitesDomains map[string][]string) (result map[string]map[string]*GlobalStats) {
 	result = make(map[string]map[string]*GlobalStats)
 

@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -69,7 +70,9 @@ func TestLoadAndSave(t *testing.T) {
 	tmpfile, _ := os.CreateTemp("/tmp", "nodes")
 	config.StatePath = tmpfile.Name()
 	nodes.save()
-	os.Remove(tmpfile.Name())
+	if err := os.Remove(tmpfile.Name()); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 
 	assert.Panics(func() {
 		SaveJSON(nodes, "/proc/a")
@@ -81,7 +84,9 @@ func TestLoadAndSave(t *testing.T) {
 		SaveJSON(tmpfile.Name, tmpfile.Name())
 		// "json: unsupported type: func() string",
 	})
-	os.Remove(tmpfile.Name())
+	if err := os.Remove(tmpfile.Name()); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 
 	//TODO how to test easy a failing renaming
 

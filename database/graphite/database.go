@@ -58,7 +58,9 @@ func Connect(configuration map[string]interface{}) (database.Connection, error) 
 func (c *Connection) Close() {
 	close(c.points)
 	if c.client.Connection != nil {
-		c.client.Close()
+		if err := c.client.Close(); err != nil {
+			log.WithError(err).Error("unable close connection")
+		}
 	}
 }
 
@@ -66,9 +68,8 @@ func (c *Connection) addWorker() {
 	defer c.wg.Done()
 	defer c.Close()
 	for point := range c.points {
-		err := c.client.SendAll(point)
-		if err != nil {
-			log.WithField("database", "graphite").Fatal(err)
+		if err := c.client.SendAll(point); err != nil {
+			log.WithError(err).WithField("database", "graphite").Fatal("unable to store data")
 			return
 		}
 	}

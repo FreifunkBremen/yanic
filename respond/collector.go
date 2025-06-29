@@ -160,7 +160,9 @@ func (coll *Collector) Start(interval time.Duration) {
 func (coll *Collector) Close() {
 	close(coll.stop)
 	for _, conn := range coll.connections {
-		conn.Conn.Close()
+		if err := conn.Conn.Close(); err != nil {
+			log.WithError(err).Error("close during collector sockets")
+		}
 	}
 	close(coll.queue)
 }
@@ -230,7 +232,7 @@ func (coll *Collector) sendPacket(conn *net.UDPConn, destination net.IP) {
 	}
 
 	if _, err := conn.WriteToUDP([]byte("GET nodeinfo statistics neighbours"), &addr); err != nil {
-		log.WithField("address", addr.String()).Errorf("WriteToUDP failed: %s", err)
+		log.WithError(err).WithField("address", addr.String()).Error("WriteToUDP failed")
 	}
 }
 
@@ -252,7 +254,7 @@ func (coll *Collector) sender() {
 func (coll *Collector) parser() {
 	for obj := range coll.queue {
 		if data, err := obj.parse(coll.config.CustomFields); err != nil {
-			log.WithField("address", obj.Address.String()).Errorf("unable to decode response %s", err)
+			log.WithError(err).WithField("address", obj.Address.String()).Error("unable to decode response")
 		} else {
 			coll.saveResponse(obj.Address, data)
 		}
@@ -316,12 +318,12 @@ func (coll *Collector) receiver(conn *net.UDPConn) {
 
 		if err != nil {
 			if conn != nil {
-				log.WithFields(map[string]interface{}{
+				log.WithError(err).WithFields(map[string]interface{}{
 					"local":  conn.LocalAddr(),
 					"remote": conn.RemoteAddr(),
-				}).Errorf("ReadFromUDP failed: %s", err)
+				}).Error("ReadFromUDP failed")
 			} else {
-				log.Errorf("ReadFromUDP failed: %s", err)
+				log.WithError(err).Error("ReadFromUDP failed")
 			}
 			return
 		}

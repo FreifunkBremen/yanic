@@ -1,6 +1,7 @@
 package prometheus_sd
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"testing"
@@ -68,7 +69,9 @@ func TestOutput(t *testing.T) {
 			"service": "yanic",
 		},
 	})
-	os.Remove("/tmp/prometheus_sd.json")
+	if err := os.Remove("/tmp/prometheus_sd.json"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 	assert.NoError(err)
 	assert.NotNil(out)
 
@@ -80,7 +83,9 @@ func TestOutput(t *testing.T) {
 	out, err = Register(map[string]interface{}{
 		"path": "/tmp/prometheus_sd.json",
 	})
-	os.Remove("/tmp/prometheus_sd.json")
+	if err := os.Remove("/tmp/prometheus_sd.json"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 	assert.NoError(err)
 	assert.NotNil(out)
 
@@ -93,7 +98,9 @@ func TestOutput(t *testing.T) {
 		"path":           "/tmp/prometheus_sd.json",
 		"target_address": "ip-publish",
 	})
-	os.Remove("/tmp/prometheus_sd.json")
+	if err := os.Remove("/tmp/prometheus_sd.json"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 	assert.NoError(err)
 	assert.NotNil(out)
 

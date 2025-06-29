@@ -1,6 +1,7 @@
 package webserver
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -21,5 +22,7 @@ func TestWebserver(t *testing.T) {
 		Start(srv)
 	}, "not allowed to listen twice")
 
-	srv.Close()
+	if err := srv.Close(); err != nil {
+		fmt.Println("Error when closing:", err)
+	}
 }

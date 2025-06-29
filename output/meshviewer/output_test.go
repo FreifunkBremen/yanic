@@ -1,6 +1,7 @@
 package meshviewer
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -31,10 +32,14 @@ func TestOutput(t *testing.T) {
 		"nodes_path": "/tmp/nodes.json",
 		"graph_path": "/tmp/graph.json",
 	})
-	os.Remove("/tmp/nodes.json")
-	os.Remove("/tmp/graph.json")
-	assert.NoError(err)
+	if err := os.Remove("/tmp/nodes.json"); err != nil {
+		fmt.Printf("during cleanup %s\n", err)
+	}
+	if err := os.Remove("/tmp/graph.json"); err != nil {
+		fmt.Printf("during cleanup %s\n", err)
+	}
 	assert.NotNil(out)
+	assert.NoError(err)
 
 	out.Save(&runtime.Nodes{})
 	_, err = os.Stat("/tmp/nodes.json")

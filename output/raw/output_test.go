@@ -1,6 +1,7 @@
 package raw
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -18,8 +19,10 @@ func TestOutput(t *testing.T) {
 	out, err = Register(map[string]interface{}{
 		"path": "/tmp/raw.json",
 	})
-	os.Remove("/tmp/raw.json")
-	assert.NoError(err)
+	if err := os.Remove("/tmp/raw.json"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
+	assert.NoError(err, "could not Register")
 	assert.NotNil(out)
 
 	out.Save(&runtime.Nodes{})

@@ -5,7 +5,7 @@ package data
 	They always return float.
 */
 
-//Statistics struct
+// Statistics struct
 type Statistics struct {
 	NodeID         string  `json:"node_id"`
 	Clients        Clients `json:"clients"`

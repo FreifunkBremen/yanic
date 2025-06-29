@@ -142,7 +142,9 @@ func (conn *Connection) addPoint(name string, tags models.Tags, fields models.Fi
 func (conn *Connection) Close() {
 	close(conn.points)
 	conn.wg.Wait()
-	conn.client.Close()
+	if err := conn.client.Close(); err != nil {
+		log.WithError(err).Error("during close connection")
+	}
 }
 
 // stores data points in batches into the influxdb
@@ -166,7 +168,7 @@ func (conn *Connection) addWorker() {
 					// create new batch
 					timer.Reset(batchTimeout)
 					if bp, err = client.NewBatchPoints(bpConfig); err != nil {
-						log.Fatal(err)
+						log.WithError(err).Fatal("not able to create new batch for points")
 					}
 				}
 				bp.AddPoint(point)
@@ -186,7 +188,7 @@ func (conn *Connection) addWorker() {
 			log.WithField("count", len(bp.Points())).Info("saving points")
 
 			if err = conn.client.Write(bp); err != nil {
-				log.Error(err)
+				log.WithError(err).Error("not able to write batch of points")
 			}
 			writeNow = false
 			bp = nil

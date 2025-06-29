@@ -33,8 +33,11 @@ func (c Config) Address() string {
 	return c["address"].(string)
 }
 
+var logger *log.Entry
+
 func init() {
 	database.RegisterAdapter("respondd", Connect)
+	logger = log.WithField("type", "database-yanic")
 }
 
 func Connect(configuration map[string]interface{}) (database.Connection, error) {
@@ -59,26 +62,30 @@ func (conn *Connection) InsertNode(node *runtime.Node) {
 
 	flater, err := flate.NewWriter(writer, flate.BestCompression)
 	if err != nil {
-		log.Errorf("[database-yanic] could not create flater: %s", err)
+		logger.WithError(err).Error("could not create flater")
 		return
 	}
-	defer flater.Close()
+	defer func() {
+		if err := flater.Close(); err != nil {
+			logger.WithError(err).Error("could not close flater")
+		}
+	}()
 	err = json.NewEncoder(flater).Encode(res)
 	if err != nil {
 		nodeid := "unknown"
 		if node.Nodeinfo != nil && node.Nodeinfo.NodeID != "" {
 			nodeid = node.Nodeinfo.NodeID
 		}
-		log.WithField("node_id", nodeid).Errorf("[database-yanic] could not encode node: %s", err)
+		logger.WithError(err).WithField("node_id", nodeid).Error("could not encode node")
 		return
 	}
 	err = flater.Flush()
 	if err != nil {
-		log.Errorf("[database-yanic] could not compress: %s", err)
+		logger.WithError(err).Error("could not compress")
 	}
 	err = writer.Flush()
 	if err != nil {
-		log.Errorf("[database-yanic] could not send: %s", err)
+		logger.WithError(err).Error("could not send")
 	}
 }
 
@@ -92,5 +99,7 @@ func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 }
 
 func (conn *Connection) Close() {
-	conn.conn.Close()
+	if err := conn.conn.Close(); err != nil {
+		logger.WithError(err).Error("cound not close socket")
+	}
 }

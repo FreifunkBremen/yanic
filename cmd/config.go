@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/BurntSushi/toml"
+	"github.com/bdlm/log"
 
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/respond"
@@ -29,7 +29,7 @@ var (
 func loadConfig() *Config {
 	config, err := ReadConfigFile(configPath)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "unable to load config file:", err)
+		log.WithError(err).Error("unable to load config file")
 		os.Exit(2)
 	}
 	return config
@@ -43,7 +43,11 @@ func ReadConfigFile(path string) (config *Config, err error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.WithError(err).Error("failed to close after read config")
+		}
+	}()
 
 	_, err = toml.NewDecoder(file).Decode(config)
 	if err != nil {

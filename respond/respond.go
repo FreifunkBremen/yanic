@@ -36,7 +36,11 @@ func NewRespone(res *data.ResponseData, addr *net.UDPAddr) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer flater.Close()
+	defer func() {
+		if err := flater.Close(); err != nil {
+			log.WithError(err).Error("failed to close compression")
+		}
+	}()
 
 	if err = json.NewEncoder(flater).Encode(res); err != nil {
 		return nil, err
@@ -53,8 +57,11 @@ func NewRespone(res *data.ResponseData, addr *net.UDPAddr) (*Response, error) {
 func (res *Response) parse(customFields []CustomFieldConfig) (*data.ResponseData, error) {
 	// Deflate
 	deflater := flate.NewReader(bytes.NewReader(res.Raw))
-	defer deflater.Close()
-
+	defer func() {
+		if err := deflater.Close(); err != nil {
+			log.WithError(err).Error("failed to close uncompression")
+		}
+	}()
 	jsonData, err := io.ReadAll(deflater)
 	if err != nil && err != io.ErrUnexpectedEOF {
 		return nil, err

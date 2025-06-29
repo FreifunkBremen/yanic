@@ -8,7 +8,7 @@ import (
 // TimeFormat of JSONTime
 const TimeFormat = "2006-01-02T15:04:05-0700"
 
-//Time struct of JSONTime
+// Time struct of JSONTime
 type Time struct {
 	time time.Time
 }
@@ -18,7 +18,7 @@ func Now() Time {
 	return Time{time.Now()}
 }
 
-//MarshalJSON to bytearray
+// MarshalJSON to bytearray
 func (t Time) MarshalJSON() ([]byte, error) {
 	stamp := `"` + t.time.Format(TimeFormat) + `"`
 	return []byte(stamp), nil

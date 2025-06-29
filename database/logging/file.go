@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	logger "github.com/bdlm/log"
+
 	"github.com/FreifunkBremen/yanic/database"
 	"github.com/FreifunkBremen/yanic/runtime"
 )
@@ -59,7 +61,9 @@ func (conn *Connection) PruneNodes(deleteAfter time.Duration) {
 
 func (conn *Connection) Close() {
 	conn.log("Close")
-	conn.file.Close()
+	if err := conn.file.Close(); err != nil {
+		logger.WithError(err).Error("unable to close connection")
+	}
 }
 
 func (conn *Connection) log(v ...interface{}) {

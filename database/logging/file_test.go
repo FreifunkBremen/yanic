@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -56,5 +57,7 @@ func TestStart(t *testing.T) {
 	dat, _ = os.ReadFile(path)
 	assert.Contains(string(dat), "Close")
 
-	os.Remove(path)
+	if err := os.Remove(path); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 }

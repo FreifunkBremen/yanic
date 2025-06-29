@@ -1,6 +1,7 @@
 package jsonlines
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -17,7 +18,9 @@ func TestOutput(t *testing.T) {
 	out, err = Register(map[string]interface{}{
 		"path": "/tmp/raw.jsonl",
 	})
-	os.Remove("/tmp/raw.jsonl")
+	if err := os.Remove("/tmp/raw.jsonl"); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
 	assert.NoError(err)
 	assert.NotNil(out)
 

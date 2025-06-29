@@ -311,10 +311,10 @@ func (nodes *Nodes) load() {
 			nodes.Unlock()
 
 		} else {
-			log.Errorf("failed to unmarshal nodes: %s", err)
+			log.WithError(err).Error("failed to unmarshal nodes")
 		}
 	} else {
-		log.Errorf("failed to load cached nodes: %s", err)
+		log.WithError(err).Error("failed to load cached nodes")
 	}
 }
 
@@ -341,7 +341,9 @@ func SaveJSON(input interface{}, outputFile string) {
 		log.Panic(err)
 	}
 
-	f.Close()
+	if err := f.Close(); err != nil {
+		log.WithError(err).Error("failed to close after save")
+	}
 	if err := os.Rename(tmpFile, outputFile); err != nil {
 		log.Panic(err)
 	}
@@ -363,7 +365,9 @@ func SaveJSONL(input []interface{}, outputFile string) {
 		}
 	}
 
-	f.Close()
+	if err := f.Close(); err != nil {
+		log.WithError(err).Error("failed to close after save")
+	}
 	if err := os.Rename(tmpFile, outputFile); err != nil {
 		log.Panic(err)
 	}

@@ -26,7 +26,7 @@ var serveCmd = &cobra.Command{
 
 		err := allDatabase.Start(config.Database)
 		if err != nil {
-			log.Panicf("could not connect to database: %s", err)
+			log.WithError(err).Panic("could not connect to database")
 		}
 		defer allDatabase.Close()
 
@@ -35,15 +35,19 @@ var serveCmd = &cobra.Command{
 
 		err = allOutput.Start(nodes, config.Nodes)
 		if err != nil {
-			log.Panicf("error on init outputs: %s", err)
+			log.WithError(err).Panicf("error on init outputs")
 		}
 		defer allOutput.Close()
 
 		if config.Webserver.Enable {
-			log.Infof("starting webserver on %s", config.Webserver.Bind)
+			log.WithField("address", config.Webserver.Bind).Info("starting webserver")
 			srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
 			go webserver.Start(srv)
-			defer srv.Close()
+			defer func() {
+				if err := srv.Close(); err != nil {
+					log.WithError(err).Panic("could not stop webserver")
+				}
+			}()
 		}
 
 		if config.Respondd.Enable {

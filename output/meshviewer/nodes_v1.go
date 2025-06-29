@@ -6,7 +6,8 @@ import (
 )
 
 // NodesV1 struct, to support legacy meshviewer (which are in master branch)
-//  i.e. https://github.com/ffnord/meshviewer/tree/master
+//
+//	i.e. https://github.com/ffnord/meshviewer/tree/master
 type NodesV1 struct {
 	Version   int              `json:"version"`
 	Timestamp jsontime.Time    `json:"timestamp"` // Timestamp of the generation

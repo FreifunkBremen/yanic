@@ -126,8 +126,8 @@ func TestToInflux(t *testing.T) {
 					Subtarget string `json:"subtarget,omitempty"`
 					ImageName string `json:"image_name,omitempty"`
 				}{
-					Base: "gluon",
-					Target: "x86",
+					Base:      "gluon",
+					Target:    "x86",
 					Subtarget: "64",
 					ImageName: "x86-64",
 				},
