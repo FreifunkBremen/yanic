@@ -11,6 +11,9 @@ import (
 )
 
 var (
+	VERSION    = ""
+	promDescUP = prometheus.NewDesc("yanic_up", "yanic is up", []string{"version"}, prometheus.Labels{})
+
 	promDescNodeInfo = prometheus.NewDesc("yanic_node_info", "node info on labels", []string{
 		"node_id",
 		"hostname",
@@ -122,6 +125,7 @@ func (prom *Prometheus) Init(nodes *runtime.Nodes) {
 }
 
 func (prom *Prometheus) Describe(d chan<- *prometheus.Desc) {
+	d <- promDescUP
 	d <- promDescNodeInfo
 
 	d <- promDescNodeUP
@@ -237,6 +241,15 @@ func (prom *Prometheus) getNodeLabels(ni *data.Nodeinfo) []string {
 func (prom *Prometheus) Collect(metrics chan<- prometheus.Metric) {
 	prom.nodes.Lock()
 	defer prom.nodes.Unlock()
+	if VERSION != "" {
+		if m, err := prometheus.NewConstMetric(
+			promDescUP,
+			prometheus.GaugeValue,
+			1,
+			VERSION); err == nil {
+			metrics <- m
+		}
+	}
 	for _, node := range prom.nodes.List {
 		nodeinfo := node.Nodeinfo
 		if nodeinfo == nil {
