@@ -511,6 +511,8 @@ A example for other developers for new database types.
 [[database.connection.logging]]
 enable   = false
 path     = "/var/log/yanic.log" # (1)
+type     = "text" # (2)
 ```
 
 1. Path to file where to store some examples with every line.
+2. Support different output types in of logging, current supported are "text" and "json" (default "text" if not defined)

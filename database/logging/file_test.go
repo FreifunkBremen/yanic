@@ -16,6 +16,7 @@ func TestStart(t *testing.T) {
 
 	conn, err := Connect(map[string]interface{}{
 		"path": "/dev/notexists/file",
+		"type": "text",
 	})
 	assert.Nil(conn)
 	assert.Error(err)
@@ -36,6 +37,7 @@ func TestStart(t *testing.T) {
 
 	dat, _ = os.ReadFile(path)
 	assert.Contains(string(dat), "InsertNode")
+	assert.NotContains(string(dat), `"msg":"InsertNode"`)
 
 	assert.NotContains(string(dat), "InsertLink")
 	conn.InsertLink(&runtime.Link{}, time.Now())
@@ -56,6 +58,26 @@ func TestStart(t *testing.T) {
 	conn.Close()
 	dat, _ = os.ReadFile(path)
 	assert.Contains(string(dat), "Close")
+
+	if err := os.Remove(path); err != nil {
+		fmt.Printf("during cleanup: %s\n", err)
+	}
+
+	conn, err = Connect(map[string]interface{}{
+		"path": path,
+		"type": "json",
+	})
+	assert.NoError(err)
+
+	dat, _ = os.ReadFile(path)
+	assert.NotContains(string(dat), "InsertNode")
+
+	conn.InsertNode(&runtime.Node{
+		Statistics: &data.Statistics{},
+	})
+
+	dat, _ = os.ReadFile(path)
+	assert.Contains(string(dat), `"msg":"InsertNode"`)
 
 	if err := os.Remove(path); err != nil {
 		fmt.Printf("during cleanup: %s\n", err)

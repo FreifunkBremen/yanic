@@ -287,3 +287,5 @@ address  = "stats.bremen.freifunk.net:11001"
 [[database.connection.logging]]
 enable   = false
 path     = "/var/log/yanic.log"
+# Support different output types in of logging current supported are "text",  and "json" (default "text" if not defined)
+type = "text" 
