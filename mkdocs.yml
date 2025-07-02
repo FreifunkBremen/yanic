@@ -2,10 +2,10 @@
 site_name: Yanic
 site_description: Yet another node info collector - for respondd to be used with meshviewer to Grafana (with influxdb or graphite) 
 site_author: FreifunkBremen
-site_url: "https://freifunkbremen.github.io/yanic/"
-repo_url: "https://github.com/FreifunkBremen/yanic"
+site_url: "https://freifunkbremen.codeberg.page/yanic/"
+repo_url: "https://codeberg.org/FreifunkBremen/yanic"
 
-remote_branch: gh-pages
+remote_branch: pages
 
 docs_dir: docs
 
