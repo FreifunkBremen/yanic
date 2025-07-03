@@ -1,0 +1,39 @@
+when:
+  - event: push
+  - event: pull_request
+  - event: tag
+    ref: refs/tags/v*
+
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      tags: true
+      lfs: true
+
+
+steps:
+  - name: test
+    image: golang
+    depends_on: []
+    commands:
+      - make test
+
+  - name: lint
+    image: golangci/golangci-lint
+    depends_on: []
+    commands:
+      - golangci-lint run -v ./...
+      - golangci-lint fmt --diff-colored ./...
+
+  - name: build
+    image: golang
+    depends_on: []
+    environment:
+      CGO: 0
+      GOOS: linux
+      GOARCH: amd64
+    commands:
+      - export FILENAME="yanic_$${GOARCH}_$${GOOS}"
+      - go build -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=$(git describe --tags)" -v -o "$${FILENAME}"
+      - ./yanic_* version
