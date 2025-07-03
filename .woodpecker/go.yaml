@@ -38,6 +38,31 @@ steps:
       - go build -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=$(git describe --tags)" -v -o "$${FILENAME}"
       - ./yanic_* version
 
+  - name: container
+    image: woodpeckerci/plugin-kaniko
+    depends_on:
+      - test
+      - lint
+      - build
+    when:
+      - event: push
+        branch:
+          - main
+          - master
+          - rc
+      - event: tag
+        ref: refs/tags/v*
+    settings:
+      dockerfile: Containerfile
+      registry: "${CI_FORGE_URL#https://}"
+      repo: "${CI_REPO,,}"
+      auto_tag: true
+      build_args:
+        - VERSION=${CI_COMMIT_TAG:-${CI_COMMIT_SHA}}
+      username: "${CI_REPO_OWNER}"
+      password:
+        from_secret: CODEBERG_TOKEN
+
   - name: release
     image: "docker.io/node"
     depends_on:
