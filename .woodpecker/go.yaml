@@ -37,3 +37,25 @@ steps:
       - export FILENAME="yanic_$${GOARCH}_$${GOOS}"
       - go build -ldflags "-X github.com/FreifunkBremen/yanic/cmd.VERSION=$(git describe --tags)" -v -o "$${FILENAME}"
       - ./yanic_* version
+
+  - name: release
+    image: "docker.io/node"
+    depends_on:
+      - test
+      - lint
+      - build
+    when:
+      - event: push
+        branch:
+          - main
+          - master
+          - rc
+    environment:
+      GITEA_TOKEN:
+        from_secret: CODEBERG_TOKEN
+      GIT_CREDENTIALS:
+        from_secret: CODEBERG_TOKEN
+    commands:
+      - export GITEA_URL="${CI_FORGE_URL}"
+      - npm install semantic-release conventional-changelog-conventionalcommits @semantic-release/changelog @saithodev/semantic-release-gitea
+      - "npx semantic-release"

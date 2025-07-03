@@ -1,6 +1,7 @@
 {
   "branches": [
     { "name": "main" },
+    { "name": "master" },
     { "name": "rc", "prerelease": true }
   ],
   "plugins": [
@@ -17,14 +18,10 @@
       }
     ],
     [
-      "@semantic-release/git",
-      {}
-    ],
-    [
-      "@semantic-release/github",
+      "@saithodev/semantic-release-gitea",
       {
         "assets": [
-          { "path": "build/yanic*" }
+          { "path": "yanic*" }
         ]
       }
     ]
