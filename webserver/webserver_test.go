@@ -11,7 +11,12 @@ import (
 func TestWebserver(t *testing.T) {
 	assert := assert.New(t)
 
-	srv := New(":12345", "/tmp")
+	config := Config{
+		Bind:    ":12345",
+		Webroot: "/tmp",
+	}
+
+	srv := New(config, nil)
 	assert.NotNil(srv)
 
 	go Start(srv)

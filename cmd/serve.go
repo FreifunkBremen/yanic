@@ -41,13 +41,15 @@ var serveCmd = &cobra.Command{
 
 		if config.Webserver.Enable {
 			log.WithField("address", config.Webserver.Bind).Info("starting webserver")
-			srv := webserver.New(config.Webserver.Bind, config.Webserver.Webroot)
+			srv := webserver.New(config.Webserver, nodes)
 			go webserver.Start(srv)
 			defer func() {
 				if err := srv.Close(); err != nil {
 					log.WithError(err).Panic("could not stop webserver")
 				}
 			}()
+		} else if prom := config.Webserver.Prometheus; prom != nil && prom.Enable {
+			log.Error("to enable prometheus exporter, please enable webserver ")
 		}
 
 		if config.Respondd.Enable {

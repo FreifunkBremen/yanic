@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"github.com/FreifunkBremen/yanic/webserver"
 )
 
 // VERSION is set at build time
@@ -21,6 +23,7 @@ var versionCMD = &cobra.Command{
 
 func init() {
 	if VERSION != "" {
+		webserver.VERSION = VERSION
 		RootCmd.AddCommand(versionCMD)
 	}
 }
